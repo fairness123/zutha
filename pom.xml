@@ -177,6 +177,7 @@
         <configuration>
           <reload>manual</reload>
           <contextPath>/</contextPath>
+          <webDefaultXml>src/main/resources/webdefault.xml</webDefaultXml>
           <scanIntervalSeconds>5</scanIntervalSeconds>
         </configuration>
       </plugin>

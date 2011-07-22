@@ -1,7 +1,9 @@
 
-package net.zutha.model
+package net.zutha
+package model
 
 object DB {
+  
   def getItem(id:String): Option[Item] = {
     items.get(id)
   }
@@ -11,4 +13,6 @@ object DB {
     "02" -> Item("02","Third_Item"),
     "10G" -> Item("10G","Foreign_Item")
   )
+  
+
 }

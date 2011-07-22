@@ -4,12 +4,11 @@
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
 		
-		<title>net.zutha:zutha:0.0.1-SNAPSHOT</title>
-		<script id="jquery" src="/classpath/jquery.js" type="text/javascript"></script>
+		<title><lift:bind name="title"/></title>
+		
+		<lift:bind name="head"/>
 	</head>
 	<body>
 		<lift:bind name="content" />
-		<lift:Menu.builder />
-		<lift:msgs/>
 	</body>
 </html>

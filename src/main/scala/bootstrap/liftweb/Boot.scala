@@ -45,8 +45,6 @@ class Boot {
     )
     LiftRules.setSiteMap(siteMap)
     
-    
-    
     // Use jQuery 1.4
     LiftRules.jsArtifacts = net.liftweb.http.js.jquery.JQuery14Artifacts
 

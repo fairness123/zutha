@@ -1,8 +1,30 @@
-<lift:surround with="master" at="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:lift="http://liftweb.net/">
+	<head>
+		<title>Zutha Console</title>
+		<link rel="stylesheet" type="text/css" href="/css/console.css" />
+	</head>
+	
+	<body>
+		<div class="lift:ZuthaConsole.prefixes">
+			Predefined prefixes:
+			<table><tr><th id="prefix_header">prefix</th><th>uri</th></tr>
+			<tr class="prefix_entry">
+				<td><span class="prefix"></span></td>
+				<td><span class="uri"></span></td>
+			</tr>
+			</table>
+		</div>
+	
+		<form class="lift:ZuthaConsole.query?form=post">
+			<textarea cols="40" rows="4"></textarea>
+			<input type="submit" value="Submit" />
+		
+			<div>
+				Query Output:
+				<pre id="query_output"></pre>
+			</div>
+			
+		</form>
 
-    <form id="query_form" method="post" action="console.html">
-        <input id="query_input" type="text" />
-        <input id="submit_button" type="submit" value="Submit" />
-    </form>
-
-</lift:surround>
+	</body>
+</html>

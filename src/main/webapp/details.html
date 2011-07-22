@@ -1,82 +1,95 @@
-<lift:surround with="master" at="content">
-    <div id="filter_bar">
-        <a id="add_to_filter" href="">Add to filter</a>
-    </div>
+<div class="lift:surround?with=master">
 
-    <div id="edit">
-        <form action="" method="post">
-            <input type="submit" value="Edit" />
-        </form>
-    </div>
-
-    <div id="container">
-        <!-- Main Item container -->
-        <lift:embed what="mainItem"/>
-
-        <!-- Associations -->
-        <ul class="associations">
-           <li class="association">
-                <h2 class="association_type"><a href="">Murders</a></h2>
-                <ul class="roles">
-                    <li class="role">
-                        <h3 class="role_type"><a href="">Victims</a></h3>
-                        <ul class="role_players">
-                            <li class="role_player"><a href="">Dardano</a></li>
-                            <li class="role_player"><a href="">Dejanice</a></li>
-                        </ul>
-                    </li>
-                   <li class="role">
-                       <h3 class="role_type"><a href="">Cause of Death</a></h3>
-                        <ul class="role_players">
-                            <li class="role_player"><a href="">Stabbing</a></li>
-                        </ul>
-                   </li>
-                </ul>
-            </li>
-            <li class="association">
-                <h2 class="association_type"><a href="">Murdered By</a></h2>
-                <ul class="roles">
-                    <li class="role">
-                        <h3 class="role_type"><a href="">Murderer</a></h3>
-                        <ul class="role_players">
-                            <li class="role_player"><a href="">Dejanice</a></li>
-                        </ul>
-                    </li>
-                   <li class="role">
-                       <h3 class="role_type"><a href="">Cause of Death</a></h3>
-                        <ul class="role_players">
-                            <li class="role_player"><a href="">Stabbing</a></li>
-                        </ul>
-                   </li>
-                </ul>
-            </li>
-            <li class="association">
-                <h2 class="association_type"><a href="">Instance of</a></h2>
-                <ul class="roles">
-                    <li class="role">
-                        <h3 class="role_type"><a href="">Type</a></h3>
-                        <ul class="role_players">
-                            <li class="role_player"><a href="">Character</a></li>
-                            <li class="role_player"><a href="">Person</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li class="association">
-                <h2 class="association_type"><a href="">Discussed in</a></h2>
-                <ul class="roles">
-                    <li class="role">
-                        <h3 class="role_type"><a href="">Comments</a></h3>
-                        <ul class="role_players">
-                            <li class="role_player"><a href="">I hate Dejanice!</a></li>
-                            <li class="role_player"><a href="">What a tragic character!</a></li>
-                            <li class="role_player"><a href="">where can I find a good character analysis?</a></li>
-                            <li class="role_player"><a href="">...</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-
-    </div>
-</lift:surround>
+	<!-- Head Binding -->
+	
+	<div class="lift:bind-at?name=head">
+		<title>Dejanice (Character)</title>
+		
+	</div>
+	
+	<!-- Content Binding -->
+	
+	<div class="lift:bind-at?name=content">
+		<div id="filter_bar">
+	        <a id="add_to_filter" href="">Add to filter</a>
+	    </div>
+	
+	    <div id="edit">
+	        <form action="" method="post">
+	            <input type="submit" value="Edit" />
+	        </form>
+	    </div>
+	
+	    <div id="container">
+	        <!-- Main Item container -->
+	        <lift:embed what="mainItem"/>
+	
+	        <!-- Associations -->
+	        <ul class="associations">
+	           <li class="association">
+	                <h2 class="association_type"><a href="">Murders</a></h2>
+	                <ul class="roles">
+	                    <li class="role">
+	                        <h3 class="role_type"><a href="">Victims</a></h3>
+	                        <ul class="role_players">
+	                            <li class="role_player"><a href="">Dardano</a></li>
+	                            <li class="role_player"><a href="">Dejanice</a></li>
+	                        </ul>
+	                    </li>
+	                   <li class="role">
+	                       <h3 class="role_type"><a href="">Cause of Death</a></h3>
+	                        <ul class="role_players">
+	                            <li class="role_player"><a href="">Stabbing</a></li>
+	                        </ul>
+	                   </li>
+	                </ul>
+	            </li>
+	            <li class="association">
+	                <h2 class="association_type"><a href="">Murdered By</a></h2>
+	                <ul class="roles">
+	                    <li class="role">
+	                        <h3 class="role_type"><a href="">Murderer</a></h3>
+	                        <ul class="role_players">
+	                            <li class="role_player"><a href="">Dejanice</a></li>
+	                        </ul>
+	                    </li>
+	                   <li class="role">
+	                       <h3 class="role_type"><a href="">Cause of Death</a></h3>
+	                        <ul class="role_players">
+	                            <li class="role_player"><a href="">Stabbing</a></li>
+	                        </ul>
+	                   </li>
+	                </ul>
+	            </li>
+	            <li class="association">
+	                <h2 class="association_type"><a href="">Instance of</a></h2>
+	                <ul class="roles">
+	                    <li class="role">
+	                        <h3 class="role_type"><a href="">Type</a></h3>
+	                        <ul class="role_players">
+	                            <li class="role_player"><a href="">Character</a></li>
+	                            <li class="role_player"><a href="">Person</a></li>
+	                        </ul>
+	                    </li>
+	                </ul>
+	            </li>
+	            <li class="association">
+	                <h2 class="association_type"><a href="">Discussed in</a></h2>
+	                <ul class="roles">
+	                    <li class="role">
+	                        <h3 class="role_type"><a href="">Comments</a></h3>
+	                        <ul class="role_players">
+	                            <li class="role_player"><a href="">I hate Dejanice!</a></li>
+	                            <li class="role_player"><a href="">What a tragic character!</a></li>
+	                            <li class="role_player"><a href="">where can I find a good character analysis?</a></li>
+	                            <li class="role_player"><a href="">...</a></li>
+	                        </ul>
+	                    </li>
+	                </ul>
+	            </li>
+	        </ul>
+	    </div>
+    
+	</div>
+   
+</div>
