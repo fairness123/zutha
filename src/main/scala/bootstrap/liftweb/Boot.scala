@@ -41,7 +41,8 @@ class Boot {
     def siteMap = SiteMap(
       Menu("Home") / "index",
       Menu("details") / "details",
-      Menu("console") / "console"
+      Menu("console") / "console",
+      Menu("CreateItem") / "create_item"
     )
     LiftRules.setSiteMap(siteMap)
     

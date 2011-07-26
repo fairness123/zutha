@@ -15,12 +15,18 @@ object TMQLexperiments{
   var tm : TopicMap = null;
   
   
+  val q0 = """DELETE CASCADE ALL"""
   val q1 = """
     	insert '''
       %prefix z http://psi.zutha.net/
       %prefix zid http://zutha.net/item/
     		zid:04 isa [z:Person];
-    		- "Chris Barnett" .
+    		- "Raymond E. Feist" .
+        zid:05 isa z:Person;
+        - "Janny Wurts" .
+        zid:06 isa [z:Book];
+        - "Daughter of the Empire" .
+        [z:Authorship]([z:Author]: zid:04, z:Author : zid:05, [z:Work] : zid:06) 
     	'''
       """
   val q2 = """
@@ -40,16 +46,18 @@ object TMQLexperiments{
     
   val q5 = """
       %prefix z http://psi.zutha.net/
-      FOR $t IN z:Person >> instances
+      FOR $t IN tm:subject >> instances
         RETURN <item><id>{$t >> indicators >> atomify}</id><name>{$t / tm:name}</name></item>
       """
+  
     
   def main(args : Array[String]) {
+    QueryEngine.printTMLocators
     lazyRunMethod
     //oldRunMethod
   }
   def lazyRunMethod = {
-    val result = QueryEngine.runQuery(q4)
+    val result = QueryEngine.runQuery(q3)
     val prefixes = QueryEngine.getPrefixes
     println(prefixes)
     println(result)

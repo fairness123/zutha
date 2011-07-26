@@ -1,0 +1,30 @@
+<div class="lift:surround?with=default">
+	<!-- Head Merge -->
+
+	<head>
+		<title>Zutha Console</title>
+		<link rel="stylesheet" type="text/css" href="/css/console.css" />
+	</head>
+	
+	<!-- Content Binding -->
+	
+	<div class="lift:bind-at?name=content">
+
+	
+		<form class="lift:CreateItem?form=post">
+			<div id="subject_indicators" ></div>
+			<div><div id="addSI">Add</div></div>
+			<input type="submit" value="Submit" />
+		
+			<div>
+				Created Item:
+				<br />
+				<pre id="item_xml"></pre>
+			</div>
+			
+		</form>
+		
+		<lift:Msgs/>
+
+	</div>
+</div>

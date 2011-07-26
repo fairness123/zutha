@@ -12,7 +12,11 @@
   <name>zutha Project</name>
   <inceptionYear>2010</inceptionYear>
   <properties>
+  	<!-- Dependencf Versions -->
     <scala.version>2.8.1</scala.version>
+    <tmql.version>3.2.0-SNAPSHOT</tmql.version>
+<!--     <tmql.version>3.1.0</tmql.version> -->
+    <majortom.version>1.2.0</majortom.version>
     <!-- Common plugin settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
@@ -46,74 +50,94 @@
     <dependency>
       <groupId>de.topicmapslab.majortom</groupId>
       <artifactId>majortom-model</artifactId>
-      <version>1.2.0</version>
+      <version>${majortom.version}</version>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.majortom</groupId>
       <artifactId>majortom-db</artifactId>
-      <version>1.2.0</version>
+      <version>${majortom.version}</version>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.majortom</groupId>
       <artifactId>majortom-inMemory</artifactId>
-      <version>1.2.0</version>
+      <version>${majortom.version}</version>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.majortom</groupId>
       <artifactId>majortom-queued</artifactId>
-      <version>1.2.0</version>
+      <version>${majortom.version}</version>
     </dependency>  
     <dependency>
       <groupId>de.topicmapslab.majortom</groupId>
       <artifactId>majortom-redis</artifactId>
-      <version>1.2.0</version>
+      <version>${majortom.version}</version>
     </dependency>
+    
     <!-- TMQL4J -->
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-draft2010</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-path</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-flwr</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-select</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-update</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-insert</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-delete</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
       <artifactId>tmql4j-merge</artifactId>
-      <version>3.1.0</version>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.topicmapslab.tmql4j</groupId>
-      <artifactId>tmql4j-template</artifactId>
-      <version>3.1.0</version>
+      <artifactId>tmql4j-majortom</artifactId>
+      <version>${tmql.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
+
     <!-- Lift -->
     <dependency>
       <groupId>net.liftweb</groupId>

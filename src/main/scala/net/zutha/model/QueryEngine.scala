@@ -35,17 +35,19 @@ object QueryEngine {
   
   def getPrefixes = runtime.getLanguageContext().getPrefixHandler().getPrefixMap
   
-  def testmap = {
-    val map = new java.util.HashMap[String,String]
-    map.foreach(elem => elem match {case (pre,uri) => print(pre)})
-    map.foreach(_ match {
-      case (pre,uri) => print(pre)
-    })
+  def printTMLocators = {
+    for(val loc <- sys.getLocators) {
+      println (loc.getReference)
+    }
   }
+  
   def zuthaTopicMap = {
     val uri = "http://zutha.net"
-    sys.createTopicMap(uri)
-    sys.getTopicMap(uri)
+    val tm = sys.getTopicMap(uri)
+    if(tm==null) 
+      sys.createTopicMap(uri)
+    else
+      tm
   }
   
   def defaultTMQLRuntime = {

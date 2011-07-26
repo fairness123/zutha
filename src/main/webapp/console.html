@@ -1,30 +1,32 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:lift="http://liftweb.net/">
+<div class="lift:surround?with=default;at=content">
+	<!-- Head Merge -->
+
 	<head>
 		<title>Zutha Console</title>
 		<link rel="stylesheet" type="text/css" href="/css/console.css" />
 	</head>
 	
-	<body>
-		<div class="lift:ZuthaConsole.prefixes">
-			Predefined prefixes:
-			<table><tr><th id="prefix_header">prefix</th><th>uri</th></tr>
-			<tr class="prefix_entry">
-				<td><span class="prefix"></span></td>
-				<td><span class="uri"></span></td>
-			</tr>
-			</table>
-		</div>
+	<!-- Content Binding -->
 	
-		<form class="lift:ZuthaConsole.query?form=post">
-			<textarea cols="40" rows="4"></textarea>
-			<input type="submit" value="Submit" />
-		
-			<div>
-				Query Output:
-				<pre id="query_output"></pre>
-			</div>
-			
-		</form>
+	<div class="lift:ZuthaConsole.prefixes">
+		Predefined prefixes:
+		<table><tr><th id="prefix_header">prefix</th><th>uri</th></tr>
+		<tr class="prefix_entry">
+			<td><span class="prefix"></span></td>
+			<td><span class="uri"></span></td>
+		</tr>
+		</table>
+	</div>
 
-	</body>
-</html>
+	<form class="lift:ZuthaConsole.query?form=post">
+		<textarea cols="40" rows="4"></textarea>
+		<input type="submit" value="Submit" />
+	
+		<div>
+			Query Output:
+			<pre id="query_output"></pre>
+		</div>
+		
+	</form>
+
+</div>

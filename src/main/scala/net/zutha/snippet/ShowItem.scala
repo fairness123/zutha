@@ -8,7 +8,7 @@ import net.liftweb.http.{S}
 import _root_.net.liftweb.util.Helpers
 import Helpers._
 
-class ItemSnippet {
+class ShowItem {
   def render(content: NodeSeq): NodeSeq = {
     def display(item:Item) = {
       bind("item", content,
