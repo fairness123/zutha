@@ -25,7 +25,7 @@ object CreateItem {
     S.notice("form being rendered. XML: " + createdItemXML)
     "#subject_indicators *" #> SIs.flatMap(renderSI) &
     "#addSI" #> addSI _ &
-    "type=submit" #> SHtml.onSubmitUnit(executeCreateItem) &
+    "type=submit" #> SHtml.submit("Submit", executeCreateItem) &
     "#item_xml *" #> createdItemXML.get
   }
   
