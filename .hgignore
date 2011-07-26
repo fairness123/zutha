@@ -1,2 +1,5 @@
 syntax: regexp
 target/
+.*\.log
+syntax: glob
+.scala_dependencies
