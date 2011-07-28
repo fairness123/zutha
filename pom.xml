@@ -142,7 +142,9 @@
     <dependency>
       <groupId>net.liftweb</groupId>
       <artifactId>lift-mapper_2.8.1</artifactId>
-      <version>2.3</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <version>2.4-M3</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -180,20 +182,20 @@
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
     <plugins>
-	    <plugin>
-			  <groupId>org.zeroturnaround</groupId>
-			  <artifactId>jrebel-maven-plugin</artifactId>
-			  <version>1.0.7</version>
-			  <executions>
-			    <execution>
-			      <id>generate-rebel-xml</id>
-			      <phase>process-resources</phase>
-			      <goals>
-			        <goal>generate</goal>
-			      </goals>
-			    </execution>
-			  </executions>
-			</plugin>
+        <plugin>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>jrebel-maven-plugin</artifactId>
+            <version>1.0.7</version>
+            <executions>
+            <execution>
+              <id>generate-rebel-xml</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+            </executions>
+        </plugin>
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
@@ -202,7 +204,7 @@
           <reload>manual</reload>
           <contextPath>/</contextPath>
           <webDefaultXml>src/main/resources/webdefault.xml</webDefaultXml>
-          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
         </configuration>
       </plugin>
       <plugin>

@@ -1,5 +1,5 @@
-package net.zutha {
-package snippet {
+package net.zutha
+package snippet
 
 import net.zutha.model.{DB,Item}
 import net.liftweb.common.{Full}
@@ -15,7 +15,7 @@ class ShowItem {
            "id" -> Text(item.id),
            "name" -> Text(item.name))
     }
-    
+		
     S.attr("id") match {
       case Full(id) => DB.getItem(id) match {
           case Some(item) => display(item)
@@ -23,11 +23,7 @@ class ShowItem {
       }
       case _ => Text("no item id was specified") //TODO:return 404 Not Found response
     }
-    
 
   }
 
-
 } //end of class
-
-}}

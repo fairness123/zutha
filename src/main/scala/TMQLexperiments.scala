@@ -2,14 +2,13 @@
 import scala.collection.JavaConversions._
 import org.tmapi.core._
 import de.topicmapslab.tmql4j.components.processor.runtime.{TMQLRuntimeFactory,ITMQLRuntime}
-import de.topicmapslab.tmql4j.components.processor.results.xml.{XMLResult, XMLValue}
 import de.topicmapslab.tmql4j.components.processor.results.model.IResultSet
 import de.topicmapslab.tmql4j.components.processor.results.model.IResult
 import de.topicmapslab.majortom.store.TopicMapStoreProperty
 import de.topicmapslab.majortom.util.FeatureStrings
 import net.zutha.model.{QueryEngine}
 
-object TMQLexperiments{
+object TMQLexperiments {
   var sys : TopicMapSystem = null
   var runtime : ITMQLRuntime = null
   var tm : TopicMap = null;
@@ -57,7 +56,7 @@ object TMQLexperiments{
     //oldRunMethod
   }
   def lazyRunMethod = {
-    val result = QueryEngine.runQuery(q3)
+    val result = QueryEngine.runQuery(q2)
     val prefixes = QueryEngine.getPrefixes
     println(prefixes)
     println(result)
