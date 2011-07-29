@@ -1,5 +1,7 @@
 syntax: regexp
 target/
 .*\.log
+project/boot.*
+.*\.idea
 syntax: glob
-.scala_dependencies
+sbt_open.bat

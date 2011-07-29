@@ -26,7 +26,9 @@ object CreateItem {
     "type=submit" #> SHtml.submit("Submit", executeCreateItem) &
     "#item_xml *" #> createdItemXML.get
   }
-  
+
+
+
   def render_SIs(ns: NodeSeq): NodeSeq = {
 	//use the html in the element with class=SI_line as a basis for rendering each SI
 	val si_line_ns: NodeSeq = (".SI_line ^^" #> "")(ns)
@@ -64,11 +66,12 @@ object CreateItem {
   private def newSI = SI_Line(nextFuncName,"")
   
   private def appendSI: SI_Line = {
+    S.notice("adding line 2")
     val retn = newSI
     SIs.atomicUpdate(_ :+ retn)
     retn
   }
-  
+
   private def mutateSI(guid: String)(f: SI_Line => SI_Line) {
     SIs.atomicUpdate(_.map(si => if (si.guid == guid) f(si) else si))
   }
