@@ -1,40 +1,78 @@
-<div class="lift:surround?with=default">
-	<!-- Head Merge -->
+<html>
+<body class="lift:content_id=real_content">
+<div id="real_content" class="lift:surround?with=default">
 
+    <!-- Head Merge -->
 	<head>
 		<title>Zutha Console</title>
 		<link rel="stylesheet" type="text/css" href="/css/console.css" />
 	</head>
-	
+
 	<!-- Content Binding -->
-	
+
 	<div class="lift:bind-at?name=content">
 
-	
+
 		<form class="lift:CreateItem?form=post">
-                        
-			<div id="SI_block" >
-				Subject Indicators:
-				<div id="SIs">
-					<div class="SI_line">
-						<input name="SI"></input>
+
+            <div id="name_block" >
+			 	<p>Names:</p>
+				<div id="names">
+					<div class="property">
+						<input name="nameType"/>
+                        <input name="name"/>
+                        <input name="scope"/>
 						<button name="remove">Remove</button>
 					</div>
 				</div>
-				<div id="addSI">Add</div>
+				<div class="addProp">Add</div>
 			</div>
-			
-			<input type="submit" value="Submit" />
-		
+
+            <hr />
+
+            <div id="type_block" >
+				<p>Types:</p>
+				<div id="types">
+					<div class="property">
+                        <input name="name"/>
+                        <input name="id" type="hidden" />
+						<button name="remove">Remove</button>
+					</div>
+				</div>
+				<div class="addProp">Add</div>
+			</div>
+
+		    <hr />
+            
+            <div id="SI_block" >
+				<p>Subject Indicators:</p>
+				<div id="SIs">
+					<div class="property">
+						<input name="uri"/>
+						<button name="remove">Remove</button>
+					</div>
+				</div>
+				<div class="addProp">Add</div>
+			</div>
+
+            <hr />
+
+            <div>
+                <input type="submit" value="Submit" />
+            </div>
+
+
 			<div>
 				Created Item:
 				<br />
 				<pre id="item_xml"></pre>
 			</div>
-			
+
 		</form>
-		
-		<lift:Msgs/>
+
+		<div class="lift:Msgs" ></div>
 
 	</div>
 </div>
+</body>
+</html>

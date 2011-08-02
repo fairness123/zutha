@@ -1,7 +1,7 @@
 syntax: regexp
 target/
 .*\.log
-project/boot.*
-.*\.idea
+project/boot
+^\.idea
 syntax: glob
 sbt_open.bat
