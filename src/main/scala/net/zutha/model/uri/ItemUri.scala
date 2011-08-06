@@ -5,10 +5,10 @@ import net.liftweb.common.{Box,Full,Empty}
 
 object ItemUri {
   /*
-   * make a URI of the form /item/<id>/<name> from an id
+   * make a URI of the form /item/<zid>/<name> from a zid
    */
-  def apply(id:String):Box[String] = id match {
-    case IDLookup(wasFixed,item) => Full("/item/"+item.id+"/"+item.name)
+  def apply(zid:String):Box[String] = zid match {
+    case ZIDLookup(wasFixed,item) => Full("/item/"+item.zid+"/"+item.name)
     case _ => Empty
   }
 
@@ -17,9 +17,9 @@ object ItemUri {
    * @return (wasFixed,repairedID,actualName)
    */
   def unapply(uri:List[String]):Option[(Boolean,String,String)] = uri match {
-    case ItemUriStem(wasFixed,item,Nil) => Some(wasFixed,item.id,item.name)
-    case IDLookup(wasFixed,item)::Nil => Some(true,item.id,item.name)
-    case "item"::IDLookup(wasFixed,item)::Nil => Some(true,item.id,item.name)
+    case ItemUriStem(wasFixed,item,Nil) => Some(wasFixed,item.zid.toString,item.name)
+    case ZIDLookup(wasFixed,item)::Nil => Some(true,item.zid.toString,item.name)
+    case "item"::ZIDLookup(wasFixed,item)::Nil => Some(true,item.zid.toString,item.name)
     case _ => None
   }
 }

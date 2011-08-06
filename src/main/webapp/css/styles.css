@@ -288,21 +288,21 @@ ul.item_properties .property_name:after{
     content:": ";
 }
 /* ----------------------------- */
-/* Item ID and related_count */
-.id_block, .related_count{
+/* Item ZID and related_count */
+.zid_block, .related_count{
     font-size:70%;
 }
 .related_count p{
     margin:0;
 }
-.id_block{
+.zid_block{
     float:left;
 }
 /* Related Count */
 .related_count{
     float:right;
 }
-/* make sure item div stretches to include id and related_count */
+/* make sure item div stretches to include zid and related_count */
 .item .bottom{
     clear:left;
 }

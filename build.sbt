@@ -39,6 +39,9 @@ libraryDependencies ++= {
     "de.topicmapslab.tmql4j" % "tmql4j-template" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-update" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-tolog" % tmql4j_version withJavadoc() withSources(),
+    "de.topicmapslab.tmql4j" % "tmql4j-majortom" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.majortom" % "majortom-model" % majortom_version withJavadoc() withSources(),
-    "de.topicmapslab.majortom" % "majortom-db" % majortom_version withJavadoc() withSources()
+    "de.topicmapslab.majortom" % "majortom-db" % majortom_version withJavadoc() withSources(),
+    "de.topicmapslab.majortom" % "majortom-inMemory" % majortom_version withJavadoc() withSources(),
+    "de.topicmapslab.majortom" % "majortom-queued" % majortom_version withJavadoc() withSources()
 )}

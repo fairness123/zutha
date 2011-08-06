@@ -5,5 +5,10 @@
 
 package net.zutha.model
 
-case class Item(id:String,name:String)
+trait Item {
+  def zid: ZID
+  def name: String
+
+}
+
 

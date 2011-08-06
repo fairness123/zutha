@@ -3,23 +3,20 @@
 
 	<head>
 		<title>Zutha Console</title>
-		<link rel="stylesheet" type="text/css" href="/css/console.css" />
+		<link rel="stylesheet" type="text/css" href="/css/zutha_console.css" />
 	</head>
 	
 	<!-- Content Binding -->
 	
 	<div class="lift:ZuthaConsole.prefixes">
-		Predefined prefixes:
-		<table><tr><th id="prefix_header">prefix</th><th>uri</th></tr>
-		<tr class="prefix_entry">
-			<td><span class="prefix"></span></td>
-			<td><span class="uri"></span></td>
-		</tr>
-		</table>
+		<strong>Predefined prefixes:</strong>
+		<div class="prefix_entry">
+			%prefix <span class="prefix"></span> <span class="uri"></span>
+		</div>
 	</div>
 
 	<form class="lift:ZuthaConsole.query?form=post">
-		<textarea cols="40" rows="4"></textarea>
+		<textarea cols="80" rows="8"></textarea>
 		<input type="submit" value="Submit" />
 	
 		<div>

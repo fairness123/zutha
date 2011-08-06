@@ -8,7 +8,7 @@ object ItemUriStem {
    * @return (wasFixed,item,remainingUri)
    */
   def unapply(uri:List[String]):Option[(Boolean,Item,List[String])] = uri match {
-    case "item"::IDLookup(wasFixed,item)::name::tail => {
+    case "item"::ZIDLookup(wasFixed,item)::name::tail => {
         Some( (wasFixed || name!=item.name), item, tail)
     }
     case _ => None

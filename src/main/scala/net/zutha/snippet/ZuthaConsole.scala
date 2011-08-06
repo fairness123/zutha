@@ -3,11 +3,9 @@ package net.zutha.snippet
 import scala.collection.JavaConversions._
 import net.liftweb._
 import http._
-import common._
 import util._
 import Helpers._
-import scala.xml.NodeSeq
-import net.zutha.model.QueryEngine
+import net.zutha.model.db.DB
 
 object ZuthaConsole extends StatefulSnippet {
   private var queryStr = ""
@@ -18,19 +16,17 @@ object ZuthaConsole extends StatefulSnippet {
     case "prefixes" => prefixes
   }
     
-  def prefixes = ".prefix_entry *" #> QueryEngine.getPrefixes.map{pre => 
+  def prefixes = ".prefix_entry *" #> DB.getPrefixes.map{pre =>
       ".prefix" #> pre._1 &
       ".uri" #> pre._2
   }
-    
 
-    
   def runQuery =
     "textarea" #> SHtml.textarea(queryStr, queryStr = _) &
     "#query_output *" #> queryRes &
     "type=submit" #> SHtml.onSubmitUnit(processQuery)
  
   def processQuery() = {
-      queryRes = QueryEngine.runQuery(queryStr)
+      queryRes = DB.runQuery(queryStr).toString
     }
 }

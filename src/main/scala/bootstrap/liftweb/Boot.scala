@@ -22,10 +22,10 @@ class Boot {
     LiftRules.addToPackages("net.zutha")
 
     LiftRules.statelessRewrite.append {
-      //rewrite: /item/09H5/Item_Name  =>  /details?id=09H5&name=Item_Name
+      //rewrite: /item/09H5/Item_Name  =>  /details?zid=09H5&name=Item_Name
       case RewriteRequest(
         ParsePath(ItemUri(wasFixed,repairedID,actualName),_,_,_),_,_) if (!wasFixed) => {
-          RewriteResponse("details"::Nil, Map("id" -> repairedID, "name" -> actualName))
+          RewriteResponse("details"::Nil, Map("zid" -> repairedID, "name" -> actualName))
         }
     }
 
@@ -41,8 +41,8 @@ class Boot {
     def siteMap = SiteMap(
       Menu("Home") / "index",
       Menu("details") / "details",
-      Menu("console") / "console",
-      Menu("CreateItem") / "create_item"
+      Menu("Zutha Console") / "zutha_console",
+      Menu("Create Item") / "create_item"
     )
     LiftRules.setSiteMap(siteMap)
     

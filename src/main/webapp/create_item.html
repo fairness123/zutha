@@ -1,78 +1,72 @@
 <html>
 <body class="lift:content_id=real_content">
-<div id="real_content" class="lift:surround?with=default">
+<div id="real_content" class="lift:surround?with=default;at=content">
 
     <!-- Head Merge -->
 	<head>
-		<title>Zutha Console</title>
-		<link rel="stylesheet" type="text/css" href="/css/console.css" />
+		<title>Create Item</title>
+		<link rel="stylesheet" type="text/css" href="/css/create_item.css" />
 	</head>
 
 	<!-- Content Binding -->
+    <form class="lift:CreateItem?form=post">
 
-	<div class="lift:bind-at?name=content">
-
-
-		<form class="lift:CreateItem?form=post">
-
-            <div id="name_block" >
-			 	<p>Names:</p>
-				<div name="elements">
-					<div name="element">
-						<input name="nameType"/>
-                        <input name="name"/>
-                        <input name="scope"/>
-						<button name="remove">Remove</button>
-					</div>
-				</div>
-				<div name="addElement">Add</div>
-			</div>
-
-            <hr />
-
-            <div id="type_block" >
-				<p>Types:</p>
-				<div name="elements">
-					<div name="element">
-                        <input name="name"/>
-                        <input name="id" type="hidden" />
-						<button name="remove">Remove</button>
-					</div>
-				</div>
-				<div name="addElement">Add</div>
-			</div>
-
-		    <hr />
-            
-            <div id="SI_block" >
-				<p>Subject Indicators:</p>
-				<div name="elements">
-					<div name="element">
-						<input name="uri"/>
-						<button name="remove">Remove</button>
-					</div>
-				</div>
-				<div name="addElement">Add</div>
-			</div>
-
-            <hr />
-
-            <div>
-                <input type="submit" value="Submit" />
+        <div id="name_block" >
+            <p>Names:</p>
+            <div class="dynamicElementSet">
+                <div class="removableElement">
+                    <input name="nameType"/>
+                    <input name="name"/>
+                    <button class="removeElement">Remove</button>
+                </div>
             </div>
+            <div class="addElement">Add</div>
+        </div>
+
+        <hr />
+
+        <div id="type_block" >
+            <p>Types:</p>
+            <div class="dynamicElementSet">
+                <div class="removableElement">
+                    <input name="name"/>
+                    <input name="id" type="hidden" />
+                    <button class="removeElement">Remove</button>
+                </div>
+            </div>
+            <div class="addElement">Add</div>
+        </div>
+
+        <hr />
+
+        <div id="SI_block" >
+            <p>Subject Indicators:</p>
+            <div class="dynamicElementSet">
+                <div class="removableElement">
+                    <input name="uri" size="50" />
+                    <button class="removeElement">Remove</button>
+                </div>
+            </div>
+            <div class="addElement">Add</div>
+        </div>
+
+        <hr />
+
+        <div>
+            <input type="submit" value="Submit" />
+        </div>
 
 
-			<div>
-				Created Item:
-				<br />
-				<pre id="item_xml"></pre>
-			</div>
+        <div>
+            Created Item:
+            <br />
+            <pre id="item_xml"></pre>
+        </div>
 
-		</form>
+    </form>
 
-		<div class="lift:Msgs" ></div>
+	<div class="lift:Msgs" ></div>
 
-	</div>
 </div>
 </body>
 </html>

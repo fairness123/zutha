@@ -9,7 +9,7 @@ object AssociationUri {
    */
   def unapply(uri:List[String]):Option[(Boolean,String,String,String)] = uri match {
     case ItemUriStem(wasFixed,item, association::Nil) => {
-        Some(wasFixed, item.id, item.name, association)
+        Some(wasFixed, item.zid.toString, item.name, association)
     }
     case _ => None
   }

@@ -1,11 +1,11 @@
-package net.zutha.lib
+package net.zutha.model.properties
 
 import net.liftweb._
 import util._
 import Helpers._
 import net.liftweb.http.SHtml
 
-class DynamicSubjectIndicatorProps extends DynamicFormElementSet[SubjectIndicatorProp]{
+class SubjectIndicatorProps extends DynamicFormElementSet[SubjectIndicatorProp]{
   def newProp = new SubjectIndicatorProp()
 }
 

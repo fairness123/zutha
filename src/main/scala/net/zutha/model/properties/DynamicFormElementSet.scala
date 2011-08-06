@@ -1,4 +1,4 @@
-package net.zutha.lib
+package net.zutha.model.properties
 
 import net.liftweb._
 import http._
@@ -28,12 +28,12 @@ import collection.mutable.ListBuffer
 
     def renderElements(ns: NodeSeq): NodeSeq = {
       //use the html in the element with name=element as a basis for rendering each property
-      val prop_ns: NodeSeq = ("@element ^^" #> "")(ns)
+      val prop_ns: NodeSeq = (".removableElement ^^" #> "")(ns)
       def sel =
-        "@elements [id]" #> elements_id &
-        "@element" #> props.map(p => p.render(prop_ns)) &
+        ".dynamicElementSet [id]" #> elements_id &
+        ".removableElement" #> props.map(p => p.render(prop_ns)) &
         //prop_ns will be used for the JsCmd that generates new property blocks
-        "@addElement *" #> (add_ns => renderAddButton(prop_ns)(add_ns))
+        ".addElement *" #> (add_ns => renderAddButton(prop_ns)(add_ns))
       sel(ns)
     }
 
@@ -52,8 +52,8 @@ import collection.mutable.ListBuffer
 
     def render: NodeSeq => NodeSeq = {
       val guid: String = nextFuncName
-      "@element [id]" #> guid &
-      "@remove" #> SHtml.ajaxButton("Remove", () => {
+      ".removableElement [id]" #> guid &
+      ".removeElement" #> SHtml.ajaxButton("Remove", () => {
         remove()
         JqJsCmds.JqSetHtml(guid,Nil)
       }) &
