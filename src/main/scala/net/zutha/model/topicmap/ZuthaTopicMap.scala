@@ -1,45 +1,41 @@
 package net.zutha.model.topicmap
 
-import net.zutha.model.{ZID, Item}
-import org.tmapi.core.{Topic, Locator, TopicMap}
+import net.zutha.model.{ZID}
+import net.zutha.model.constants.ZuthaConstants._
+import net.zutha.model.constants.{TopicMapConstants => TM}
+import org.tmapi.core.{Topic, TopicMap}
 
 class ZuthaTopicMap(val tm: TopicMap) {
-  val ZID_PREFIX = "http://zutha.net/item/"
-  val ZSI_PREFIX = "http://psi.zutha.net/"
 
-  def lookupItemByZSI(zsi: String): Option[Item] = {
-    lookupTopicByZSI(zsi).map(TopicMapItem(_))
-  }
+  def lookupTopicByZSI(zsi: String): Option[Topic] = lookupTopicBySI(ZSI_PREFIX + zsi)
 
-  def lookupItemByZID(zid: ZID): Option[Item] = {
-    lookupTopicByZID(zid).map(TopicMapItem(_))
-  }
+  def lookupTopicByZID(zid: ZID): Option[Topic] = lookupTopicBySI(ZID_PREFIX + zid)
 
-  def lookupItemBySI(si: Locator): Option[Item] = {
-    lookupTopicBySI(si).map(TopicMapItem(_))
-  }
-
-  def lookupTopicByZSI(zsi: String): Option[Topic] = {
-    val si = convertZSItoLocator(zsi)
-    lookupTopicBySI(si)
-  }
-
-  def lookupTopicByZID(zid: ZID): Option[Topic] = {
-    val si = convertIDtoLocator(zid)
-    lookupTopicBySI(si)
-  }
-
-  def lookupTopicBySI(si: Locator): Option[Topic] = {
+  def lookupTopicBySI(siStr: String): Option[Topic] = {
+    val si = tm.createLocator(siStr)
     val topic = tm.getTopicBySubjectIdentifier(si)
     if(topic==null) None
     else Some(topic)
   }
 
-  private def convertZSItoLocator(zsi: String) = {
-    tm.createLocator(ZSI_PREFIX + zsi)
+  def getOrCreateTopicBySI(siStr: String): Topic = lookupTopicBySI(siStr) match {
+    case Some(t) => t
+    case _ => {
+      val loc = tm.createLocator(siStr)
+      tm.createTopicBySubjectIdentifier(loc)
+    }
   }
 
-  private def convertIDtoLocator(zid: ZID) = {
-    tm.createLocator(ZID_PREFIX + zid)
+  def getOrCreateOccurrenceTypeBySI(siStr: String): Topic = lookupTopicBySI(siStr) match {
+    case Some(ot) => ot
+    case _ =>
+      val occTypeTopic = getOrCreateTopicBySI(TM.OCCURRENCE_TYPE_SI)
+      val si = tm.createLocator(siStr)
+      val ot = tm.createTopicBySubjectIdentifier(si)
+      ot.addType(occTypeTopic)
+      ot
   }
+
+
+
 }

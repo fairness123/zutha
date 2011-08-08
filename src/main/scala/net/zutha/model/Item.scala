@@ -7,8 +7,10 @@ package net.zutha.model
 
 trait Item {
   def zid: ZID
+
   def name: String
 
+  def addZID(zid: ZID)
 }
 
 

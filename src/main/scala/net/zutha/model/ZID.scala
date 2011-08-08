@@ -4,45 +4,47 @@ import net.zutha.lib.BaseX
 
 class ZID(zid: String) {
   val correctZID = zid match{
-    case ZID(newZID,_,_) => newZID
+    case ZID(newZID) => newZID
     case _ => throw new IllegalArgumentException
   }
 
-  def next: ZID = {
-    val nextIDstr = correctZID match {
-      case ZID(_,hostID,identifier) => hostID + ZID.incrementIdentifier(identifier)
-    }
+  def ++ : ZID = {
+    val nextIDstr = getHostID + ZID.incrementIdentifier(getIdentifier)
     ZID(nextIDstr)
   }
+
+  def getHostID = correctZID.substring(0,getHostIdLength)
+
+  def getIdentifier = correctZID.substring(getHostIdLength+1)
+
+  private def getHostIdLength = ZID.charset.indexOf(correctZID(0)) + 1
 
   override def toString = correctZID
 }
 
 object ZID {
   private val ValidCharset = """\A([0-9A-Z][0-9A-Z]+)\z""".r
-  private val charset = "0123456789ABCDEFGHJKLMNPQRTUVWXY"
+  val charset = "0123456789ABCDEFGHJKLMNPQRTUVWXY"
 
   def apply(zid: String) = new ZID(zid)
 
   /*  */
 
   /**
-   * corrects the syntax of a ZID and extracts hostID and identifier if it is valid
+   * extracts the corrected-syntax form of a ZID if it is valid
    * @param maybeZID string form of a ZID to try to resolve to a valid ZID
-   * @return (correctedID, hostID, identifier)
+   * @return correctedID
    */
-  def unapply(maybeZID: String): Option[(String, String, String)] = correctCharset(maybeZID) match {
+  def unapply(maybeZID: String): Option[String] = correctCharset(maybeZID) match {
     case ValidCharset(zid) => {
-      val hostIdLen = charset.indexOf(zid(0))
-      if(zid.length < hostIdLen + 2)
+      val hostIdLen = charset.indexOf(zid(0)) + 1
+      if(zid.length > hostIdLen)
+        Some(zid)
+      else { //the id is too short
         None
-      else {
-        val hostID = zid.substring(0,hostIdLen)
-        val identifier = zid.substring(hostIdLen+1)
-        Some(zid,hostID,identifier)
       }
     }
-    case _ => None
+    case _ => None //the id contains invalid characters
   }
 
   /**
@@ -55,12 +57,15 @@ object ZID {
     zid.toUpperCase.replace('O', '0').replace('I','1').replace('S','5').replace('Z','2')
   }
 
+  //no longer needed. Use ZIDTicker
   def incrementIdentifier(zidStr: String): String = {
-    val converter = BaseX(charset,32)
+    val converter = BaseX(charset)
     val idVal = converter.decode(zidStr)
     val newIdStr = converter.encode(idVal+1)
     newIdStr
   }
+
+
 
 
 }

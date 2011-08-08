@@ -1,23 +1,27 @@
 package net.zutha.model.topicmap
 
 import scala.collection.JavaConversions._
-import net.zutha.model.{ProposedItem, Item, ZID}
-import net.zutha.model.db.{TMQL, MajortomDB, DB}
+import net.zutha.model.constants._
+import ZuthaConstants._
+import ApplicationConstants._
 import org.tmapi.core._
 import de.topicmapslab.majortom.model.core.{ITopicMap, ITopicMapSystem}
 import de.topicmapslab.majortom.model.transaction.ITransaction
+import net.zutha.model.db.{ZIDTicker, TMQL, MajortomDB, DB}
+import net.zutha.model.{ProposedItem, ZID}
 
 class TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtensions{
-  val ZuthaTopicMapURI = "http://zutha.net"
+  val ENABLE_TRANSACTIONS = true
 
-  val ENABLE_TRANSACTIONS = false
-
-  
   lazy val sys: ITopicMapSystem = makeTopicSystem
 //  lazy val store: ITopicMapStore = makeTopicMapStore(sys)
-  lazy val tm: ITopicMap = sys.createTopicMap(ZuthaTopicMapURI).asInstanceOf[ITopicMap]
+  lazy val tm: ITopicMap = sys.createTopicMap(ZUTHA_TOPIC_MAP_URI).asInstanceOf[ITopicMap]
 
-  def getItem(zid: ZID) = tm.lookupItemByZID(zid)
+  val zidTicker = new ZIDTicker(tm)
+
+  def getItem(zid: ZID) = tm.lookupTopicByZID(zid).map{_.toItem}
+
+  def getNextZID: ZID = zidTicker.getNext
 
   def createItem(item: ProposedItem) {
     //start transaction
@@ -48,9 +52,12 @@ class TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtensions
     for(typeProp <- item.types.props){
       txn.lookupTopicByZSI(typeProp.typeZSI) match {
         case Some(tt) => topic.addType(tt)
-        case _ => //do nothing
+        case _ => //TODO send error: topic type not found
       }
     }
+
+    //create a ZID for this new item
+    topic.addZID(zidTicker.getNext)
 
     //commit proposed item
     if(ENABLE_TRANSACTIONS) txn.asInstanceOf[ITransaction].commit
@@ -63,6 +70,7 @@ class TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtensions
       println (loc.getReference)
     }
   }
+
 
 
 }

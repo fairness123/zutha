@@ -9,7 +9,7 @@ object ZIDLookup {
    * @return (wasFixed,item)
    */
   def unapply(zid: String): Option[(Boolean,Item)] = zid match {
-    case ZID(repairedZID,_,_) => DB.getItem(repairedZID) match {
+    case ZID(repairedZID) => DB.getItem(repairedZID) match {
         case Some(item) => Some( (zid!=repairedZID), item)
         case _ => None
     }

@@ -22,7 +22,7 @@ trait MajortomDB {
     factory.setProperty("de.topicmapslab.majortom.jdbc.database", "majortom")
     factory.setProperty("de.topicmapslab.majortom.jdbc.user", "postgres")
     factory.setProperty("de.topicmapslab.majortom.jdbc.password", "postgres")
-    factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL")
+    factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL99")
     factory.setFeature(FeatureStrings.AUTOMATIC_MERGING,true)
     factory.setFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME,true)
     //factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
