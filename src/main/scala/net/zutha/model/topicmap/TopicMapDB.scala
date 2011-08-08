@@ -10,7 +10,7 @@ import de.topicmapslab.majortom.model.transaction.ITransaction
 import net.zutha.model.db.{ZIDTicker, TMQL, MajortomDB, DB}
 import net.zutha.model.{ProposedItem, ZID}
 
-class TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtensions{
+object TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtensions{
   val ENABLE_TRANSACTIONS = true
 
   lazy val sys: ITopicMapSystem = makeTopicSystem

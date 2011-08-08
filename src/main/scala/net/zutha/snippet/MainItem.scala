@@ -1,5 +1,5 @@
-package net.zutha {
-package snippet {
+package net.zutha
+package snippet
 
 import net.liftweb.common.{Box,Empty,Full}
 import _root_.scala.xml.{NodeSeq,Text}
@@ -11,7 +11,7 @@ class MainItem {
   def render(content: NodeSeq): NodeSeq = {
     def displayItem(zid:String) = {
         bind("main", content,
-             AttrBindParam("id",zid,"id")
+             AttrBindParam("zid",zid,"zid")
             )
     }
 
@@ -33,7 +33,4 @@ class MainItem {
     }
   }
 
-
-} //end of class
-
-}}
+}

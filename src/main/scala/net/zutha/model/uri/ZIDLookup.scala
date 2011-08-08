@@ -6,11 +6,11 @@ import net.zutha.model.db.DB
 object ZIDLookup {
   /**
    * extractor for a ZID
-   * @return (wasFixed,item)
+   * @return (wasRepaired,item)
    */
-  def unapply(zid: String): Option[(Boolean,Item)] = zid match {
-    case ZID(repairedZID) => DB.getItem(repairedZID) match {
-        case Some(item) => Some( (zid!=repairedZID), item)
+  def unapply(maybeZid: String): Option[(Boolean,Item)] = maybeZid match {
+    case ZID(repairedZID) => DB.get.getItem(ZID(repairedZID)) match {
+        case Some(item) => Some( (maybeZid!=repairedZID), item)
         case _ => None
     }
     case _ => None

@@ -4,7 +4,7 @@ import net.zutha.lib.BaseX
 
 class ZID(zid: String) {
   val correctZID = zid match{
-    case ZID(newZID) => newZID
+    case ZID(repairedZID) => repairedZID
     case _ => throw new IllegalArgumentException
   }
 

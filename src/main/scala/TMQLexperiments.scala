@@ -1,4 +1,5 @@
 import net.zutha.model.db.DB
+import net.zutha.model.topicmap.TopicMapDB
 
 object TMQLexperiments {
   //q specifies the query that will be run
@@ -41,13 +42,13 @@ object TMQLexperiments {
   
     
   def main(args : Array[String]) {
-    DB.printTMLocators
+    TopicMapDB.printTMLocators
     lazyRunMethod
   }
 
   def lazyRunMethod = {
-    val result = DB.runQuery(q)
-    val prefixes = DB.getPrefixes
+    val result = TopicMapDB.runQuery(q)
+    val prefixes = TopicMapDB.getPrefixes
 //    println(prefixes)
     println(result)
   }
