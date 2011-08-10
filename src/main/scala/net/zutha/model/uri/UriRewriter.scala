@@ -5,13 +5,13 @@ import net.liftweb.http.{ParsePath, RewriteResponse, RewriteRequest}
 import net.zutha.model.Item
 
 object UriRewriter {
-  /* rewrite: /item/01H5/Item_Name/details.xhtml?<params>
+  /* rewrite: /item/01H5/Item_Name/details.html?<params>
    *      =>  /item-views/details?zid=01H5&name=Item_Name&<params>
-   * rewrite: /item/01H5/Item_Name/Association_Name/assoc-table.xhtml
+   * rewrite: /item/01H5/Item_Name/Association_Name/assoc-table.html
    *      =>  /assoc-views/assoc_table?zid=01H5&name=Item_Name&association=Association_Name
-   * rewrite: /item/01H5/Item_Name/Association_Name/Role_Name/item-list.xhtml
+   * rewrite: /item/01H5/Item_Name/Association_Name/Role_Name/item-list.html
    *      =>  /role-views/item_list?zid=01H5&name=Item_Name&association=Association_Name&role=Role_Name
-   * rewrite: /item/0D7P0/some_file.png/details.xhtml
+   * rewrite: /item/0D7P0/some_file.png/details.html
    *      =>  /item-views/details?zid=0D7P0&name=some_file.png
    * rewrite: /file/0D7P0/some_file.png
    *      =>  /file/?zid=0D7P0&name=some_file.png
