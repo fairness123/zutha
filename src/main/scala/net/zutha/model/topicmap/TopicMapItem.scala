@@ -11,7 +11,7 @@ case class TopicMapItem(topic: Topic) extends Item{
 
   def toItem = this
   
-  def zid: ZID = {
+  def zid: String = {
     val zidSIs = topic.getSubjectIdentifiers.map(_.toExternalForm)
       .filter{_.startsWith(ZID_PREFIX)}
       .toSeq.sorted
@@ -21,7 +21,7 @@ case class TopicMapItem(topic: Topic) extends Item{
     val zidStr = zidSIs.get(0).replace(ZID_PREFIX,"")
 
     try{
-      ZID(zidStr)
+      ZID(zidStr).toString
     } catch {
       case e: IllegalArgumentException => throw new Exception("item has an invalid ZID")
     }

@@ -1,6 +1,8 @@
 package net.zutha.model.constants
 
 object ApplicationConstants {
+  val HTML_EXT = "html"
+
   val THIS_HOST_ID                = "0"
   val THIS_HOST_URI               = "http://" + THIS_HOST_ID + ".zutha.net/"
   val THIS_HOST_PSI_PREFIX        = THIS_HOST_URI + "psi/"

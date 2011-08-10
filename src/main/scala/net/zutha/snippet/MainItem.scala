@@ -22,13 +22,6 @@ class MainItem {
 
         displayItem(zid)
       }
-      //if name param not given, find it
-      case (Full(zid),Empty) => {
-          //validate id, lookup name
-          //if name is wrong, redirect
-
-          displayItem(zid)
-      }
       case _ => Text("invalid URL") //TODO:make better error handler
     }
   }

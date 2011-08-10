@@ -14,7 +14,8 @@ class ShowItem {
     def display(item: Item) = {
       bind("item", content,
            "zid" -> Text(item.zid.toString),
-           "name" -> Text(item.name))
+           "name" -> Text(item.name),
+           "param" -> Text(S.param("param").getOrElse("no value")))
     }
 		
     S.attr("zid") match {

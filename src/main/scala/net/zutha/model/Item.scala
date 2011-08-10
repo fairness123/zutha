@@ -6,7 +6,7 @@
 package net.zutha.model
 
 trait Item {
-  def zid: ZID
+  def zid: String
 
   def name: String
 
