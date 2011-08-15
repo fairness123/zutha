@@ -29,7 +29,7 @@ class CreateItem extends StatefulSnippet {
 
   def executeCreateItem() {
     S.notice("form submitted...")
-    DB.get.createItem(ProposedItem(nameProps,subjectIndicatorProps, typeProps))
+    DB.get.createItem(ProposedItem(nameProps, subjectIndicatorProps, typeProps))
   }
 
   def createdItemXML: String = {

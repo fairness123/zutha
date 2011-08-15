@@ -1,92 +1,152 @@
-<lift:surround with="master" at="content">
+<html>
+<body class="lift:content_id=details">
+<div class="lift:surround?with=master" id="details">
 
 	<!-- Head Merge -->
-	<head>
-		<title>Dejanice (Character)</title>
-		
-	</head>
+    <div class="lift:bind-at?name=head">
+        <head>
+            <title><span class="lift:currentItem.pageTitle?view=details">Dejanice (Character)</span></title>
+            <link rel="stylesheet" type="text/css" href="/css/details.css" />
+        </head>
+    </div>
 	
-	<!-- Content Binding -->
-	<div id="filter_bar">
-		<a id="add_to_filter" href="">Add to filter</a>
+	<!-- Toolbar Binding-->
+	<div class="lift:bind-at?name=toolbar" id="toolbar">
+		<div id="edit">
+            <form action="" method="post">
+                <input type="submit" value="Edit" />
+            </form>
+		</div>
 	</div>
 
-	<div id="edit">
-		<form action="" method="post">
-			<input type="submit" value="Edit" />
-		</form>
+    <!-- Content Binding -->
+	<div class="lift:bind-at?name=content rounded" id="container" >
+        <div class="item rounded">
+            <!-- Item Summary bubble -->
+            <div class="lift:currentItem.summary?eager_eval=true">
+                <div class="lift:embed?what=_itemSummary"></div>
+            </div>
+
+            <hr />
+
+            <!--  Item Properties -->
+            <div class="properties lift:currentItem.props">
+                <div class="property_set">
+                    <h2><span class="property_set_name">Character Properties</span></h2>
+                    
+                    <ul>
+                        <!--multi-value occurrence displayed as dotpoints-->
+                        <li class="property multi_prop_dotpoint">
+                            <h3><span class="property_name">External IDs</span></h3>
+                            <ul>
+                                <li class="property_value">
+                                    <a href="http://en.wikipedia.org/Dejanice_(Character)">http://en.wikipedia.org/Dejanice_(Character)</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--multi-value occurrence displayed as linear comma-separated list -->
+                        <li class="property multi_prop_linear">
+                            <h3 class="inline"><span class="property_name">ZIDs</span>:</h3>
+                            <ul class="linear">
+                                <li class="first_propval"><span class="property_value">07X4</span></li>
+                                <li class="extra_propval">, <span class="property_value">03PY0</span></li>
+                            </ul>
+                        </li>
+                        <!--standard single-value occurrence-->
+                        <li class="property single_prop">
+                            <h3 class="inline"><span class="property_name">Date of Birth</span>:</h3>
+                            <span class="property_value">7 August 1851</span>
+                        </li>
+                        <!-- Association Bubble -->
+                        <li class="property association rounded">
+                            <h3 class="association_type"><a href="#aa4iii">Discussed in</a></h3>
+                            <ul class="roles">
+                                <li class="role">
+                                    <h4 class="inline"><span class="role_type"><a href="#9hhd">Comments</a></span>:</h4>
+                                    <ul class="role_players linear">
+                                        <li class="first_player"><span class="role_player"><a href="#21543">I hate Dejanice!</a></span></li>
+                                        <li class="extra_player">, <span class="role_player"><a href="#15h63">What a tragic character!</a></span></li>
+                                        <li class="more_players">, <span class="more_link"><a href="#885">...</a></span></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--binary association-->
+                        <li class="property binary_association">
+                            <h3 class="inline"><span class="association_type"><a href="#og23g">Instance-of</a></span>/<span class="role_type"><a href="#9d">Type</a></span>:</h3>
+                            <ul class="role_players linear">
+                                <li class="first_player"><span class="role_player"><a href="#hoh">Person</a></span></li>
+                                <li class="extra_player">, <span class="role_player"><a href="#213">Character</a></span></li>
+                                <li class="more_players">, <span class="more_link"><a href="@gud9">...</a></span></li>
+                            </ul>
+                        </li>
+                        <!--association with 3 or more role-types-->
+                        <li class="property nary_association rounded">
+                            <h3 class="association_type"><a href="#d7898d">Murders</a></h3>
+                            <table class="roles">
+                                <thead>
+                                    <tr class="role-types">
+                                        <th class="role_type"><a href="h59u">Victim</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="association_row">
+                                        <td>
+                                            <ul class="role_players linear">
+                                                <li class="first_player"><span class="role_player"><a href="#21543">Dejanice</a></span></li>
+                                                <li class="extra_player">, <span class="role_player"><a href="#1563">Dardano</a></span></li>
+                                                <li class="more_players">, <span class="more_link"><a href="#885">...</a></span></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+
+                        <li class="property nary_association rounded">
+                            <h3 class="association_type"><a href="#8172">Murders</a></h3>
+                            <table class="roles">
+                                <thead>
+                                    <tr class="role-types">
+                                        <th class="role_type"><a href="#262">Victim</a></th>
+                                        <th class="role_type"><a href="#9201">Cause of Death</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="association_row">
+                                        <td>
+                                            <ul class="role_players linear">
+                                                <li class="first_player"><span class="role_player"><a href="#aouh">Dejanice</a></span></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul class="role_players linear">
+                                                <li class="first_player"><span class="role_player"><a href="#o8u">Stabbing</a></span></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr class="association_row">
+                                        <td>
+                                            <ul class="role_players linear">
+                                                <li class="first_player"><span class="role_player"><a href="#o8ua">Dardano</a></span></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul class="role_players linear">
+                                                <li class="first_player"><span class="role_player"><a href="#o9ua">Stabbing</a></span></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
 	</div>
 
-	<div id="container">
-		<!-- Main Item container -->
-		<lift:embed what="mainItem"/>
-
-		<lift:Msgs/>
-		
-		<!-- Associations -->
-		<ul class="associations">
-		   <li class="association">
-				<h2 class="association_type"><a href="">Murders</a></h2>
-				<ul class="roles">
-					<li class="role">
-						<h3 class="role_type"><a href="">Victims</a></h3>
-						<ul class="role_players">
-							<li class="role_player"><a href="">Dardano</a></li>
-							<li class="role_player"><a href="">Dejanice</a></li>
-						</ul>
-					</li>
-				   <li class="role">
-					   <h3 class="role_type"><a href="">Cause of Death</a></h3>
-						<ul class="role_players">
-							<li class="role_player"><a href="">Stabbing</a></li>
-						</ul>
-				   </li>
-				</ul>
-			</li>
-			<li class="association">
-				<h2 class="association_type"><a href="">Murdered By</a></h2>
-				<ul class="roles">
-					<li class="role">
-						<h3 class="role_type"><a href="">Murderer</a></h3>
-						<ul class="role_players">
-							<li class="role_player"><a href="">Dejanice</a></li>
-						</ul>
-					</li>
-				   <li class="role">
-					   <h3 class="role_type"><a href="">Cause of Death</a></h3>
-						<ul class="role_players">
-							<li class="role_player"><a href="">Stabbing</a></li>
-						</ul>
-				   </li>
-				</ul>
-			</li>
-			<li class="association">
-				<h2 class="association_type"><a href="">Instance of</a></h2>
-				<ul class="roles">
-					<li class="role">
-						<h3 class="role_type"><a href="">Type</a></h3>
-						<ul class="role_players">
-							<li class="role_player"><a href="">Character</a></li>
-							<li class="role_player"><a href="">Person</a></li>
-						</ul>
-					</li>
-				</ul>
-			</li>
-			<li class="association">
-				<h2 class="association_type"><a href="">Discussed in</a></h2>
-				<ul class="roles">
-					<li class="role">
-						<h3 class="role_type"><a href="">Comments</a></h3>
-						<ul class="role_players">
-							<li class="role_player"><a href="">I hate Dejanice!</a></li>
-							<li class="role_player"><a href="">What a tragic character!</a></li>
-							<li class="role_player"><a href="">where can I find a good character analysis?</a></li>
-							<li class="role_player"><a href="">...</a></li>
-						</ul>
-					</li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-
-</lift:surround>
+</div>
+</body>
+</html>

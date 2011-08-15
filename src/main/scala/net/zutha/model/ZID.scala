@@ -8,11 +8,6 @@ class ZID(zid: String) {
     case _ => throw new IllegalArgumentException
   }
 
-  def ++ : ZID = {
-    val nextIDstr = getHostID + ZID.incrementIdentifier(getIdentifier)
-    ZID(nextIDstr)
-  }
-
   def getHostID = correctZID.substring(0,getHostIdLength)
 
   def getIdentifier = correctZID.substring(getHostIdLength+1)
@@ -30,12 +25,13 @@ object ZID {
 
   /*  */
 
+
   /**
-   * extracts the corrected-syntax form of a ZID if it is valid
+   * repairs the syntax of a ZID if it is valid
    * @param maybeZID string form of a ZID to try to resolve to a valid ZID
    * @return correctedID
    */
-  def unapply(maybeZID: String): Option[String] = correctCharset(maybeZID) match {
+  def repair(maybeZID: String): Option[String] = correctCharset(maybeZID) match {
     case ValidCharset(zid) => {
       val hostIdLen = charset.indexOf(zid(0)) + 1
       if(zid.length > hostIdLen)
@@ -48,6 +44,13 @@ object ZID {
   }
 
   /**
+   * extracts the corrected-syntax form of a ZID if it is valid
+   * @param maybeZID string form of a ZID to try to resolve to a valid ZID
+   * @return correctedID
+   */
+  def unapply(maybeZID: String): Option[String] = repair(maybeZID)
+
+  /**
    * extracts the string representation of a ZID object
    * @return (ZID_string)
    */
@@ -56,15 +59,6 @@ object ZID {
   private def correctCharset(zid: String) = {
     zid.toUpperCase.replace('O', '0').replace('I','1').replace('S','5').replace('Z','2')
   }
-
-  //no longer needed. Use ZIDTicker
-  def incrementIdentifier(zidStr: String): String = {
-    val converter = BaseX(charset)
-    val idVal = converter.decode(zidStr)
-    val newIdStr = converter.encode(idVal+1)
-    newIdStr
-  }
-
 
 
 
