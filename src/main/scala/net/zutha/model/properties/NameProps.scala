@@ -10,12 +10,10 @@ class NameProps extends DynamicFormElementSet[NameProp]{
 }
 
 class NameProp() extends RemovableFormElement {
-  var typeZSI = "Name"
   var value = ""
 //  val scope = new ScopeProps()
 
   override def render_fields = {
-    "@nameType" #> SHtml.ajaxText(typeZSI,s => typeZSI = s) &
     "@name" #> SHtml.ajaxText(value,s => value = s)
   }
 }

@@ -36,7 +36,7 @@ class CreateItem extends StatefulSnippet {
     val ns = <item>
       <Names>{
         nameProps.props.map{name =>
-        <name type={name.typeZSI} >{name.value}</name>}
+        <name>{name.value}</name>}
       }</Names>
       <Types>{
         typeProps.props.map{t =>

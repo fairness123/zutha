@@ -32,10 +32,6 @@ object TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtension
     //add names
     for(nameProp <- item.names.props){
       val name = topic.createName(nameProp.value)
-      txn.lookupTopicByZSI(nameProp.typeZSI) match {
-        case Some(tt) => name.setType(tt)
-        case _ => //TODO: invalid name type
-      }
     }
 
     //add Subject Indicators
