@@ -5,7 +5,8 @@ import de.topicmapslab.tmql4j.components.processor.runtime.TMQLRuntimeFactory
 import de.topicmapslab.tmql4j.path.query.TMQLQuery
 import de.topicmapslab.tmql4j.components.processor.results.model.{IResult, IResultSet}
 import org.tmapi.core.TopicMap
-
+import de.topicmapslab.tmql4j.components.processor.results.xml.XMLValue
+import xml._
 
 trait TMQL {
   val tm: TopicMap
@@ -25,11 +26,43 @@ trait TMQL {
     return res
   }
 
-  def resultsAsTable(res : IResultSet[_]): Seq[Seq[String]] = {
-    res.getResults.map{r =>
-      r.asInstanceOf[IResult].getResults.map{obj =>
-        obj.toString
-      }
+
+  def queryResultsToNodeSeq(rs : IResultSet[_]): NodeSeq = {
+    rs.getResultType match{
+      case "XML" =>
+        val allxml = rs.getResults.foldRight(NodeSeq.Empty){(r, acc) =>
+          val flatXml = r.asInstanceOf[XMLValue].first().toString
+          val ns = XML.loadString(flatXml)
+          val newacc = ns ++: acc
+          newacc
+        }
+        allxml
+      case _ => throw new IllegalArgumentException
+    }
+  }
+
+  /**
+   * @param qstr a TMQL query that will return XML results
+   * @return the results as a NodeSeq
+   */
+  def runXmlQuery(qstr: String): NodeSeq = {
+    val rs = runQuery(qstr)
+    queryResultsToNodeSeq(rs)
+  }
+
+  def queryResultsToString(rs : IResultSet[_]): String = {
+    rs.getResultType match{
+      case "XML" =>
+        val pp = new PrettyPrinter(80,3)
+        try{
+          val allxml = queryResultsToNodeSeq(rs)
+          val prettyXml = pp.formatNodes(allxml)
+          prettyXml
+        } catch {
+          case _ => rs.toString
+        }
+
+      case _ => rs.toString
     }
   }
 

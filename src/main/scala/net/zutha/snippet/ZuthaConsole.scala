@@ -7,7 +7,7 @@ import util._
 import Helpers._
 import net.zutha.model.topicmap.TopicMapDB
 
-object ZuthaConsole extends StatefulSnippet {
+class ZuthaConsole extends StatefulSnippet {
   private var queryStr = ""
   private var queryRes = ""
     
@@ -27,6 +27,7 @@ object ZuthaConsole extends StatefulSnippet {
     "type=submit" #> SHtml.onSubmitUnit(processQuery)
  
   def processQuery() = {
-      queryRes = TopicMapDB.runQuery(queryStr).toString
+      val res = TopicMapDB.runQuery(queryStr)
+      queryRes = TopicMapDB.queryResultsToString(res)
     }
 }
