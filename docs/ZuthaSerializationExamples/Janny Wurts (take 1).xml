@@ -1,0 +1,72 @@
+<constructs>
+    <!--Janny Wurts-->
+    <item>
+        <zid>07DP</zid>
+        <zid>1503BJ</zid>
+        <created>2011-08-18T08:10:14</created>
+        <modified>2011-08-18T08:10:14</modified>
+        <property>
+            <zid>0MMK5</zid>
+            <type>name</type>
+            <created>2011-08-18T08:10:14</created>
+            <modified>2011-08-18T08:10:14</modified>
+            <value>Janny Wurts</value>
+            <scope>
+                <itemref>author</itemref>
+            </scope>
+        </property>
+        <property>
+            <zid>06FG7</zid>
+            <type>name</type>
+            <created>2011-08-18T08:10:14</created>
+            <modified>2011-08-18T08:10:14</modified>
+            <value>Janny Wurts (Author)</value>
+        </property>
+    </item>
+
+    <!--Janny Wurts has type Author-->
+    <association>
+        <zid>099XPA</zid>
+        <type>type-instance</type>
+        <created>2011-08-18T08:10:14</created>
+        <modified>2011-08-18T08:10:14</modified>
+        <player>
+            <type>type</type>
+            <itemref>author</itemref>
+        </player>
+        <player>
+            <type>instance</type>
+            <itemref>07DP</itemref>
+        </player>
+    </association>
+
+    <!--Name-->
+    <item>
+        <zid>004</zid>
+        <created>2011-08-18T08:10:14</created>
+        <modified>2011-08-18T08:10:14</modified>
+        <property>
+            <type>identifier</type>
+            <value>name</value>
+        </property>
+        <property>
+            <type>name</type>
+            <value>Name</value>
+        </property>
+    </item>
+
+    <!--Author-->
+    <item>
+        <zid>09B4</zid>
+        <created>2011-08-18T08:10:14</created>
+        <modified>2011-08-18T08:10:14</modified>
+        <property>
+            <type>identifier</type>
+            <value>author</value>
+        </property>
+        <property>
+            <type>name</type>
+            <value>Author</value>
+        </property>
+    </item>
+</constructs>
