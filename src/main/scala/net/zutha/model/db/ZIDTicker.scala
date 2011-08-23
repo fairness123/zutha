@@ -28,7 +28,7 @@ class ZIDTicker(tm: TopicMap) extends TMConstructExtensions{
 
     //get nextZID occurrence of ZID_Ticker
     val occs = tickerTopic.getOccurrences(nextZIDOccType)
-    if (occs.size == 0) { //create nextZID occurrence
+    if (occs.size == 0) { //create nextZID occurrence with initial value of 1
       tickerTopic.createIntOccurrence(nextZIDOccType, "1")
     } else if (occs.size == 1){
       occs.iterator().next()

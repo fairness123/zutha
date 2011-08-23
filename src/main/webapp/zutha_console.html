@@ -7,15 +7,22 @@
 	</head>
 	
 	<!-- Content Binding -->
-	
-	<div class="lift:ZuthaConsole.prefixes">
-		<strong>Predefined prefixes:</strong>
-		<div class="prefix_entry">
-			%prefix <span class="prefix"></span> <span class="uri"></span>
-		</div>
+	<div class="header_block">
+        <div class="prefix_block lift:ZuthaConsole.prefixes">
+            <strong>Predefined prefixes:</strong>
+            <div class="prefix_entry">
+                %prefix <span class="prefix"></span> <span class="uri"></span>
+            </div>
+        </div>
+
+        <form class="button_block lift:ZuthaConsole.buttons?form=post">
+            <button class="getPath">getPath</button>
+            <button class="reset">Reset</button>
+        </form>
 	</div>
 
-	<form class="lift:ZuthaConsole.query?form=post">
+
+	<form class="console lift:ZuthaConsole.query?form=post">
 		<textarea cols="100" rows="16"></textarea>
 		<input type="submit" value="Submit" />
 	
@@ -26,4 +33,5 @@
 		
 	</form>
 
+    <div class="lift:Msgs" ></div>
 </div>

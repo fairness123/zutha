@@ -9,7 +9,7 @@ import de.topicmapslab.tmql4j.components.processor.results.xml.XMLValue
 import xml._
 
 trait TMQL {
-  val tm: TopicMap
+  def tm: TopicMap
 
   lazy val runtime = TMQLRuntimeFactory.newFactory().newRuntime("tmql-2007")
 

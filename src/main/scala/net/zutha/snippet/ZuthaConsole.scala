@@ -14,6 +14,7 @@ class ZuthaConsole extends StatefulSnippet {
   def dispatch = {
     case "query" => runQuery
     case "prefixes" => prefixes
+    case "buttons" => buttons
   }
     
   def prefixes = ".prefix_entry *" #> TopicMapDB.getPrefixes.map{pre =>
@@ -30,4 +31,13 @@ class ZuthaConsole extends StatefulSnippet {
       val res = TopicMapDB.runQuery(queryStr)
       queryRes = TopicMapDB.queryResultsToString(res)
     }
+
+  def buttons =
+    ".reset" #> SHtml.button("Reset",TopicMapDB.resetDBtoSchema) &
+    ".getPath" #> SHtml.button("getPath",{() =>
+      val rootDir = new java.io.File(".")
+      val rootStr = rootDir.getAbsolutePath
+      S.notice(rootStr)
+    })
+
 }

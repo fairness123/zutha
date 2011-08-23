@@ -1,6 +1,8 @@
 package net.zutha.model.constants
 
 object ApplicationConstants {
+  val TM_DATA_PATH = "src/main/resources/tm_data/"
+
   val HTML_EXT = "html"
 
   val THIS_HOST_ID                = "0"

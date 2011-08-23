@@ -10,3 +10,15 @@ table, tr, td, th {
 #prefix_header {
 	width: 80px;
 }
+
+.prefix_block {
+    float: left;
+    width: 50%;
+}
+.button_block {
+    float: right;
+    width: 50%;
+}
+.console {
+    clear: left;
+}
