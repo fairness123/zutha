@@ -3,7 +3,7 @@ package net.zutha.model.topicmap
 import org.tmapi.core.{Topic, TopicMap}
 import de.topicmapslab.majortom.model.core.ITopicMap
 
-trait TMConstructExtensions {
+trait TMConversions {
   //convert tmapi Topic Map to MajorTM Topic Map
   implicit def topicMapToITopicMap(tm: TopicMap) = tm.asInstanceOf[ITopicMap]
 
@@ -12,4 +12,7 @@ trait TMConstructExtensions {
 
   //convert tmapi Topic to Zutha Topic Map Item
   implicit def topicToTopicMapItem(topic: Topic) = new TopicMapItem(topic)
+
+  //convert tmapi Topic to Zutha Topic
+  implicit def topicToZuthaTopic(topic: Topic) = new ZuthaTopic(topic)
 }

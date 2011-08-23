@@ -25,6 +25,7 @@ trait MajortomDB {
     factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL99")
     factory.setFeature(FeatureStrings.AUTOMATIC_MERGING,true)
     factory.setFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME,true)
+    
     //factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
 
     factory.newTopicMapSystem().asInstanceOf[ITopicMapSystem]

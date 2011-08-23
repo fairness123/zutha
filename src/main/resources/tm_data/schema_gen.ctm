@@ -172,7 +172,7 @@ zsi:property-type
 # AUTO PROPERTY TYPE
 zsi:auto-property-type
     ako zsi:property-type;
-    isa item-type;
+    isa zsi:item-type;
 
     zid:%zid%;
     - "Auto Property Type";
@@ -184,7 +184,7 @@ zsi:auto-property-type
 # ABSTRACT PROPERTY TYPE
 zsi:abstract-property-type
     ako zsi:property-type;
-    isa item-type;
+    isa zsi:item-type;
 
     zid:%zid%;
     - "Abstract Property Type";
@@ -196,7 +196,7 @@ zsi:abstract-property-type
 # MODIFIABLE PROPERTY TYPE
 zsi:modifiable-property-type
     ako zsi:property-type;
-    isa item-type;
+    isa zsi:item-type;
 
     zid:%zid%;
     - "Modifiable Property Type";

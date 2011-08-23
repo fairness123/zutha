@@ -6,11 +6,17 @@
 package net.zutha.model
 
 trait Item {
-  def zid: String
+  def getZIDs: Seq[String];
 
-  def name: String
+  def zid: String;
 
-  def addZID(zid: ZID)
+  def name: String;
+
+  def getDirectTypes: Seq[Item];
+  
+  def addZID(zid: ZID);
+
+  def address: String;
 }
 
 

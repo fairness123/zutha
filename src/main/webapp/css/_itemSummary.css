@@ -56,22 +56,6 @@
     font-size: 70%;
     text-align:center;
 }
-.item .types ul{
-    list-style-type:none;
-    display:inline;
-    padding-left:0;
-    margin:0 0;
-}
-.item .types li{
-    display:inline-block;
-}
-.item .types li:after {
-    content: ", \0020"; /* put a comma between list items */
-    padding-right:2px;
-}
-.item .types li:last-child:after {
-    content: "";
-}
 
 /* ----------- Worth Bars ----------- */
 .worth_bars{

@@ -12,7 +12,7 @@ import net.zutha.model.{ProposedItem, ZID}
 import org.tmapix.io.CTMTopicMapReader
 import tools.nsc.io.{File}
 
-object TopicMapDB extends DB with MajortomDB with TMQL with TMConstructExtensions{
+object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
   val ENABLE_TRANSACTIONS = true
 
   val sys: ITopicMapSystem = makeTopicSystem
