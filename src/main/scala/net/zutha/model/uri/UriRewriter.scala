@@ -2,7 +2,7 @@ package net.zutha.model.uri
 
 import net.zutha.model.constants.ApplicationConstants._
 import net.liftweb.http.{ParsePath, RewriteResponse, RewriteRequest}
-import net.zutha.model.Item
+import net.zutha.model.constructs.Item
 
 object UriRewriter {
   /* rewrite: /item/01H5/Item_Name/details.html?<params>

@@ -1,6 +1,6 @@
 package net.zutha.model.uri {
 
-import net.zutha.model.{ZID,Item}
+import net.zutha.model.constructs.{ZID,Item}
 import net.zutha.model.db.DB
 
 object ZIDLookup {

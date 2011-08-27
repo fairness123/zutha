@@ -1,12 +1,12 @@
-package net.zutha.model.db
+package net.zutha.model.topicmap.db
 
 import net.zutha.lib.BaseX
-import net.zutha.model.ZID
+import net.zutha.model.constructs.ZID
 import net.zutha.model.constants.ApplicationConstants._
 import org.tmapi.core.{TopicMap,Occurrence}
-import net.zutha.model.topicmap.TMConversions
+import net.zutha.model.topicmap.TMConversions._
 
-class ZIDTicker(tm: TopicMap) extends TMConversions{
+class ZIDTicker(tm: TopicMap){
   val base32converter = BaseX(ZID.charset)
   val tickerProp: Occurrence = getNextZIDOccurrence
 

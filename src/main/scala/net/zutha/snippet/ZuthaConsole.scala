@@ -5,7 +5,7 @@ import net.liftweb._
 import http._
 import util._
 import Helpers._
-import net.zutha.model.topicmap.TopicMapDB
+import net.zutha.model.topicmap.db.TopicMapDB
 
 class ZuthaConsole extends StatefulSnippet {
   private var queryStr = ""
@@ -33,11 +33,6 @@ class ZuthaConsole extends StatefulSnippet {
     }
 
   def buttons =
-    ".reset" #> SHtml.button("Reset",TopicMapDB.resetDBtoSchema) &
-    ".getPath" #> SHtml.button("getPath",{() =>
-      val rootDir = new java.io.File(".")
-      val rootStr = rootDir.getAbsolutePath
-      S.notice(rootStr)
-    })
+    "*" #> ""
 
 }

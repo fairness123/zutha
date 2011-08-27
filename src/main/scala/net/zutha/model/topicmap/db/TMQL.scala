@@ -1,33 +1,37 @@
-package net.zutha.model.db
+package net.zutha.model.topicmap.db
 
 import scala.collection.JavaConversions._
 import de.topicmapslab.tmql4j.components.processor.runtime.TMQLRuntimeFactory
 import de.topicmapslab.tmql4j.path.query.TMQLQuery
-import de.topicmapslab.tmql4j.components.processor.results.model.{IResult, IResultSet}
+import de.topicmapslab.tmql4j.components.processor.results.model.{IResultSet}
 import org.tmapi.core.TopicMap
 import de.topicmapslab.tmql4j.components.processor.results.xml.XMLValue
 import xml._
 
 trait TMQL {
-  def tm: TopicMap
+  def tm: TopicMap;
 
-  lazy val runtime = TMQLRuntimeFactory.newFactory().newRuntime("tmql-2007")
+  private lazy val runtime = TMQLRuntimeFactory.newFactory().newRuntime("tmql-2007")
 
   //register Zutha prefixes
-  val prefixHandler = runtime.getLanguageContext().getPrefixHandler()
+  private val prefixHandler = runtime.getLanguageContext().getPrefixHandler()
   prefixHandler.registerPrefix("zid", "http://zutha.net/item/")
   prefixHandler.registerPrefix("zsi", "http://psi.zutha.net/")
 
-  def runQuery(qstr : String): IResultSet[_] = {
+  //TODO cache prepared statements
+  def prepareStatement(qstr: String) = {
     val query = new TMQLQuery(tm, qstr)
-    val statement = runtime.preparedStatement(query)
-    statement.run()
-    val res = statement.getResults
+    runtime.preparedStatement(query)
+  }
+
+  def runQuery(qstr : String): IResultSet[_] = {
+    val query = runtime.run(tm,qstr)
+    val res = query.getResults
     return res
   }
 
 
-  def queryResultsToNodeSeq(rs : IResultSet[_]): NodeSeq = {
+  def XmlQueryResultsToNodeSeq(rs : IResultSet[_]): NodeSeq = {
     rs.getResultType match{
       case "XML" =>
         val allxml = rs.getResults.foldRight(NodeSeq.Empty){(r, acc) =>
@@ -47,7 +51,7 @@ trait TMQL {
    */
   def runXmlQuery(qstr: String): NodeSeq = {
     val rs = runQuery(qstr)
-    queryResultsToNodeSeq(rs)
+    XmlQueryResultsToNodeSeq(rs)
   }
 
   def queryResultsToString(rs : IResultSet[_]): String = {
@@ -55,7 +59,7 @@ trait TMQL {
       case "XML" =>
         val pp = new PrettyPrinter(80,3)
         try{
-          val allxml = queryResultsToNodeSeq(rs)
+          val allxml = XmlQueryResultsToNodeSeq(rs)
           val prettyXml = pp.formatNodes(allxml)
           prettyXml
         } catch {

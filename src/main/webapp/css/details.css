@@ -33,12 +33,12 @@
     padding:10px 10px 4px;
 }
 
-/**************** Properties *********************/
-.properties{
+/**************** Fields *********************/
+.fields{
     padding-left:0;
     margin:0.5em 0;
 }
-.property_set h2 {
+.field_group h2 {
     font-size:24px;
     font-family:Georgia,Serif;
     font-variant: small-caps;
@@ -48,44 +48,45 @@
     border-top: solid darkred medium;
     border-bottom: dotted darkred thin;
 }
-.property_set > ul{
+.field_group > ul{
     padding-left:1.5em;
 }
-.property{
+.field_block{
     margin: 4px 0;
     list-style-type: none;
 }
 
-/* Mulitprop dotpoint list */
-.multi_prop_dotpoint {
+/* Property Set (dotpoint list) */
+.dotpoint_property_set {
     margin-bottom: 12px;
 }
 
 /* Association Bubbles */
-.nary_association, .association{
+.association_set {
     border: 2px solid purple;
     padding: 4px 10px;
     margin: 15px 0;
 }
-.association > ul{
+/* compact association set */
+.compact_association_set > ul{
     padding-left:1.5em;
 }
-.association .role{
+.compact_association_set .role{
     list-style-type: none;
 }
 
-/* Nary association table */
-.nary_association table{
+/* association table */
+.association_set_table table{
     margin:0px 15px;
     background: white;
     border-collapse: collapse;
     text-align: left;
 }
-.nary_association th{
+.association_set_table th{
     border-bottom: 2px solid lightblue;
     padding: 4px 24px;
 }
-.nary_association td{
+.association_set_table td{
     border-bottom: 1px solid lightblue;
     padding: 4px 24px;
 }

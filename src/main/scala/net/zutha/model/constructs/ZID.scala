@@ -1,4 +1,4 @@
-package net.zutha.model
+package net.zutha.model.constructs
 
 import net.zutha.lib.BaseX
 

@@ -2,7 +2,7 @@ package net.zutha.model.uri
 
 import net.zutha.model.constants.ApplicationConstants._
 import net.liftweb.http.{PermRedirectResponse, LiftResponse, Req}
-import net.zutha.model.Item
+import net.zutha.model.constructs.Item
 
 object UriRedirector {
   /* redirect: /item/0IZ?<params>
@@ -22,61 +22,62 @@ object UriRedirector {
     case r @ Req(path,suffix,reqType) =>
       def makeResponse(toPath: String) = Some(PermRedirectResponse(toPath,r))
       path match {
-      //match: /<stem>/<any_zid>...
-      case stem::ZIDLookup(wasRepaired,item)::tail => stem match {
-        case "item" => tail match {
-          //redirect: /item/<any_zid>  
-          //      => /item-views/<defaultView>?zid=<fixedZID>&name=<correctName>
+      //match: /item/<any_zid>...
+      case "item"::ZIDLookup(wasRepaired,item)::tail => tail match {
+        //redirect: /item/<any_zid>
+        //      => /item-views/<defaultView>?zid=<fixedZID>&name=<correctName>
+        case Nil => makeResponse(ItemUri(item))
+        //match: /item/<fixable_zid>/<wrong_name>...
+        //       /item/<valid_zid>/<correct_name>.html
+        //       /item/<valid_zid>/<correct_name>/<assoc_name>
+        case name::tail2 if (wasRepaired || name!=item.name || tail2==Nil || suffix!=HTML_EXT) => tail2 match {
+          //redirect: /item/<any_zid>/<any_name[.html|<other_ext>]>
+          //       => /item-views/<defaultView>?zid=<fixedZID>&name=<correctName>
           case Nil => makeResponse(ItemUri(item))
-          //match: /item/<fixable_zid>/<wrong_name>...
-          //       /item/<valid_zid>/<correct_name>.html
-          //       /item/<valid_zid>/<correct_name>/<assoc_name>
-          case name::tail2 if (wasRepaired || name!=item.name || tail2==Nil || suffix!=HTML_EXT) => tail2 match {
-            //redirect: /item/<any_zid>/<any_name[.html|<other_ext>]>
-            //       => /item-views/<defaultView>?zid=<fixedZID>&name=<correctName>
-            case Nil => makeResponse(ItemUri(item))
-            //redirect: /item/<fixableZID>/<wrongName>/<view>.html
-            //       => /item-views/<view>?zid=<fixedZID>&name=<correctName>
-            case view::Nil if(suffix==HTML_EXT) => makeResponse(ItemUri(view,item))
-            //redirect: /item/<any_zid>/<any_name>/<assocName> 
-            //       => /assoc-views/<defaultView>?zid=<fixedZID>&name=<correctName>&association=<assocName>
-            case assocName::Nil if(suffix=="") => makeResponse(AssocUri(item,assocName))
-            //redirect: /item/<fixableZID>/<wrongName>/<assocName>/<view>.html
-            //       => /assoc-views/<view>?zid=<fixedZID>&name=<correctName>&association=<assocName>
-            case assocName::view::Nil if(suffix==HTML_EXT) => makeResponse(AssocUri(view,item,assocName))
-            //redirect: /item/<any_zid>/<any_name>/<assocName>/<roleName>
-            //       => /role-views/<defaultView>?zid=<fixedZID>&name=<correctName>&association=<assocName>&role=<roleName>
-            case assocName::roleName::Nil if(suffix=="") => makeResponse(RoleUri(item,assocName,roleName))
-            //redirect: /item/<fixableZID>/<wrongName>/<assocName>/<roleName>/<view>.html
-            //       => /role-views/<view>?zid=<fixedZID>&name=<correctName>&association=<assocName>&role=<roleName>
-            case assocName::roleName::view::Nil if(suffix==HTML_EXT) => makeResponse(RoleUri(view,item,assocName,roleName))
-            //too many path segments or invalid suffix
-            case _ => None
-          }
-          //uri is either correct or invalid, but not fixable
+          //redirect: /item/<fixableZID>/<wrongName>/<view>.html
+          //       => /item-views/<view>?zid=<fixedZID>&name=<correctName>
+          case view::Nil if(suffix==HTML_EXT) => makeResponse(ItemUri(view,item))
+          //redirect: /item/<any_zid>/<any_name>/<assocName>
+          //       => /assoc-views/<defaultView>?zid=<fixedZID>&name=<correctName>&association=<assocName>
+          case assocName::Nil if(suffix=="") => makeResponse(AssocUri(item,assocName))
+          //redirect: /item/<fixableZID>/<wrongName>/<assocName>/<view>.html
+          //       => /assoc-views/<view>?zid=<fixedZID>&name=<correctName>&association=<assocName>
+          case assocName::view::Nil if(suffix==HTML_EXT) => makeResponse(AssocUri(view,item,assocName))
+          //redirect: /item/<any_zid>/<any_name>/<assocName>/<roleName>
+          //       => /role-views/<defaultView>?zid=<fixedZID>&name=<correctName>&association=<assocName>&role=<roleName>
+          case assocName::roleName::Nil if(suffix=="") => makeResponse(RoleUri(item,assocName,roleName))
+          //redirect: /item/<fixableZID>/<wrongName>/<assocName>/<roleName>/<view>.html
+          //       => /role-views/<view>?zid=<fixedZID>&name=<correctName>&association=<assocName>&role=<roleName>
+          case assocName::roleName::view::Nil if(suffix==HTML_EXT) => makeResponse(RoleUri(view,item,assocName,roleName))
+          //too many path segments or invalid suffix
           case _ => None
         }
-        case "file" => tail match {
-          //redirect: /file/<any_zid>
-          //       => /file?zid=<fixedZID>&name=<looked_up_name>
-          case Nil => makeResponse(FileUri(item))
-          //redirect: /file/<fixable_zid>/<wrong_name>
-          //       => /file?zid=<fixedZID>&name=<correctName>
-          case filename::Nil if{
-            val ext = if(suffix=="") "" else "."+suffix
-            (wasRepaired || filename+ext!=item.name)} => makeResponse(FileUri(item))
-          case _ => None
-        }
-        //invalid <stem>
+        //uri is either correct or invalid, but not fixable
         case _ => None
       }
-      //doesn't match: /<stem>/<any_zid>...
-      case _ => None
+      //match: /item/<any_zid>...
+      case "file"::ZIDLookup(wasRepaired,item)::tail => tail match {
+        //redirect: /file/<any_zid>
+        //       => /file?zid=<fixedZID>&name=<looked_up_name>
+        case Nil => makeResponse(FileUri(item))
+        //redirect: /file/<fixable_zid>/<wrong_name>
+        //       => /file?zid=<fixedZID>&name=<correctName>
+        case filename::Nil if{
+          val ext = if(suffix=="") "" else "."+suffix
+          (wasRepaired || filename+ext!=item.name)} => makeResponse(FileUri(item))
+        case _ => None
+      }
+
+      //match: /<stem>...
+      case _ => None //no need to redirect
+
     }
     //isn't at Req
     case _ => None
   }
 }
+
+
 
 //TODO: get default views from user settings
 

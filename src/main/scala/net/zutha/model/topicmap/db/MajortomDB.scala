@@ -1,4 +1,4 @@
-package net.zutha.model.db
+package net.zutha.model.topicmap.db
 
 import de.topicmapslab.majortom.model.core.ITopicMapSystem
 import org.tmapi.core.TopicMapSystemFactory
@@ -11,9 +11,9 @@ import de.topicmapslab.majortom.model.store.ITopicMapStore
 trait MajortomDB {
   val rdbms = "de.topicmapslab.majortom.database.store.JdbcTopicMapStore"
   val queued = "de.topicmapslab.majortom.queued.store.QueuedTopicMapStore"
-  val inmemory = "de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore"
+  val inMemory = "de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore"
 
-  val useStore = rdbms
+  val useStore = inMemory
   
   def makeTopicSystem: ITopicMapSystem = {
     val factory = TopicMapSystemFactory.newInstance();

@@ -30,36 +30,36 @@
             <hr />
 
             <!--  Item Properties -->
-            <div class="properties lift:currentItem.props">
-                <div class="property_set">
-                    <h2><span class="property_set_name">Character Properties</span></h2>
+            <div class="fields lift:currentItem.props">
+                <div class="field_group">
+                    <h2><span class="field_group_name">Fields from Character</span></h2>
                     
                     <ul>
-                        <!--multi-value occurrence displayed as dotpoints-->
-                        <li class="property multi_prop_dotpoint">
-                            <h3><span class="property_name">External IDs</span></h3>
-                            <ul>
-                                <li class="property_value">
-                                    <a href="http://en.wikipedia.org/Dejanice_(Character)">http://en.wikipedia.org/Dejanice_(Character)</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!--multi-value occurrence displayed as linear comma-separated list -->
-                        <li class="property multi_prop_linear">
+                        <!--multi-value property displayed as linear comma-separated list -->
+                        <!--used for multi-value auto-properties like ZIDs-->
+                        <li class="field_block auto_property_set">
                             <h3 class="inline"><span class="property_name">ZIDs</span>:</h3>
                             <ul class="linear">
                                 <li class="intermediate"><span class="property_value">07X4</span>, </li>
                                 <li class="last"><span class="property_value">03PY0</span></li>
                             </ul>
                         </li>
-                        <!--standard single-value occurrence-->
-                        <li class="property single_prop">
-                            <h3 class="inline"><span class="property_name">Date of Birth</span>:</h3>
-                            <span class="property_value">7 August 1851</span>
+                        <!--property set displayed as dotpoints-->
+                        <li class="field_block property_set">
+                            <h3><span class="property_name">External IDs</span></h3>
+                            <ul>
+                                <li class="property">
+                                <span class="property_value"><a href="#7oeHH">http://en.wikipedia.org/Dejanice_(Character)</a></span>
+                                </li>
+                            </ul>
                         </li>
-                        <!-- Association Bubble -->
-                        <li class="property association rounded">
-                            <h3 class="association_type"><a href="#aa4iii">Discussed in</a></h3>
+                        <!--standard single-value property-->
+                        <li class="field_block property">
+                            <h3 class="inline"><span class="property_name">Date of Birth</span>:</h3><span class="property_value">7 August 1851</span>
+                        </li>
+                        <!-- Compact Association -->
+                        <li class="field_block association_set compact_association_set rounded">
+                            <h3 class="association_set_name"><a class="association_set_link" href="#aa4iii"><span class="role_played">Item</span>:<span class="association_type">Discussed in</span></a></h3>
                             <ul class="roles">
                                 <li class="role">
                                     <h4 class="inline"><span class="role_type"><a href="#9hhd">Comments</a></span>:</h4>
@@ -71,19 +71,10 @@
                                 </li>
                             </ul>
                         </li>
-                        <!--binary association-->
-                        <li class="property binary_association">
-                            <h3 class="inline"><span class="association_type"><a href="#og23g">Instance-of</a></span>/<span class="role_type"><a href="#9d">Type</a></span>:</h3>
-                            <ul class="role_players linear">
-                                <li class="intermediate"><span class="role_player"><a href="#hoh">Person</a></span>, </li>
-                                <li class="last"><span class="role_player"><a href="#213">Character</a></span></li>
-                                <li class="more"><span class="more_link"><a href="@gud9">...</a></span></li>
-                            </ul>
-                        </li>
-                        <!--association with 3 or more role-types-->
-                        <li class="property nary_association rounded">
-                            <h3 class="association_type"><a href="#d7898d">Murders</a></h3>
-                            <table class="roles">
+                        <!-- Association Table (3 or more role-types) -->
+                        <li class="field_block association_set association_set_table rounded">
+                            <h3 class="association_set_name"><a class="association_set_link" href="#d7898d"><span class="role_played">Murderer</span>:<span class="association_type">Murders</span></a></h3>
+                            <table>
                                 <thead>
                                     <tr class="role-types">
                                         <th class="role_type"><a href="h59u">Victim</a></th>
@@ -103,43 +94,6 @@
                             </table>
                         </li>
 
-                        <li class="property nary_association rounded">
-                            <h3 class="association_type"><a href="#8172">Murders</a></h3>
-                            <table class="roles">
-                                <thead>
-                                    <tr class="role-types">
-                                        <th class="role_type"><a href="#262">Victim</a></th>
-                                        <th class="role_type"><a href="#9201">Cause of Death</a></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="association_row">
-                                        <td>
-                                            <ul class="role_players linear">
-                                                <li class="first_player"><span class="role_player"><a href="#aouh">Dejanice</a></span></li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <ul class="role_players linear">
-                                                <li class="first_player"><span class="role_player"><a href="#o8u">Stabbing</a></span></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr class="association_row">
-                                        <td>
-                                            <ul class="role_players linear">
-                                                <li class="first_player"><span class="role_player"><a href="#o8ua">Dardano</a></span></li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <ul class="role_players linear">
-                                                <li class="first_player"><span class="role_player"><a href="#o9ua">Stabbing</a></span></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </li>
                     </ul>
                 </div>
             </div>

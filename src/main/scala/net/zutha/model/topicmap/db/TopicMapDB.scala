@@ -1,21 +1,32 @@
-package net.zutha.model.topicmap
+package net.zutha.model.topicmap.db
 
 import scala.collection.JavaConversions._
-import net.zutha.model.constants._
-import ZuthaConstants._
-import ApplicationConstants._
 import org.tmapi.core._
-import de.topicmapslab.majortom.model.core.{ITopicMap, ITopicMapSystem}
-import de.topicmapslab.majortom.model.transaction.ITransaction
-import net.zutha.model.db.{ZIDTicker, TMQL, MajortomDB, DB}
-import net.zutha.model.{ProposedItem, ZID}
 import org.tmapix.io.CTMTopicMapReader
 import tools.nsc.io.{File}
+import de.topicmapslab.majortom.model.core.{ITopicMapSystem}
+import de.topicmapslab.majortom.model.transaction.ITransaction
 
-object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
+import net.zutha.model.constants._
+import ZuthaConstants._
+import SchemaIdentifier._
+import ApplicationConstants._
+import net.zutha.model.{ProposedItem}
+import net.zutha.model.topicmap.TMConversions._
+import net.zutha.model.constructs._
+import net.zutha.model.db.DB
+import net.zutha.model.exceptions.SchemaItemMissingException
+
+object TopicMapDB extends DB with MajortomDB with TMQL{
   val ENABLE_TRANSACTIONS = true
 
   val sys: ITopicMapSystem = makeTopicSystem
+
+  //check if schema needs to be created
+  tm.lookupTopicByZSI("item") match {
+    case Some(_)  => //nothing needs doing
+    case None     => generateSchema()
+  }
 
   // Zutha Topic Map
   def tm = {
@@ -26,8 +37,18 @@ object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
   }
 
   // ZID Ticker
-  var zidTicker = new ZIDTicker(tm)
+  private lazy val zidTicker = new ZIDTicker(tm)
   def getNextZID: ZID = zidTicker.getNext
+
+  /**
+   * @param identifier the SchemaIdentifier of the schema item to retrieve
+   * @return the schema item with the given identifier
+   * @throws SchemaItemMissingException if the requested topic does not exist
+   */
+  def getSchemaItem(identifier: SchemaIdentifier): Item = tm.lookupTopicByZSI(identifier.toString) match {
+    case Some(topic) => topic.toItem
+    case None => throw new SchemaItemMissingException
+  }
 
   def getItem(zid: ZID) = tm.lookupTopicByZID(zid).map{_.toItem}
 
@@ -61,7 +82,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
     }
 
     //create a ZID for this new item
-    topic.addZID(zidTicker.getNext)
+    topic.addZID(getNextZID)
 
     //commit proposed item
     if(ENABLE_TRANSACTIONS) txn.asInstanceOf[ITransaction].commit
@@ -73,12 +94,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
     }
   }
 
-  def resetDBtoSchema() = {
-    //delete current topic map (it will be recreated when next requested)
-    val oldTm = tm
-    oldTm.remove(true)
-    zidTicker = new ZIDTicker(tm)
-
+  def generateSchema() = {
     //open current schema.ctm file
     val schema_file = File(TM_DATA_PATH + "schema.ctm")
 
@@ -87,8 +103,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
     val ctm_templates_file = File(TM_DATA_PATH + "ctm_templates.ctm")
 
     //if schema_gen.ctm or ctm_templates.ctm are newer than schema.ctm,
-    //then egenerate schema.ctm
-
+    //then regenerate schema.ctm
     val schemaMod = schema_file.lastModified
     if (schemaMod < schema_gen_file.lastModified ||
         schemaMod < ctm_templates_file.lastModified){
@@ -109,7 +124,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with TMConversions{
 
     //make a topic map from the ctm schema
     val source: java.io.File = schema_file.jfile
-    val reader: CTMTopicMapReader = new CTMTopicMapReader(tm, source)
+    val reader: CTMTopicMapReader = new CTMTopicMapReader(tm, source,ZUTHA_TOPIC_MAP_URI)
     reader.read
   }
 
