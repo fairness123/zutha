@@ -3,10 +3,20 @@
 
 # ==================== General Purpose Templates ====================
 
+# ITEM PLAYS ROLE
+def plays-role($item, $role)
+    zsi:item-plays-role($item,$role);
+end
+def played-by($role,$item)
+    zsi:item-plays-role($item,$role);
+end
+
 # ITEM PROPERTY
 def property($item, $propType, $value)
+    ?propReifier isa $propType.
+
     $item
-    $propType: $value.
+    $propType: $value ~ ?propReifier.
 end
 
 # ITEM PROPERTY WITH PERMISSION
@@ -23,24 +33,54 @@ end
 
 # OVERLAP DECLARATION
 def overlaps($itemType1, $itemType2)
-  zsi:overlap-declaration(zsi:overlapping-item-type : $itemType1,
-    zsi:overlapping-item-type : $itemType2)
+    ?assoc isa zsi:overlap-declaration.
+
+    zsi:overlap-declaration(
+        zsi:item-type : $itemType1,
+        zsi:item-type : $itemType2
+    ) ~ ?assoc
 end
 
-# ABSTRACT CONSTRAINT
-def is-abstract($itemType)
-    zsi:abstract-constraint(zsi:constrained-item-type: $itemType)
+# ITEM TYPE ROLE DECLARATION
+def cannot-play-role($itemType, $role)
+    declares-role($itemType, $role, 0, 0)
 end
-
-# ITEM PROPERTY CONSTRAINT
-def has-property($itemType, $propType, $min, $max)
-    ?assoc isa zsi:item-property-constraint;
-        zsi:card-min: $min;
-        zsi:card-max: $max;
+def may-play-role($itemType, $role)
+    declares-role($itemType, $role, 0, 1)
+end
+def must-play-role($itemType, $role)
+    declares-role($itemType, $role, 1, 1)
+end
+def cannot-be-played-by(role, $itemType)
+    cannot-play-role($itemType, $role)
+end
+def may-be-played-by(role, $itemType)
+    can-play-role($itemType, $role)
+end
+def must-be-played-by(role, $itemType)
+    must-play-role($itemType, $role)
+end
+def declares-role($itemType, $role, $min, $max)
+    ?assoc isa zsi:item-type-role-declaration;
+        zsi:role-card-min: $min;
+        zsi:role-card-max: $max;
     .
-    zsi:item-property-constraint(
-        zsi:constrained-item-type: $itemType,
-        zsi:constrained-property-type: $propType
+    zsi:item-type-role-declaration(
+        zsi:item-type: $itemType,
+        zsi:role: $role,
+    ) ~ ?assoc
+end
+
+
+# PROPERTY DECLARATION
+def has-property($itemType, $propType, $min, $max)
+    ?assoc isa zsi:property-declaration;
+        zsi:property-card-min: $min;
+        zsi:property-card-max: $max;
+    .
+    zsi:property-declaration(
+        zsi:item-type: $itemType,
+        zsi:property-type: $propType
     ) ~ ?assoc
 end
 
@@ -50,124 +90,106 @@ def has-datatype($propType, $dataType)
         zsi:datatype: $dataType;
     .
     zsi:property-datatype-constraint(
-        zsi:constrained-property-type: $propType
+        zsi:property-type: $propType
     ) ~ ?assoc
 end
 
 # ASSOCIATION ROLE CONSTRAINT
-def has-role($assocType, $roleType, $min, $max)
-    ?assoc isa zsi:item-role-constraint;
-        zsi:card-min: $min;
-        zsi:card-max: $max;
+def has-role($assocType, $assocMin, $assocMax, $role, $roleMin, $roleMax)
+    ?assoc isa zsi:association-role-constraint;
+        zsi:association-card-min: $assocMin;
+        zsi:association-card-max: $assocMax;
+        zsi:role-card-min: $roleMin;
+        zsi:role-card-max: $roleMax;
     .
-    zsi:item-role-constraint(
-        zsi:constrained-association-type: assocType,
-        zsi:constrained-role-type: $roleType
+    zsi:association-role-constraint(
+        zsi:association-type: assocType,
+        zsi:role: $role
     ) ~ ?assoc
 end
-
-# ITEM ROLE CONSTRAINT
-def plays-role($itemType, $roleType, $assocType, $min, $max)
-    ?assoc isa zsi:item-role-constraint;
-        zsi:card-min: $min;
-        zsi:card-max: $max;
-    .
-    zsi:item-role-constraint(
-        zsi:constrained-item-type: $itemType,
-        zsi:constrained-role-type: $roleType,
-        zsi:constrained-association-type: $assocType
-    ) ~ ?assoc
-end
-def role-played-by($assocType, $roleType, $itemType, $min, $max)
-    plays-role($itemType, $roleType, $assocType, $min, $max)
+def has-association($role, $roleMin, $roleMax, $assocType, $assocMin, $assocMax)
+    has-role($assocType, $assocMin, $assocMax, $role, $roleMin, $roleMax)
 end
 
 # ROLE COMBINATION CONSTRAINT
 def role-combination($assocType,
-        $roleType1,$topicType1,$roleType2,$topicType2)
+        $role1,$itemType1,$role2,$itemType2)
     ?combo isa zsi:role-combination;
     .
     zsi:association-has-role-combination-constraint(
-        zsi:constrained-role-combination: ?combo,
-        zsi:constrained-association-type: $assocType
+        zsi:role-combination: ?combo,
+        zsi:association-type: $assocType
     )
     zsi:role-combination-constraint(
-        zsi:allowed-role-combination: ?combo,
-        zsi:constrained-role-type: $roleType1,
-        zsi:constrained-item-type: $topicType1
+        zsi:role-combination: ?combo,
+        zsi:role: $role1,
+        zsi:item-type: $itemType1
     )
     zsi:role-combination-constraint(
-        zsi:allowed-role-combination: ?combo,
-        zsi:constrained-role-type: $roleType2,
-        zsi:constrained-item-type: $topicType2
+        zsi:role-combination: ?combo,
+        zsi:role: $role2,
+        zsi:item-type: $itemType2
     )
 end
 
 # FIELD HAS SCOPE ITEM TYPE CONSTRAINT
 def has-scope($fieldType, $itemType, $min, $max)
     ?assoc isa zsi:field-has-scope-item-type-constraint;
-        zsi:card-min: $min;
-        zsi:card-max: $max;
+        zsi:scope-item-card-min: $min;
+        zsi:scope-item-card-max: $max;
     .
     zsi:field-has-scope-item-type-constraint(
-        zsi:constrained-field-type: $fieldType,
-        zsi:constrained-scope-item-type: $itemType
+        zsi:field-type: $fieldType,
+        zsi:scope-item-type: $itemType
     ) ~ ?assoc
 end
 
 # ITEM HAS FIELD WITH SCOPE ITEM CONSTRAINT
 def requires-scope($itemType, $fieldType, $item, $min, $max)
     ?assoc isa zsi:item-has-field-with-scope-item-constraint;
-        zsi:card-min: $min;
-        zsi:card-max: $max;
+        zsi:field-card-min: $min;
+        zsi:field-card-max: $max;
     .
     zsi:item-has-field-with-scope-item-constraint(
-        zsi:constrained-item-type: $itemType,
-        zsi:constrained-field-type: $fieldType,
-        zsi:constrained-scope-item: $item
+        zsi:item-type: $itemType,
+        zsi:field-type: $fieldType,
+        zsi:scope-item: $item
     ) ~ ?assoc
 end
 
 # REIFIER CONSTRAINT
-#--- Constructs of type $reifiable must be reified
-#--- by an item of type $reifiable and vice versa.
-def must-have-reifier($reifiable)
-    ?assoc isa zsi:reifier-constraint;
-        zsi:card-min: 1;
-        zsi:card-max: 1;
-    .
-    zsi:reifier-constraint(
-        zsi:constrained-reifiable-construct-type: $reifiable
-    ) ~ ?assoc
+#--- reifiable cannot be instantiated
+def cannot-have-reifier($reifiable)
+    reifier-cardinality($reifiable,0,0)
 end
 #--- Construct of type $reifiable optionally has a reifier.
 #--- If instantiated as an item,
 #--- $reifiable must reify a construct of the same type
 def may-have-reifier($reifiable)
+    reifier-cardinality($reifiable,0,1)
+end
+#--- Constructs of type $reifiable must be reified
+#--- by an item of type $reifiable and vice versa.
+def must-have-reifier($reifiable)
+    reifier-cardinality($reifiable,1,1)
+end
+def reifier-cardinality($reifiable,$min,$max)
     ?assoc isa zsi:reifier-constraint;
-        zsi:card-min: 0;
-        zsi:card-max: 1;
+        zsi:reifier-card-min: $min;
+        zsi:reifier-card-max: $max;
     .
     zsi:reifier-constraint(
-        zsi:constrained-reifiable-construct-type: $reifiable
+        zsi:reifiable-construct-type: $reifiable
     ) ~ ?assoc
 end
-#--- reifiable cannot be instantiated
-def cannot-have-reifier($reifiable)
-    ?assoc isa zsi:reifier-constraint;
-        zsi:card-min: 0;
-        zsi:card-max: 0;
-    .
-    zsi:reifier-constraint(
-        zsi:constrained-reifiable-construct-type: $reifiable
-    ) ~ ?assoc
-end
-
 
 # UNIQUE VALUE CONSTRAINT
 def has-unique-value($propType)
+    ?assoc isa zsi:unique-value-constraint;
+    .
     zsi:unique-value-constraint(
-        zsi:constrained-property-type: $propType)
+        zsi:constrained-property-type: $propType
+    ) ~ ?assoc
 end
 
 # REGULAR EXPRESSION CONSTRAINT
@@ -176,6 +198,6 @@ def matches-regexp($propType, $regexp)
         zsi:regexp: $regexp;
     .
     zsi:regular-expression-constraint(
-        zsi:constrained-property-type: $propType
+        zsi:property-type: $propType
     ) ~ ?assoc
 end
