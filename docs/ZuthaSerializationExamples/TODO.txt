@@ -2,12 +2,10 @@
 
 
 --------------------- Schema ---------------------
-is-abstract
 default-permission-level in field-declarations (has-property, plays-role)
-overrides association
 is-inherited property on schema-rules
-item-type-subtypes-item-type constraint
-item-type-descendants-have-type-constraint
+may-be-unknown property in has-property and has-role associations
+overrides association between reified associations such as field-declaration and association-role-constraint
 
 --------------------- Zutha Google Group posts ---------------------
 
@@ -23,3 +21,6 @@ Goal: To create a universal currency of reputation
 Goal: To fill a perceived void in semantic search tools
 Goal: To found a more appropriate framework than intellectual property laws for incentivising the production of socially beneficial intellectual goods
 Goal: To create an effective forum for cross-discipline and cross-faction debate
+
+Use Case: Searching for a product or Service
+Use Case: Earning a living as an open source developer

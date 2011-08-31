@@ -6,30 +6,36 @@ package net.zutha.model.constructs
  */
 
 trait Item {
-  // conversion
+  // -------------- conversion --------------
+  /**
+   * converts this Item to an ItemType
+   * @throws IllegalArgumentException if this Item is not an ItemType
+   */
   def toItemType: ItemType;
   def isItemType: Boolean;
   
-  // ZIDs
+  // -------------- ZIDs --------------
   def zid: String;
   def getZIDs: Seq[String];
   def addZID(zid: ZID);
 
-  // names
+  // -------------- names --------------
   def name: String;
 
-  // web address of form: /item/<zid>/<name>
-  def address: String;
-
-  // types
+  // -------------- types --------------
   def hasType(itemType: ItemType): Boolean;
-  def getDirectTypes: Set[ItemType];
+  def getType: ItemType;
   def getAllTypes: Set[ItemType];
   def getFieldDefiningTypes: Set[ItemType];
 
-  // fields
+  // -------------- fields --------------
   def getPropertySets: Set[PropertySet]
   def getProperties(propType: ItemType): Set[Property];
+
+  // -------------- zutha.net-specific properties --------------
+
+  // web address of form: /item/<zid>/<name>
+  def address: String;
 }
 
 

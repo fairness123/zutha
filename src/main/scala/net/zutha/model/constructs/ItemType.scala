@@ -8,7 +8,7 @@ trait ItemType extends Item {
 
   // field definition
   def definesFields: Boolean;
-  def getDefinedFields: Seq[ItemType];
+//  def getDefinedFields: Seq[ItemType];
   def getDefinedProperties: Seq[ItemType];
-  def getDefinedAssociations: Seq[ItemType];
+  def getDefinedAssociationFields: Seq[(Item,ItemType)];
 }

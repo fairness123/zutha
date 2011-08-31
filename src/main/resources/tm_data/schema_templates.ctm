@@ -1,0 +1,229 @@
+%prefix zsi http://psi.zutha.net/
+%prefix ztm http://psi.zutha.net/topicmap/
+
+# ==================== General Purpose Templates ====================
+
+# ITEM HAS TRAIT
+def has-trait($item, $trait)
+    ?assoc isa zsi:item-has-trait;
+    .
+    zsi:item-has-trait(
+        zsi:item: $item,
+        zsi:trait: $trait
+    ) ~ ?assoc
+    #topic map implementation
+    ?anon isa ztm:anonymous-topic;
+        ako $trait.
+    $item isa ?anon.
+    ztm:anonymous-topic-link(
+        ztm:reified-zdm-association: ?assoc,
+        ztm:anonymous-topic: ?anon
+    )
+end
+
+# ITEM TYPE IMPLEMENTS INTERFACE
+def implements($itemType, $interface)
+    ?assoc isa zsi:item-type-implements-interface;
+    .
+    zsi:item-type-implements-interface(
+        zsi:item-type: $itemType,
+        zsi:interface: $interface
+    ) ~ ?assoc
+
+    #topic map implementation
+    ?anon isa ztm:anonymous-topic;
+        ako $interface.
+    $itemType ako ?anon.
+    ztm:anonymous-topic-link(
+        ztm:reified-zdm-association: ?assoc,
+        ztm:anonymous-topic: ?anon
+    )
+end
+
+# ITEM PROPERTY
+def property($item, $propType, $value)
+    ?propReifier isa $propType.
+
+    $item
+    $propType: $value ~ ?propReifier.
+end
+
+# ITEM PROPERTY WITH PERMISSION
+def property($item, $propType, $value, $permLevel)
+    ?propReifier isa $propType;
+        zsi:permission-level: $permLevel.
+
+    $item
+    $propType: $value ~ ?propReifier.
+end
+
+# ==================== Schema Templates ====================
+
+# ABSTRACT CONSTRAINT
+def is-abstract($type)
+    ?assoc isa zsi:abstract-constraint;
+    .
+    zsi:abstract-constraint(
+        zsi:type: $type
+    ) ~ ?assoc
+end
+
+# ITEM TYPE HAS ROOT ITEM CONSTRAINT
+def root-of($rootItem, $type)
+    ?assoc isa zsi:item-type-has-root-item-constraint;
+    .
+    zsi:item-type-has-root-item-constraint(
+        zsi:root-item: $rootItem,
+        zsi:type: $type
+    ) ~ ?assoc
+end
+def has-root($type, $rootItem)
+    root-of($rootItem, $type)
+end
+
+# ITEM TYPE TRAIT DECLARATION
+def may-have-trait($itemType, $trait)
+    ?assoc isa zsi:item-type-trait-declaration;
+    .
+    zsi:item-type-role-declaration(
+        zsi:item-type: $itemType,
+        zsi:trait: $role
+    ) ~ ?assoc
+end
+
+# PROPERTY DECLARATION
+def has-property($declarer, $propType, $min, $max)
+    ?assoc isa zsi:property-declaration;
+        zsi:property-card-min: $min;
+        zsi:property-card-max: $max;
+    .
+    zsi:property-declaration(
+        zsi:property-declarer: $declarer,
+        zsi:property-type: $propType
+    ) ~ ?assoc
+end
+
+# ASSOCIATION FIELD DECLARATION
+def plays-role($declarer, $role, $assocType, $min, $max)
+    ?assoc isa zsi:association-field-declaration;
+        zsi:association-card-min: $min;
+        zsi:association-card-max: $max;
+    .
+    zsi:association-field-declaration(
+        zsi:association-field-declarer: $declarer,
+        zsi:role: $role,
+        zsi:association-type: $assocType
+    ) ~ ?assoc
+end
+
+# ASSOCIATION ROLE CONSTRAINT
+def has-role($assocType, $role, $min, $max)
+    ?assoc isa zsi:association-role-constraint;
+        zsi:role-card-min: $min;
+        zsi:role-card-max: $max;
+    .
+    zsi:association-role-constraint(
+        zsi:association-type: assocType,
+        zsi:role: $role
+    ) ~ ?assoc
+end
+
+# ROLE COMBINATION CONSTRAINT
+def role-combination($assocType,
+        $role1,$itemType1,$role2,$itemType2)
+    ?combo isa zsi:role-combination;
+    .
+    zsi:association-has-role-combination-constraint(
+        zsi:role-combination: ?combo,
+        zsi:association-type: $assocType
+    )
+    zsi:role-combination-constraint(
+        zsi:role-combination: ?combo,
+        zsi:role: $role1,
+        zsi:item-type: $itemType1
+    )
+    zsi:role-combination-constraint(
+        zsi:role-combination: ?combo,
+        zsi:role: $role2,
+        zsi:item-type: $itemType2
+    )
+end
+
+# FIELD HAS SCOPE ITEM CONSTRAINT
+def has-scope-item($fieldType, $scopeItem, $min, $max)
+    ?assoc isa zsi:field-has-scope-item-constraint;
+        zsi:scope-item-card-min: $min;
+        zsi:scope-item-card-max: $max;
+    .
+    zsi:field-has-scope-item-constraint(
+        zsi:field-type: $fieldType,
+        zsi:scope-item: $scopeItem
+    ) ~ ?assoc
+end
+
+# FIELD HAS SCOPE ITEM TYPE CONSTRAINT
+def has-scope-item-type($fieldType, $scopeItemType, $min, $max)
+    ?assoc isa zsi:field-has-scope-item-type-constraint;
+        zsi:scope-item-type-card-min: $min;
+        zsi:scope-item-type-card-max: $max;
+    .
+    zsi:field-has-scope-item-type-constraint(
+        zsi:field-type: $fieldType,
+        zsi:scope-item-type: $scopeItemType
+    ) ~ ?assoc
+end
+
+# FIELD WITH SCOPE ITEM DECLARATION
+def has-scope-item($declarer, $fieldType, $scopeItem, $min, $max)
+    ?assoc isa zsi:field-with-scope-item-declaration;
+        zsi:field-card-min: $min;
+        zsi:field-card-max: $max;
+    .
+    zsi:field-with-scope-item-declaration(
+        zsi:field-declarer: $declarer,
+        zsi:field-type: $fieldType,
+        zsi:scope-item: $scopeItem
+    ) ~ ?assoc
+end
+
+# FIELD WITH SCOPE ITEM TYPE DECLARATION
+def has-scope-item-type($declarer, $fieldType, $scopeItemType, $min, $max)
+    ?assoc isa zsi:field-with-scope-item-type-declaration;
+        zsi:field-card-min: $min;
+        zsi:field-card-max: $max;
+    .
+    zsi:field-with-scope-item-type-declaration(
+        zsi:field-declarer: $declarer,
+        zsi:field-type: $fieldType,
+        zsi:scope-item-type: $scopeItemType
+    ) ~ ?assoc
+end
+
+# UNIQUE VALUE CONSTRAINT
+def has-unique-value($propType)
+    ?assoc isa zsi:unique-value-constraint;
+    .
+    zsi:unique-value-constraint(
+        zsi:property-type: $propType
+    ) ~ ?assoc
+end
+
+# PROPERTY DATA TYPE CONSTRAINT
+def has-datatype($propType, $dataType)
+    ?assoc isa zsi:property-datatype-constraint;
+        zsi:datatype: $dataType;
+    .
+    zsi:property-datatype-constraint(
+        zsi:property-type: $propType
+    ) ~ ?assoc
+end
+
+# REGULAR EXPRESSION CONSTRAINT
+def matches-regexp($propType, $regexp)
+    ?assoc isa zsi:regular-expression-constraint;
+        zsi:regexp: $regexp;
+    .
+    zsi:regular-expression-constraint(
+        zsi:property-type: $propType
+    ) ~ ?assoc
+end

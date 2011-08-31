@@ -2,10 +2,10 @@ package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.model.constructs.{ItemType}
 import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.constants.{SchemaIdentifier, TMQLQueries => Q}
 import SchemaIdentifier._
+import net.zutha.model.constructs.{Item, ItemType}
 
 object TMItemType {
   def apply(item: TMItem): TMItemType = new TMItemType(item)
@@ -22,41 +22,53 @@ class TMItemType(item: TMItem) extends TMItem(item.topic) with ItemType{
   def hasSuperType(superType: ItemType): Boolean = getAllSuperTypes.contains(superType)
 
   def getAllSuperTypes: Seq[ItemType] = {
-    val items = runItemTypeQuery(Q.AllSupertypesOfItemType)
+    val items = runItemTypeQuery(Q.AllSupertypesOfItemType).filterNot(_.isAnonymous)
     items.sortBy(_.zid)
   }
   //uses MaJorToM's getSupertypes which has bug and gets subtypes
   def _getAllSuperTypes: Seq[ItemType] = {
-    topic.getSupertypes.toSeq.map(_.toItemType).sortBy(_.zid)
+    topic.getSupertypes.filterNot(_.isAnonymous).toSeq.map(_.toTMItemType).sortBy(_.zid)
   }
 
 
   // --------------- defined fields ---------------
   def definesFields: Boolean = {
-    val rt = TopicMapDB.getSchemaItem(CONSTRAINED_ITEM_TYPE)
-    val propDefAssocType = TopicMapDB.getSchemaItem(ITEM_PROPERTY_CONSTRAINT)
-    val assocDefAssocType = TopicMapDB.getSchemaItem(ITEM_ROLE_CONSTRAINT)
-    val propDefRoles = topic.getRolesPlayed(rt,propDefAssocType)
-    val assocDefRoles = topic.getRolesPlayed(rt,assocDefAssocType)
-    propDefRoles.size > 0 || assocDefRoles.size > 0
+//    val fields = runItemTypeQuery(Q.fieldsDeclaredByItemType)
+//    fields.size > 0
+
+    val propertyDeclarer = TopicMapDB.getSchemaItem(PROPERTY_DECLARER)
+    val propertyDeclaration = TopicMapDB.getSchemaItem(PROPERTY_DECLARATION)
+    val propertyDefRoles = topic.getRolesPlayed(propertyDeclarer,propertyDeclaration)
+
+    val assocFieldDeclarer = TopicMapDB.getSchemaItem(ASSOCIATION_FIELD_DECLARER)
+    val assocFieldDeclaration = TopicMapDB.getSchemaItem(ASSOCIATION_FIELD_DECLARATION)
+    val assocDefRoles = topic.getRolesPlayed(assocFieldDeclarer,assocFieldDeclaration)
+    propertyDefRoles.size > 0 || assocDefRoles.size > 0
   }
 
-  def getDefinedFields: Seq[ItemType] = getDefinedProperties ++ getDefinedAssociations
-  
   def getDefinedProperties: Seq[ItemType] = {
-    val itemTypeRole = TopicMapDB.getSchemaItem(CONSTRAINED_ITEM_TYPE)
-    val propTypeRole = TopicMapDB.getSchemaItem(CONSTRAINED_PROPERTY_TYPE)
-    val propDefAssocType = TopicMapDB.getSchemaItem(ITEM_PROPERTY_CONSTRAINT)
-    val propDefRoles = topic.getRolesPlayed(itemTypeRole,propDefAssocType)
-    propDefRoles.map{_.getParent.getRoles(propTypeRole).head.getPlayer.toItemType}.toSeq
+    val propertyDeclarer = TopicMapDB.getSchemaItem(PROPERTY_DECLARER)
+    val propDeclaration = TopicMapDB.getSchemaItem(PROPERTY_DECLARATION)
+    val propType = TopicMapDB.getSchemaItem(PROPERTY_TYPE)
+    val propDefRoles = topic.getRolesPlayed(propertyDeclarer,propDeclaration)
+    propDefRoles.map{_.getParent.getRoles(propType).head.getPlayer.toTMItemType}.toSeq
   }
 
-  def getDefinedAssociations: Seq[ItemType] = {
-    val itemTypeRole = TopicMapDB.getSchemaItem(CONSTRAINED_ITEM_TYPE)
-    val roleTypeRole = TopicMapDB.getSchemaItem(CONSTRAINED_ROLE_TYPE)
-    val assocDefAssocType = TopicMapDB.getSchemaItem(ITEM_ROLE_CONSTRAINT)
-    val assocDefRoles = topic.getRolesPlayed(itemTypeRole,assocDefAssocType)
-    assocDefRoles.map{_.getParent.getRoles(roleTypeRole).head.getPlayer.toItemType}.toSeq
+  /** @return a Seq of (role:Item, assocType:ItemType) representing the
+   *  association fields defined by this ItemType
+   */
+  def getDefinedAssociationFields: Seq[(Item,ItemType)] = {
+    val assocFieldDeclarer = TopicMapDB.getSchemaItem(ASSOCIATION_FIELD_DECLARER)
+    val assocFieldDecl = TopicMapDB.getSchemaItem(ASSOCIATION_FIELD_DECLARATION)
+    val assocTypeItem = TopicMapDB.getSchemaItem(ASSOCIATION_TYPE)
+    val roleItem = TopicMapDB.getSchemaItem(ROLE)
+    val itemTypeRoles = topic.getRolesPlayed(assocFieldDeclarer,assocFieldDecl)
+    itemTypeRoles.map{itemTypeRole =>
+      val declAssoc = itemTypeRole.getParent
+      val role = declAssoc.getRoles(roleItem).head.getPlayer.toTMItem
+      val assocType = declAssoc.getRoles(assocTypeItem).head.getPlayer.toTMItemType
+      (role,assocType)
+    }.toSeq
   }
 
 }

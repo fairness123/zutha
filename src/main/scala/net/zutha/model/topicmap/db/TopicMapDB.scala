@@ -16,11 +16,12 @@ import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB
 import net.zutha.model.exceptions.SchemaItemMissingException
+import net.liftweb.common.Loggable
 
-object TopicMapDB extends DB with MajortomDB with TMQL{
+object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
   val ENABLE_TRANSACTIONS = true
 
-  val sys: ITopicMapSystem = makeTopicSystem
+  val sys: ITopicMapSystem = makeTopicMapSystem
 
   //check if schema needs to be created
   tm.lookupTopicByZSI("item") match {
@@ -45,12 +46,12 @@ object TopicMapDB extends DB with MajortomDB with TMQL{
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  def getSchemaItem(identifier: SchemaIdentifier): Item = tm.lookupTopicByZSI(identifier.toString) match {
-    case Some(topic) => topic.toItem
+  def getSchemaItem(identifier: SchemaIdentifier): Item = tm.lookupTopicBySI(identifier.toString) match {
+    case Some(topic) => topic.toTMItem
     case None => throw new SchemaItemMissingException
   }
 
-  def getItem(zid: ZID) = tm.lookupTopicByZID(zid).map{_.toItem}
+  def getItem(zid: ZID) = tm.lookupTopicByZID(zid).map{_.toTMItem}
 
   def createItem(item: ProposedItem) {
     //start transaction
@@ -98,22 +99,22 @@ object TopicMapDB extends DB with MajortomDB with TMQL{
     //open current schema.ctm file
     val schema_file = File(TM_DATA_PATH + "schema.ctm")
 
-    //open ctm data files: schema_gen.ctm, ctm_templates.ctm
+    //open ctm data files: schema_gen.ctm, schema_templates.ctm
     val schema_gen_file = File(TM_DATA_PATH + "schema_gen.ctm")
-    val ctm_templates_file = File(TM_DATA_PATH + "ctm_templates.ctm")
+    val ctm_templates_file = File(TM_DATA_PATH + "schema_templates.ctm")
 
-    //if schema_gen.ctm or ctm_templates.ctm are newer than schema.ctm,
+    //if schema_gen.ctm or schema_templates.ctm are newer than schema.ctm,
     //then regenerate schema.ctm
     val schemaMod = schema_file.lastModified
     if (schemaMod < schema_gen_file.lastModified ||
         schemaMod < ctm_templates_file.lastModified){
 
-      //read schema_gen.ctm, ctm_templates.ctm to string
+      //read schema_gen.ctm, schema_templates.ctm to string
       val schema_gen = schema_gen_file.slurp
       val ctm_templates = ctm_templates_file.slurp
 
       //insert ctm_templates
-      val schema_with_templates = schema_gen.replace("%include ctm_templates.ctm",ctm_templates)
+      val schema_with_templates = schema_gen.replace("%include schema_templates.ctm",ctm_templates)
 
       //replace %zid% markers with unique ZIDs
       val schema = "%zid%".r.replaceAllIn(schema_with_templates,(m => getNextZID.toString))
@@ -126,6 +127,8 @@ object TopicMapDB extends DB with MajortomDB with TMQL{
     val source: java.io.File = schema_file.jfile
     val reader: CTMTopicMapReader = new CTMTopicMapReader(tm, source,ZUTHA_TOPIC_MAP_URI)
     reader.read
+
+    logger.info("database has been reset back to schema")
   }
 
 }

@@ -3,7 +3,6 @@ import ZuthaConstants._
 import SchemaIdentifier._
 
 object TMQLQueries {
-  val PREFIXES = "%prefix zsi " + ZSI_PREFIX + " "
   val TRANSITIVE = "%pragma taxonometry tm:transitive "
 
 
@@ -11,7 +10,13 @@ object TMQLQueries {
    *  @params item
    *  @return non-empty result-set if this item is an ItemType
    */
-  val ItemIsAnItemType = PREFIXES + TRANSITIVE + "?item >> types == zsi:" + ITEM_TYPE
+  val ItemIsAnItemType = TRANSITIVE + "?item >> types == " + ITEM_TYPE
+
+  /** check if this Topic is an Anonymous Topic which doesn't exist in the ZDM
+   *  @params topic
+   *  @return non-empty result-set if this topic is an AnonymousTopic
+   */
+  val TopicIsAnonymous = "?topic >> types == " + ANONYMOUS_TOPIC
 
   /** get all types of an Item (transitive)
    *  @params item
@@ -26,18 +31,18 @@ object TMQLQueries {
   /** @param itemType
    *  @return a non-empty result set if this itemType is Abstract
    */
-  val ItemTypeIsAbstract = PREFIXES + "?itemType <- zsi:" + CONSTRAINED_ITEM_TYPE +
-    " << roles zsi:" + ABSTRACT_CONSTRAINT
+  val ItemTypeIsAbstract = "?itemType <- " + ITEM_TYPE +
+    " << roles " + ABSTRACT_CONSTRAINT
 
   /** get all field-types declared by an ItemType
    *  @params itemType
    */
-  val fieldsDeclaredByItemType = PREFIXES + TRANSITIVE + "?itemType <- zsi:" + CONSTRAINED_ITEM_TYPE +
-    " << roles zsi:" + ITEM_FIELD_CONSTRAINT + " >> roles zsi:" + CONSTRAINED_FIELD_TYPE + " ->"
+  val fieldsDeclaredByItemType = TRANSITIVE + "?itemType <- " + FIELD_DECLARER +
+    " << roles " + FIELD_DECLARATION + " >> roles " + FIELD_TYPE + " -> " + FIELD_TYPE
 
   /** get all property-types declared by an ItemType
    *  @params itemType
    */
-  val propertiesDeclaredByItemType = PREFIXES + "?itemType <- zsi:" + CONSTRAINED_ITEM_TYPE +
-    " << roles zsi:"+ ITEM_PROPERTY_CONSTRAINT +" >> roles zsi:" + CONSTRAINED_PROPERTY_TYPE + " ->"
+  val propertiesDeclaredByItemType = TRANSITIVE + "?itemType <- " + PROPERTY_DECLARER +
+    " << roles "+ PROPERTY_DECLARATION +" >> roles " + PROPERTY_TYPE + " -> " + PROPERTY_TYPE
 }

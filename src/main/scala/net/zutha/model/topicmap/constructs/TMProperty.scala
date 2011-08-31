@@ -11,7 +11,7 @@ abstract class TMProperty extends Property {
 class TMOccurrenceProperty(occ: Occurrence) extends TMProperty {
   override def toProperty: Property = this
 
-  def propertyType = occ.getType.toItemType
+  def propertyType = occ.getType.toTMItemType
 
   def value = occ.getValue
 
@@ -21,7 +21,7 @@ class TMOccurrenceProperty(occ: Occurrence) extends TMProperty {
 class TMNameProperty(name: Name) extends TMProperty {
   override def toProperty: Property = this
 
-  def propertyType = name.getType.toItemType
+  def propertyType = name.getType.toTMItemType
 
   def value = name.getValue
 

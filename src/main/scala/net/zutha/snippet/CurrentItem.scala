@@ -40,7 +40,7 @@ class CurrentItem {
       (".name *" #> item.name) (name_ns)
     } &
     //Types
-    ".types" #> makeItemLinkList(item.getDirectTypes.toSeq.sortBy(_.zid))
+    ".types" #> makeItemLinkList(Seq(item.getType)) //TODO: now only one direct type per Item
   }
 
   def props: NodeSeq => NodeSeq = {

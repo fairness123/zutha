@@ -24,15 +24,15 @@ libraryDependencies ++= {
     val tmql4j_version = "3.2.0-SNAPSHOT"
     val majortom_version = "1.2.0"
     Seq(
-	"org.eclipse.jetty" % "jetty-webapp" % "7.3.0.v20110203" % "jetty",
-	"ch.qos.logback" % "logback-classic" % "0.9.26",
+	  "org.eclipse.jetty" % "jetty-webapp" % "7.3.0.v20110203" % "jetty",
+	  "ch.qos.logback" % "logback-classic" % "0.9.26",
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-mapper" % liftVersion % "compile",
     "de.topicmapslab.tmql4j" % "tmql4j-path" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-draft2010" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-draft2011" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-delete" % tmql4j_version withJavadoc() withSources(),
-	"de.topicmapslab.tmql4j" % "tmql4j-flwr" % tmql4j_version withJavadoc() withSources(),
+	  "de.topicmapslab.tmql4j" % "tmql4j-flwr" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-insert" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-merge" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-select" % tmql4j_version withJavadoc() withSources(),

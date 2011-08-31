@@ -15,7 +15,7 @@ trait MajortomDB {
 
   val useStore = inMemory
   
-  def makeTopicSystem: ITopicMapSystem = {
+  def makeTopicMapSystem: ITopicMapSystem = {
     val factory = TopicMapSystemFactory.newInstance();
     factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS,useStore)
     factory.setProperty("de.topicmapslab.majortom.jdbc.host", "localhost")

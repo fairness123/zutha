@@ -1,34 +1,39 @@
 package net.zutha.model.constants
-
+import ZuthaConstants._
 
 object SchemaIdentifier extends Enumeration {
   type SchemaIdentifier = Value
 
   //types of item types
-  val ITEM_TYPE = Value("item-type")
-  val PROPERTY_TYPE = Value("property-type")
-  val ASSOCIATION_TYPE = Value("association-type")
-  val ROLE_TYPE = Value("role-type")
+  val ITEM_TYPE = Value(ZSI_PREFIX + "item-type")
+  val FIELD_TYPE = Value(ZSI_PREFIX + "field-type")
+  val PROPERTY_TYPE = Value(ZSI_PREFIX + "property-type")
+  val ASSOCIATION_TYPE = Value(ZSI_PREFIX + "association-type")
 
   //item types
-  val ITEM = Value("item")
+  val ITEM = Value(ZSI_PREFIX + "item")
+  val ROLE = Value(ZSI_PREFIX + "role")
 
   //association types
-  val ITEM_FIELD_CONSTRAINT = Value("item-field-constraint")
-  val ITEM_PROPERTY_CONSTRAINT = Value("item-property-constraint")
-  val ITEM_ROLE_CONSTRAINT = Value("item-role-constraint")
-  val ASSOCIATION_ROLE_CONSTRAINT = Value("association-role-constraint")
-  val ABSTRACT_CONSTRAINT = Value("abstract-constraint")
+  val FIELD_DECLARATION = Value(ZSI_PREFIX + "field-declaration")
+  val PROPERTY_DECLARATION = Value(ZSI_PREFIX + "property-declaration")
+  val ASSOCIATION_FIELD_DECLARATION = Value(ZSI_PREFIX + "association-field-declaration")
+  val ASSOCIATION_ROLE_CONSTRAINT = Value(ZSI_PREFIX + "association-role-constraint")
+  val ABSTRACT_CONSTRAINT = Value(ZSI_PREFIX + "abstract-constraint")
 
   //role types
-  val CONSTRAINED_ITEM_TYPE = Value("constrained-item-type")
-  val CONSTRAINED_FIELD_TYPE = Value("constrained-field-type")
-  val CONSTRAINED_PROPERTY_TYPE = Value("constrained-property-type")
-  val CONSTRAINED_ASSOCIATION_TYPE = Value("constrained-association-type")
-  val CONSTRAINED_ROLE_TYPE = Value("constrained-role-type")
+  val FIELD_DECLARER = Value(ZSI_PREFIX + "field-declarer")
+  val PROPERTY_DECLARER = Value(ZSI_PREFIX + "property-declarer")
+  val ASSOCIATION_FIELD_DECLARER = Value(ZSI_PREFIX + "association-field-declarer")
 
   //property types
-  val ABSTRACT_NAME = Value("abstract-name")
-  val NAME = Value("name")
-  val ZID = Value("zid")
+  val NAME = Value(ZSI_PREFIX + "name")
+  val MODIFIABLE_NAME = Value(ZSI_PREFIX + "modifiable-name")
+  val ZID = Value(ZSI_PREFIX + "zid")
+
+  // Topic Map implementation Constructs
+  val ANONYMOUS_TOPIC = Value(ZTM_PREFIX + "anonymous-topic")
+  val REIFIED_ZDM_ASSOCIATION = Value(ZTM_PREFIX + "reified-zdm-association")
+  val ANONYMOUS_TOPIC_LINK = Value(ZTM_PREFIX + "anonymous-topic-link")
+
 }
