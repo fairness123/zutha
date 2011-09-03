@@ -11,10 +11,10 @@ overrides association between reified associations such as field-declaration and
 
 *DONE* Core Concept: Items, Properties and Associations
 *DONE* Core Concept: Reputation and Zuth
-Core Concept: Decentralization
+*DONE* Core Concept: Decentralization
 
-Monetization
-Real Money Investment
+Monetization: Commercial Subscriptions
+Monetization: Real Money Investment
 
 Goal: To advertise products and ideas based on merit
 Goal: To create a universal currency of reputation
