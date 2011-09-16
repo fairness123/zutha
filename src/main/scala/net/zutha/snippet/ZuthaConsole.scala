@@ -28,9 +28,8 @@ class ZuthaConsole extends StatefulSnippet {
     "type=submit" #> SHtml.onSubmitUnit(processQuery)
  
   def processQuery() = {
-      val res = TopicMapDB.runQuery(queryStr)
-      queryRes = TopicMapDB.queryResultsToString(res)
-    }
+      queryRes = TopicMapDB.runStringQuery(queryStr)
+  }
 
   def buttons =
     "*" #> ""

@@ -39,19 +39,19 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
 
   // ZID Ticker
   private lazy val zidTicker = new ZIDTicker(tm)
-  def getNextZID: ZID = zidTicker.getNext
+  def getNextZID: Zid = zidTicker.getNext
 
   /**
    * @param identifier the SchemaIdentifier of the schema item to retrieve
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  def getSchemaItem(identifier: SchemaIdentifier): Item = tm.lookupTopicBySI(identifier.toString) match {
-    case Some(topic) => topic.toTMItem
+  def getSchemaItem(identifier: SchemaIdentifier): Item = tm.lookupTopicBySI(ZSI_PREFIX + identifier.toString) match {
+    case Some(topic) => topic.toItem
     case None => throw new SchemaItemMissingException
   }
 
-  def getItem(zid: ZID) = tm.lookupTopicByZID(zid).map{_.toTMItem}
+  def getItem(zid: Zid) = tm.lookupTopicByZID(zid).map{_.toItem}
 
   def createItem(item: ProposedItem) {
     //start transaction
@@ -90,7 +90,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
   }
 
   def printTMLocators = {
-    for(val loc <- sys.getLocators) {
+    for(loc <- sys.getLocators) {
       println (loc.getReference)
     }
   }

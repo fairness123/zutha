@@ -8,6 +8,8 @@ scalaVersion := "2.9.0-1"
 
 seq(webSettings :_*)
 
+scalacOptions ++= Seq("-unchecked", "-deprecation")
+
 //for JRebel
 jettyScanDirs := Nil
   
@@ -45,3 +47,4 @@ libraryDependencies ++= {
     "de.topicmapslab.majortom" % "majortom-inMemory" % majortom_version withJavadoc() withSources(),
     "de.topicmapslab.majortom" % "majortom-queued" % majortom_version withJavadoc() withSources()
 )}
+

@@ -1,5 +1,6 @@
 package net.zutha.model.constructs
 
-trait Role {
+
+trait PropertyType extends Interface{
 
 }

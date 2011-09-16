@@ -1,13 +1,13 @@
 package net.zutha.model.topicmap.db
 
 import net.zutha.lib.BaseX
-import net.zutha.model.constructs.ZID
+import net.zutha.model.constructs.Zid
 import net.zutha.model.constants.ApplicationConstants._
 import org.tmapi.core.{TopicMap,Occurrence}
 import net.zutha.model.topicmap.TMConversions._
 
 class ZIDTicker(tm: TopicMap){
-  val base32converter = BaseX(ZID.charset)
+  val base32converter = BaseX(Zid.charset)
   val tickerProp: Occurrence = getNextZIDOccurrence
 
 
@@ -17,7 +17,7 @@ class ZIDTicker(tm: TopicMap){
     oldTicker
   }
 
-  def getNext: ZID = ZID(THIS_HOST_ID + base32converter.encode(increment))
+  def getNext: Zid = Zid(THIS_HOST_ID + base32converter.encode(increment))
 
   def getNextZIDOccurrence: Occurrence = {
     //get ZID_Ticker topic

@@ -133,7 +133,7 @@ def has-role($assocType, $role, $min, $max)
         zsi:role-card-max: $max;
     .
     zsi:association-role-constraint(
-        zsi:association-type: assocType,
+        zsi:association-type: $assocType,
         zsi:role: $role
     ) ~ ?assoc
 end
@@ -272,8 +272,7 @@ zsi:item isa zsi:item-type;
 # ITEM TYPE
 zsi:item-type isa zsi:item-type;
     has-trait(zsi:role);
-    ako zsi:item;
-    implements(zsi:type);
+    ako zsi:type;
     implements(zsi:property-declarer);
     implements(zsi:association-field-declarer);
 
@@ -315,8 +314,7 @@ zsi:entity-type isa zsi:item-type;
 # INTERFACE
 zsi:interface isa zsi:item-type;
     has-trait(zsi:role);
-    ako zsi:item;
-    implements(zsi:type);
+    ako zsi:type;
 
     zid:05;
     - zsi:modifiable-name: "Interface";
@@ -348,16 +346,17 @@ zsi:trait isa zsi:item-type;
 zsi:role isa zsi:item-type;
     ako zsi:item;
     has-trait(zsi:trait);
+    has-trait(zsi:role);
 
     zid:07;
-    tmcl:role;
+    tmcl:role-type;
     - zsi:modifiable-name: "Role";
 
-    plays-role(zsi:role-type,
+    plays-role(zsi:role,
         zsi:association-role-constraint,0,*);
-    plays-role(zsi:constrained-role-type,
+    plays-role(zsi:role,
         zsi:association-field-declaration,0,*);
-    plays-role(zsi:constrained-role-type,
+    plays-role(zsi:role,
         zsi:role-combination-constraint,0,*);
 .
 
@@ -604,9 +603,8 @@ zsi:reified-property isa zsi:reified-property-type;
 # ==================== Association Types ====================
 
 # TYPE-INSTANCE
-zsi:type-instance
+zsi:type-instance isa zsi:association-type;
     ako zsi:association;
-    isa zsi:association-type;
 
     zid:0V;
     tmdm:type-instance;
@@ -617,9 +615,8 @@ zsi:type-instance
 .
 
 # SUPERTYPE-SUBTYPE
-zsi:supertype-subtype
+zsi:supertype-subtype isa zsi:reified-association-type;
     ako zsi:association;
-    isa zsi:reified-association-type;
 
     zid:0W;
     tmdm:supertype-subtype;
@@ -634,9 +631,8 @@ zsi:supertype-subtype
 .
 
 # ITEM TYPE IMPLEMENTS INTERFACE
-zsi:item-type-implements-interface
+zsi:item-type-implements-interface isa zsi:reified-association-type;
     ako zsi:association;
-    isa zsi:reified-association-type;
 
     zid:0X;
     - zsi:modifiable-name: "Item Type implements Interface";
@@ -648,9 +644,8 @@ zsi:item-type-implements-interface
 .
 
 # ITEM HAS TRAIT
-zsi:item-has-trait
+zsi:item-has-trait isa zsi:reified-association-type;
     ako zsi:association;
-    isa zsi:reified-association-type;
 
     zid:0Y;
     - zsi:modifiable-name: "Item Has Trait";
@@ -695,10 +690,10 @@ zsi:association-field-set-permission-level isa zsi:reified-association-type;
     zid:012;
     - zsi:modifiable-name: "Association Field Set Permission Level";
     - zsi:modifiable-name: "Association Field Set has Permission Level" @zsi:item;
-    - zsi:modifiable-name: "Item restricts Association Field sets of this Association type" @zsi:association-field-type;
+    - zsi:modifiable-name: "Item restricts Association Field sets of this Association Type" @zsi:association-type;
     - zsi:modifiable-name: "Item restricts Association Field sets of this Role and Association Type" @zsi:role;
 
-    has-role(zsi:reified-association-type,1,1);
+    has-role(zsi:association-type,1,1);
     has-role(zsi:role,1,1);
 .
 
@@ -961,8 +956,9 @@ zsi:role-combination isa zsi:item-type;
 # ==================== Schema Traits ====================
 
 # TYPE
-zsi:type isa zsi:trait;
+zsi:type isa zsi:item-type;
     has-trait(zsi:role);
+    ako zsi:item;
 
     zid:01R;
     tmdm:type;
@@ -1132,11 +1128,11 @@ zsi:association-role-constraint isa zsi:reified-association-type;
 
     zid:025;
     - zsi:modifiable-name: "Association Role Constraint";
-    - zsi:modifiable-name: "Has Role" @zsi:reified-association-type;
+    - zsi:modifiable-name: "Has Role" @zsi:association-type;
     - zsi:modifiable-name: "Takes Part in Association" @zsi:role;
 
     has-role(zsi:role,1,1);
-    has-role(zsi:reified-association-type,1,1);
+    has-role(zsi:association-type,1,1);
     has-property(zsi:role-card-min,1,1);
     has-property(zsi:role-card-max,1,1);
 .
@@ -1163,9 +1159,9 @@ zsi:association-has-role-combination-constraint isa zsi:reified-association-type
     zid:027;
     - zsi:modifiable-name: "Association Has Role Combination Constraint";
     - zsi:modifiable-name: "Constrains Associations of Type" @zsi:role-combination;
-    - zsi:modifiable-name: "May Have Role Combination" @zsi:reified-association-type;
+    - zsi:modifiable-name: "May Have Role Combination" @zsi:association-type;
 
-    has-role(zsi:reified-association-type,1,1);
+    has-role(zsi:association-type,1,1);
     has-role(zsi:role-combination,1,1);
 .
 

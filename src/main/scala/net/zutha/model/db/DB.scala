@@ -1,19 +1,21 @@
 package net.zutha.model.db
 
 import net.zutha.model.ProposedItem
-import net.zutha.model.constructs.{Item, ZID}
+import net.zutha.model.constructs.{Item, Zid}
 import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.constants.SchemaIdentifier._
 
-trait DB {
-  def getNextZID: ZID;
+trait DB extends SchemaItems{
+  def getNextZID: Zid;
 
-  def getItem(zid: ZID): Option[Item];
+  def getItem(zid: Zid): Option[Item];
+
+//  protected def getSchemaItem(identifier: SchemaIdentifier): Item
 
   def createItem(item: ProposedItem);
-
 
 }
 
 object DB {
-  def get: DB = TopicMapDB
+  def db: DB = TopicMapDB
 }

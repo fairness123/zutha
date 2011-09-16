@@ -123,7 +123,7 @@ def has-role($assocType, $role, $min, $max)
         zsi:role-card-max: $max;
     .
     zsi:association-role-constraint(
-        zsi:association-type: assocType,
+        zsi:association-type: $assocType,
         zsi:role: $role
     ) ~ ?assoc
 end

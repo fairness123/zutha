@@ -1,14 +1,14 @@
-package net.zutha.model.topicmap
+package net.zutha.model.topicmap.extensions
 
-import net.zutha.model.constructs.ZID
+import net.zutha.model.constructs.Zid
 import net.zutha.model.constants.ZuthaConstants._
 import net.zutha.model.constants.{TopicMapConstants => TM}
 import org.tmapi.core.{Topic, TopicMap}
 
-class TopicMapExtended(val tm: TopicMap) {
+case class TopicMapExtended(val tm: TopicMap) {
   def lookupTopicByZSI(zsi: String): Option[Topic] = lookupTopicBySI(ZSI_PREFIX + zsi)
 
-  def lookupTopicByZID(zid: ZID): Option[Topic] = lookupTopicBySI(ZID_PREFIX + zid)
+  def lookupTopicByZID(zid: Zid): Option[Topic] = lookupTopicBySI(ZID_PREFIX + zid)
 
   def lookupTopicBySI(siStr: String): Option[Topic] = {
     val si = tm.createLocator(siStr)
@@ -34,7 +34,5 @@ class TopicMapExtended(val tm: TopicMap) {
       ot.addType(occTypeTopic)
       ot
   }
-
-
 
 }

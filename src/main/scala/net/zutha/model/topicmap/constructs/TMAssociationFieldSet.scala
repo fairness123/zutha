@@ -1,16 +1,10 @@
 package net.zutha.model.topicmap.constructs
 
-import net.zutha.model.constructs.AssociationFieldSet
+import net.zutha.model.constructs._
 
+case class TMAssociationFieldSet(definingType: ZType, parentItem: Item,
+                            role: ZRole, associationType: AssociationType) extends AssociationFieldSet{
 
-class TMAssociationFieldSet extends AssociationFieldSet{
-  def roleType = null
-
-  def associationType = null
-
-  def getAssociations = null
-
-  def parentItem = null
-
-  def definingItemType = null
+  def getAssociationFields = parentItem.getAssociationFields(role,associationType)
+  def associationFieldType: AssociationFieldType = TMAssociationFieldType(role,associationType)
 }

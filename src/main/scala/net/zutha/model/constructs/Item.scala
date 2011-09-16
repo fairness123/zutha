@@ -7,30 +7,44 @@ package net.zutha.model.constructs
 
 trait Item {
   // -------------- conversion --------------
-  /**
-   * converts this Item to an ItemType
-   * @throws IllegalArgumentException if this Item is not an ItemType
-   */
-  def toItemType: ItemType;
-  def isItemType: Boolean;
-  
+  def isZType: Boolean
+  def toZType: ZType
+
+  def isItemType: Boolean
+  def toItemType: ItemType
+
+  def isInterface: Boolean
+  def toInterface: Interface
+
+  def isAssociationType: Boolean
+  def toAssociationType: AssociationType
+
+  def isPropertyType: Boolean
+  def toPropertyType: PropertyType
+
+  def isRole: Boolean
+  def toRole: ZRole
+
   // -------------- ZIDs --------------
   def zid: String;
-  def getZIDs: Seq[String];
-  def addZID(zid: ZID);
+  def getZIDs: Set[String];
+  def addZID(zid: Zid);
 
   // -------------- names --------------
+  /**@return this item's first name in the unconstrained scope */
   def name: String;
 
   // -------------- types --------------
-  def hasType(itemType: ItemType): Boolean;
-  def getType: ItemType;
-  def getAllTypes: Set[ItemType];
-  def getFieldDefiningTypes: Set[ItemType];
+  def hasType(itemType: ZType): Boolean;
+  def getType: ZType;
+  def getAllTypes: Set[ZType];
+  def getFieldDefiningTypes: Set[ZType];
 
   // -------------- fields --------------
   def getPropertySets: Set[PropertySet]
-  def getProperties(propType: ItemType): Set[Property];
+  def getProperties(propType: PropertyType): Set[Property];
+  def getAssociationFieldSets: Set[AssociationFieldSet]
+  def getAssociationFields(role: ZRole, assocType: AssociationType): Set[AssociationField]
 
   // -------------- zutha.net-specific properties --------------
 

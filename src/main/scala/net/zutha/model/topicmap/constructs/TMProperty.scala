@@ -1,27 +1,36 @@
 package net.zutha.model.topicmap.constructs
 
 import net.zutha.model.constructs.Property
-import org.tmapi.core.{Name, Occurrence}
 import net.zutha.model.topicmap.TMConversions._
+import net.zutha.util.Helpers._
+import org.tmapi.core.{Topic, Name, Occurrence}
 
 abstract class TMProperty extends Property {
   def toProperty: Property = this
 }
 
+object TMOccurrenceProperty{
+  val getItem = makeCache[Occurrence,String,TMOccurrenceProperty](_.getId, occ => new TMOccurrenceProperty(occ))
+  def apply(occ: Occurrence):TMOccurrenceProperty = getItem(occ)
+}
 class TMOccurrenceProperty(occ: Occurrence) extends TMProperty {
   override def toProperty: Property = this
 
-  def propertyType = occ.getType.toTMItemType
+  def propertyType = occ.getType.toItemType
 
   def value = occ.getValue
 
   def datatype = occ.getDatatype.toExternalForm
 }
 
-class TMNameProperty(name: Name) extends TMProperty {
+object TMNameProperty{
+  val getItem = makeCache[Name,String,TMNameProperty](_.getId, name => new TMNameProperty(name))
+  def apply(name: Name):TMNameProperty = getItem(name)
+}
+class TMNameProperty protected (name: Name) extends TMProperty {
   override def toProperty: Property = this
 
-  def propertyType = name.getType.toTMItemType
+  def propertyType = name.getType.toItemType
 
   def value = name.getValue
 

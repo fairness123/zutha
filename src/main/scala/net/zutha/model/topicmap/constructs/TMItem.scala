@@ -1,73 +1,91 @@
 package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
-import org.tmapi.core.Topic
-import de.topicmapslab.tmql4j.components.processor.results.tmdm.SimpleResult
-
-import net.zutha.model.constants.{ZuthaConstants, SchemaIdentifier, TMQLQueries => Q}
-import ZuthaConstants._
 import net.zutha.model.topicmap.TMConversions._
+import net.zutha.util.Helpers._
+import net.zutha.model.constants.ZuthaConstants
+import net.zutha.model.topicmap.db.TopicMapDB
+import ZuthaConstants._
 import net.zutha.model.constructs._
-import net.zutha.model.topicmap.db.{ConstructCache, TopicMapDB}
-class TMItem(val topic: Topic) extends Item{
-  //verify that topic is an item
-//  try{
-//    getZIDs
-//  } catch {
-//    case e: Exception => throw new IllegalArgumentException("Topic is not an Item")
-//  }
+import net.zutha.model.db.DB.db
+import de.topicmapslab.majortom.model.core.IScope
+import net.zutha.model.exceptions.SchemaViolationException
+import org.tmapi.core.{Name, Topic}
 
-  private[topicmap] val tm = topic.getTopicMap
+object TMItem{
+  val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
+  def apply(topic: Topic):TMItem = getItem(topic)
+}
+class TMItem protected (topic: Topic) extends Item{
+  val tm = topic.getTopicMap
 
   // -------------- Common method overrides --------------
   override def hashCode() = ("http://zutha.net/majortomTopic/" + topic.getId).hashCode()
 
   override def equals(obj:Any) = obj match {
     case item: Item => item.hashCode == hashCode
-    case topic: Topic => topic.toTMItem.hashCode == hashCode
+    case topic: Topic => topic.toItem.hashCode == hashCode
     case _ => false
   }
 
   // -------------- Conversion --------------
-  lazy val isItemType = {
-    runBooleanQuery(Q.ItemIsAnItemType)
-  }
-  lazy val isAnonymous = {
-    runBooleanQuery(Q.TopicIsAnonymous)
-  }
   def toTopic = topic
-  def toTMItem = this
+  def toItem: Item = this
 
-  def toTMItemType: TMItemType = ConstructCache.getItemType(this)
+  lazy val isZType = TopicMapDB.itemIsA(this,db.siTYPE)
+  def toZType: ZType = TMType(topic)
 
-  def toItemType: ItemType = toTMItemType
+  lazy val isItemType = TopicMapDB.itemIsA(this,db.siITEM_TYPE)
+  def toItemType: ItemType = TMItemType(topic)
 
+  lazy val isInterface = TopicMapDB.itemIsA(this,db.siINTERFACE)
+  def toInterface: Interface = TMInterface(topic)
+
+  lazy val isRole = TopicMapDB.itemIsA(this,db.siROLE)
+  def toRole: ZRole = TMRole(topic)
+
+  lazy val isAssociationType = TopicMapDB.itemIsA(this,db.siASSOCIATION_TYPE)
+  def toAssociationType: AssociationType = TMAssociationType(topic)
+
+  lazy val isPropertyType = TopicMapDB.itemIsA(this,db.siPROPERTY_TYPE)
+  def toPropertyType: PropertyType = TMPropertyType(topic)
 
   // -------------- ZIDs --------------
-  lazy val ZIDs: Seq[String] = {
+  lazy val ZIDs: Set[String] = {
     val zids = topic.getSubjectIdentifiers.map(_.toExternalForm)
       .filter{_.startsWith(ZID_PREFIX.toString)}.map{_.replace(ZID_PREFIX.toString,"")}
-      .toSeq.sorted
+      .toSet
     //every item must have at least one ZID
     if (zids.size == 0) throw new Exception("item has no ZIDs")
 
     try{
-      zids.map{ZID(_).toString}
+      zids.map{Zid(_).toString}
     } catch {
       case e: IllegalArgumentException => throw new Exception("item has an invalid ZID")
     }
   }
   def getZIDs = ZIDs
 
-  def zid: String = getZIDs(0)
+  def zid: String = getZIDs.toSeq.sorted.head
 
-  def addZID(zid: ZID) = {
+  def addZID(zid: Zid) = {
     val zidLoc = topic.getTopicMap.createLocator(ZID_PREFIX + zid)
     topic.addSubjectIdentifier(zidLoc)
   }
 
   // -------------- names --------------
-  def name = topic.getNames.toSeq.get(0).getValue
+
+  def names(scope: ZScope):Set[String] = topic.getNames(scope:IScope).toSet.map((_:Name).getValue)
+  def names(scopeItems: Item*):Set[String] = names(TMScope(scopeItems.toSet))
+  def allNames:Set[String] = topic.getNames.toSet.map((_:Name).getValue)
+  def unconstrainedNames:Set[String] = names(TMScope(Set.empty))
+
+  def name(scope: ZScope) = names(scope).headOption
+  def name(scopeItems: Item*) = names(TMScope(scopeItems.toSet)).headOption
+  def name = unconstrainedNames.headOption match {
+    case Some(str) => str
+    case None => throw new SchemaViolationException("item '" + this + "' has no name")
+  }
 
   // -------------- Zuthanet Address --------------
   def address: String = {
@@ -75,23 +93,19 @@ class TMItem(val topic: Topic) extends Item{
   }
   
   // -------------- types --------------
-  def hasType(itemType: ItemType): Boolean = getAllTypes.contains(itemType)
+  def hasType(zType: ZType): Boolean = getAllTypes.contains(zType)
 
-  def getType: ItemType = {
-    topic.getTypes.filterNot(_.isAnonymous).head.toTMItemType
-  }
+  def getType = TopicMapDB.directTypesOfItem(this).toSet.head
 
-  def getAllTypes: Set[ItemType] = {
-    val items = runItemTypeQuery(Q.AllTypesOfItem).filterNot(_.isAnonymous).toSet
-    items.map(_.toItemType)
-  }
+  def getAllTypes = TopicMapDB.allTypesOfItem(this).toSet
 
-  def getFieldDefiningTypes: Set[ItemType] = {
-    getAllTypes.filter(_.definesFields)
+  def getFieldDefiningTypes = {
+    val fieldDefiningTypes = getAllTypes.filter(_.definesFields)
+    fieldDefiningTypes
   }
 
   // -------------- fields --------------
-  def getPropertySets: Set[PropertySet] = {
+  def getPropertySets = {
     getFieldDefiningTypes.flatMap{definingType =>
       definingType.getDefinedProperties
         .filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
@@ -99,10 +113,9 @@ class TMItem(val topic: Topic) extends Item{
     }
   }
 
-  def getProperties(propType: ItemType): Set[Property] = {
+  def getProperties(propType: PropertyType): Set[Property] = {
     //check if propType is a name
-    val namePropType = TopicMapDB.getSchemaItem(SchemaIdentifier.NAME).toItemType
-    if(propType.hasSuperType(namePropType)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
+    if(propType.hasSuperType(db.siNAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
       val names = topic.getNames(propType).map(_.toProperty).toSet
       return names
     }
@@ -115,45 +128,16 @@ class TMItem(val topic: Topic) extends Item{
     occurrences
   }
 
-  def getAssociationSets: Set[AssociationFieldSet] = {
+  def getAssociationFieldSets = {
     getFieldDefiningTypes.flatMap{definingType =>
       definingType.getDefinedAssociationFields
-        .map(assocType => new TMAssociationFieldSet())
+        .map{case TMAssociationFieldType(role,assocType) => TMAssociationFieldSet(definingType,this,role,assocType)}
     }
   }
 
-
-  // -------------- item-centric queries --------------
-  private def runQuery(qstr: String) = {
-    val statement = TopicMapDB.prepareStatement(qstr)
-    statement.setTopic(0,topic)
-    statement.run()
-    statement.getResults
-  }
-
-  def runBooleanQuery(qstr: String): Boolean = {
-    val rs = runQuery(qstr)
-    rs.size() > 0
-  }
-
-  private[topicmap] def runItemQuery(qstr: String): Seq[TMItem] = {
-    val rs = runQuery(qstr)
-    rs.map{_ match {
-      case res: SimpleResult => res.first match {
-        case tt: Topic => tt.toTMItem
-        case _ => throw new IllegalArgumentException("query results were not Topics as expected")
-      }
-      case _ => throw new IllegalArgumentException("query did not return TMAPI constructs as expected")
-    }
-    }.toSeq
-  }
-
-  //TODO remove non-ItemType constructs from results
-  private[topicmap] def runItemTypeQuery(qstr: String): Seq[TMItemType] = {
-    try runItemQuery(qstr).map(_.toTMItemType)
-    catch {
-      case e: IllegalArgumentException =>
-        throw new IllegalArgumentException("query does not return ItemType results")
-    }
+  def getAssociationFields(role: ZRole, assocType: AssociationType) = {
+    val rolesPlayed = topic.getRolesPlayed(role, assocType).toSet
+    val visibleRolesPlayed = rolesPlayed.filterNot(_.getParent.isAnonymous)
+    visibleRolesPlayed.map{r => TMAssociationField(r)}
   }
 }

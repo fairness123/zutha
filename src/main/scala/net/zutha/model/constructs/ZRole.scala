@@ -1,5 +1,5 @@
 package net.zutha.model.constructs
 
-trait Association {
+trait ZRole extends Item{
 
 }
