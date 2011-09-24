@@ -20,6 +20,7 @@ zsi:item isa zsi:item-type;
     ako zsi:item;
 
     zid:%zid%;
+    external-identifier(tmdm:subject, zid:%zid%);
     - zsi:modifiable-name: "Item";
 
     is-abstract();
@@ -48,7 +49,7 @@ zsi:item-type isa zsi:item-type;
     implements(zsi:association-field-declarer);
 
     zid:%zid%;
-    tmcl:topic-type;
+    external-identifier(tmcl:topic-type, zid:%zid%);
     - zsi:modifiable-name: "Item Type";
 
     plays-role(zsi:type,
@@ -120,7 +121,7 @@ zsi:role isa zsi:item-type;
     has-trait(zsi:role);
 
     zid:%zid%;
-    tmcl:role-type;
+    external-identifier(tmcl:role-type, zid:%zid%);
     - zsi:modifiable-name: "Role";
 
     plays-role(zsi:role,
@@ -171,6 +172,20 @@ zsi:zutha-object isa zsi:entity-type;
     is-abstract();
 .
 
+
+# DATA TYPE
+zsi:datatype isa zsi:entity-type;
+    ako zsi:entity;
+    has-trait(zsi:role);
+    
+    zid:%zid%;
+    - zsi:modifiable-name: "Data Type";
+
+    is-abstract();
+    plays-role(zsi:datatype,
+        zsi:property-datatype-constraint,0,*);
+.
+
 # ---------------------- kinds of Field Type ----------------------
 
 # FIELD TYPE
@@ -200,7 +215,7 @@ zsi:association-type isa zsi:field-type-interface;
     ako zsi:field-type;
 
     zid:%zid%;
-    tmcl:association-type;
+    external-identifier(tmcl:association-type, zid:%zid%);
     - zsi:modifiable-name: "Association Type";
 
     plays-role(zsi:association-type,
@@ -219,7 +234,7 @@ zsi:property-type isa zsi:field-type-interface;
     ako zsi:field-type;
 
     zid:%zid%;
-    tmcl:occurrence-type;
+    external-identifier(tmcl:occurrence-type, zid:%zid%);
     - zsi:modifiable-name: "Property Type";
 
     plays-role(zsi:property-type,
@@ -378,8 +393,10 @@ zsi:type-instance isa zsi:association-type;
     ako zsi:association;
 
     zid:%zid%;
-    tmdm:type-instance;
+    external-identifier(tmdm:type-instance, zid:%zid%);
     - zsi:modifiable-name: "Type Instance";
+    - zsi:modifiable-name: "Instance Of" @zsi:instance;
+    - zsi:modifiable-name: "Has Instances" @zsi:type;
 
     has-role(zsi:type,1,1);
     has-role(zsi:instance,1,1);
@@ -390,8 +407,10 @@ zsi:supertype-subtype isa zsi:reified-association-type;
     ako zsi:association;
 
     zid:%zid%;
-    tmdm:supertype-subtype;
+    external-identifier(tmdm:supertype-subtype, zid:%zid%);
     - zsi:modifiable-name: "Supertype Subtype";
+    - zsi:modifiable-name: "Has Supertype" @zsi:subtype;
+    - zsi:modifiable-name: "Has Subtypes" @zsi:supertype;
 
     has-role(zsi:supertype,1,1);
     has-role(zsi:subtype,1,1);
@@ -444,7 +463,7 @@ zsi:field-set-permission-level isa zsi:reified-association-type;
 
 # PROPERTY SET PERMISSION LEVEL
 zsi:property-set-permission-level isa zsi:reified-association-type;
-    zsi:field-set-permission-level;
+    ako zsi:field-set-permission-level;
 
     zid:%zid%;
     - zsi:modifiable-name: "Property Set Permission Level";
@@ -456,7 +475,7 @@ zsi:property-set-permission-level isa zsi:reified-association-type;
 
 # ASSOCIATION FIELD SET PERMISSION LEVEL
 zsi:association-field-set-permission-level isa zsi:reified-association-type;
-    zsi:field-set-permission-level;
+    ako zsi:field-set-permission-level;
 
     zid:%zid%;
     - zsi:modifiable-name: "Association Field Set Permission Level";
@@ -473,21 +492,21 @@ zsi:association-field-set-permission-level isa zsi:reified-association-type;
 # SUPERTYPE
 zsi:supertype isa zsi:role;
     zid:%zid%;
-    tmdm:supertype;
+    external-identifier(tmdm:supertype, zid:%zid%);
     - zsi:modifiable-name: "Supertype";
 .
 
 # SUBTYPE
 zsi:subtype isa zsi:role;
     zid:%zid%;
-    tmdm:subtype;
+    external-identifier(tmdm:subtype, zid:%zid%);
     - zsi:modifiable-name: "Subtype";
 .
 
 # INSTANCE
 zsi:instance isa zsi:role;
     zid:%zid%;
-    tmdm:instance;
+    external-identifier(tmdm:instance, zid:%zid%);
     - zsi:modifiable-name: "Instance";
 .
 
@@ -517,7 +536,7 @@ zsi:permission-level isa zsi:property-type;
     zid:%zid%;
     - zsi:modifiable-name: "Permission Level";
 
-    has-datatype(xsd:integer);
+    has-datatype(xsd:nonNegativeInteger);
 .
 
 # PERMISSION LOCK LEVEL
@@ -527,7 +546,7 @@ zsi:permission-lock-level isa zsi:property-type;
     zid:%zid%;
     - zsi:modifiable-name: "Permission Lock Level";
 
-    has-datatype(xsd:integer);
+    has-datatype(xsd:nonNegativeInteger);
 .
 
 # AUTO NAME
@@ -659,7 +678,7 @@ zsi:default-permission-level isa zsi:reified-property-type;
     zid:%zid%;
     - zsi:modifiable-name: "Default Permission Level";
 
-    has-datatype(xsd:integer);
+    has-datatype(xsd:nonNegativeInteger);
 .
 
 # IDENTIFIER
@@ -732,7 +751,7 @@ zsi:type isa zsi:item-type;
     ako zsi:item;
 
     zid:%zid%;
-    tmdm:type;
+    external-identifier(tmdm:type, zid:%zid%);
     - zsi:modifiable-name: "Type";
 
     plays-role(zsi:type,
@@ -881,8 +900,8 @@ zsi:association-field-declaration isa zsi:reified-association-type;
     zid:%zid%;
     - zsi:modifiable-name: "Association Field Declaration";
     - zsi:modifiable-name: "Plays Role in Association" @zsi:association-field-declarer;
-    - zsi:modifiable-name: "Item Type Plays Role" @zsi:reified-association-type;
-    - zsi:modifiable-name: "Played By Item Type in Association" @zsi:role;
+    - zsi:modifiable-name: "Field Declarer Plays Role" @zsi:association-type;
+    - zsi:modifiable-name: "Played By Field Declarer in Association" @zsi:role;
 
     #--- Constraint must be satisfied, for every instance of this item type
     #--- by the instance itself or one of the instance's supertypes
@@ -1020,7 +1039,7 @@ zsi:property-datatype-constraint isa zsi:reified-association-type;
     - zsi:modifiable-name: "Has Datatype" @zsi:property-type;
 
     has-role(zsi:property-type,1,1);
-    has-property(zsi:datatype,1,1);
+    has-role(zsi:datatype,1,1);
 .
 
 # REGULAR EXPRESSION CONSTRAINT
@@ -1059,49 +1078,35 @@ zsi:scope-item-type isa zsi:role;
 # ==================== Schema Property Types ====================
 
 # REGEXP
-zsi:regexp
+zsi:regexp isa zsi:reified-property-type;
     ako zsi:pmodifiable-roperty;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Regular Expression";
     - zsi:modifiable-name: "regexp" @zsi:constrained-item-type;
 
     has-datatype(xsd:string);
-    tmcl:regexp;
-.
-
-# DATA TYPE
-zsi:datatype
-    ako zsi:reified-property;
-    isa zsi:reified-property-type;
-
-    zid:%zid%;
-    - zsi:modifiable-name: "Datatype";
-
-    has-datatype(xsd:anyURI);
+    external-identifier(tmcl:regexp, zid:%zid%);
 .
 
 # MIN CARDINALITY
-zsi:card-min
+zsi:card-min isa zsi:reified-property-type;
     ako zsi:reified-property;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
-    tmcl:card-min;
+    external-identifier(tmcl:card-min, zid:%zid%);
     - zsi:modifiable-name: "Min Cardinality";
     - zsi:modifiable-name: "Min" @zsi:constrained-item-type;
 
-    has-datatype(xsd:integer);
+    has-datatype(xsd:nonNegativeInteger);
 .
 
 # MAX CARDINALITY
-zsi:card-max
+zsi:card-max isa zsi:reified-property-type;
     ako zsi:reified-property;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
-    tmcl:card-max;
+    external-identifier(tmcl:card-max, zid:%zid%);
     - zsi:modifiable-name: "Max Cardinality";
     - zsi:modifiable-name: "Max" @zsi:constrained-item-type;
 
@@ -1118,120 +1123,141 @@ zsi:role-card-min
 .
 
 # ROLE MAX CARDINALITY
-zsi:role-card-max
+zsi:role-card-max isa zsi:reified-property-type;
     ako zsi:card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Role Max Cardinality";
 .
 
 # FIELD MIN CARDINALITY
-zsi:field-card-min
+zsi:field-card-min isa zsi:reified-property-type;
     ako zsi:card-min;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Field Min Cardinality";
 .
 
 # FIELD MAX CARDINALITY
-zsi:association-card-max
+zsi:association-card-max isa zsi:reified-property-type;
     ako zsi:card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Field Max Cardinality";
 .
 
 # ASSOCIATION MIN CARDINALITY
-zsi:association-card-min
+zsi:association-card-min isa zsi:reified-property-type;
     ako zsi:field-card-min;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Association Min Cardinality";
 .
 
 # ASSOCIATION MAX CARDINALITY
-zsi:association-card-max
+zsi:association-card-max isa zsi:reified-property-type;
     ako zsi:field-card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Association Max Cardinality";
 .
 
 # PROPERTY MIN CARDINALITY
-zsi:property-card-min
+zsi:property-card-min isa zsi:reified-property-type;
     ako zsi:field-card-min;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Property Min Cardinality";
 .
 
 # PROPERTY MAX CARDINALITY
-zsi:property-card-max
+zsi:property-card-max isa zsi:reified-property-type;
     ako zsi:field-card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Property Max Cardinality";
 .
 
 # REIFIER MIN CARDINALITY
-zsi:reifier-card-min
+zsi:reifier-card-min isa zsi:reified-property-type;
     ako zsi:card-min;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Reifier Min Cardinality";
 .
 
 # REIFIER MAX CARDINALITY
-zsi:reifier-card-max
+zsi:reifier-card-max isa zsi:reified-property-type;
     ako zsi:card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Reifier Max Cardinality";
 .
 
 # SCOPE ITEM MIN CARDINALITY
-zsi:scope-item-card-min
+zsi:scope-item-card-min isa zsi:reified-property-type;
     ako zsi:card-min;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Scope Item Min Cardinality";
 .
 
 # SCOPE ITEM MAX CARDINALITY
-zsi:scope-item-card-max
+zsi:scope-item-card-max isa zsi:reified-property-type;
     ako zsi:card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Scope Item Max Cardinality";
 .
 
 # SCOPE ITEM TYPE MIN CARDINALITY
-zsi:scope-item-type-card-min
+zsi:scope-item-type-card-min isa zsi:reified-property-type;
     ako zsi:card-min;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Scope Item Type Min Cardinality";
 .
 
 # SCOPE ITEM TYPE MAX CARDINALITY
-zsi:scope-item-type-card-max
+zsi:scope-item-type-card-max isa zsi:reified-property-type;
     ako zsi:card-max;
-    isa zsi:reified-property-type;
 
     zid:%zid%;
     - zsi:modifiable-name: "Scope Item Type Max Cardinality";
+.
+
+# ==================== Data Types ====================
+
+# STRING
+zsi:string isa zsi:datatype;
+
+    zid:%zid%;
+    external-identifier(xsd:string, zid:%zid%);
+    - zsi:modifiable-name: "String";
+.
+
+# ANY URI
+zsi:any-uri isa zsi:datatype;
+
+    zid:%zid%;
+    external-identifier(xsd:anyURI, zid:%zid%);
+    - zsi:modifiable-name: "String";
+.
+
+# NON-NEGATIVE INTEGER
+zsi:non-negative-integer isa zsi:datatype;
+
+    zid:%zid%;
+    external-identifier(xsd:nonNegativeInteger, zid:%zid%);
+    - zsi:modifiable-name: "Non-Negative Integer";
+.
+
+# UNBOUNDED NON-NEGATIVE INTEGER
+zsi:unbounded-non-negative-integer isa zsi:datatype;
+
+    zid:%zid%;
+    external-identifier(iso:ctm-integer, zid:%zid%);
+    - zsi:modifiable-name: "Unbounded Non-Negative Integer";
 .
 
 # ==================== Topic Map Implementation Constructs ====================

@@ -30,28 +30,30 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
 
   // --------------- defined fields ---------------
   def definesFields: Boolean = {
-//    val fields = runItemTypeQuery(Q.fieldsDeclaredByItemType)
-//    fields.size > 0
     val propertyDefRoles = topic.getRolesPlayed(db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION)
     val assocDefRoles = topic.getRolesPlayed(db.siASSOCIATION_FIELD_DECLARER,db.siASSOCIATION_FIELD_DECLARATION)
     propertyDefRoles.size > 0 || assocDefRoles.size > 0
   }
 
-  def getDefinedProperties = {
-    val propDefRoles = topic.getRolesPlayed(db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION).toSet
-    propDefRoles.map{_.getParent.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType}
+  def getDefinedPropertyTypes = {
+    TopicMapDB.traverseAssociation(topic,db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION,
+      db.siPROPERTY_TYPE.toRole,db.siPROPERTY_TYPE).map(_.toPropertyType)
+
+//    val propDefRoles = topic.getRolesPlayed(db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION).toSet
+//    propDefRoles.map{_.getParent.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType}
   }
 
-  /** @return a Seq of (role:Item, assocType:ItemType) representing the
-   *  association fields defined by this ItemType
+  /** @return a Seq[AssociationFieldType] representing the
+   *  association fields defined by this Type
    */
-  def getDefinedAssociationFields = {
-    val declarerRoles = topic.getRolesPlayed(db.siASSOCIATION_FIELD_DECLARER,db.siASSOCIATION_FIELD_DECLARATION)
-    declarerRoles.map{itemTypeRole =>
-      val declAssoc = itemTypeRole.getParent
-      val role = declAssoc.getRoles(db.siROLE).head.getPlayer.toRole
-      val assocType = declAssoc.getRoles(db.siASSOCIATION_TYPE).head.getPlayer.toAssociationType
-      TMAssociationFieldType(role,assocType)
+  def getDefinedAssociationFieldTypes = {
+    val declAssociations = TopicMapDB.findAssociations(db.siASSOCIATION_FIELD_DECLARATION,false,
+      db.siASSOCIATION_FIELD_DECLARER -> this)
+    declAssociations.map{declAssoc =>
+      val role = declAssoc.getPlayers(db.siROLE.toRole).head.toRole
+      val assocType = declAssoc.getPlayers(db.siASSOCIATION_TYPE.toRole).head.toAssociationType
+      TMAssociationFieldType(this,role,assocType)
     }.toSet
   }
+  
 }

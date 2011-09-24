@@ -1,7 +1,7 @@
 package net.zutha.model.topicmap.constructs
 
-import net.zutha.model.constructs.AssociationField
 import org.tmapi.core.{Role => TMAPIRole}
+import net.zutha.model.constructs.{AssociationField}
 
 case class TMAssociationField(tmapiRole: TMAPIRole) extends AssociationField{
   def parent: TMItem = TMItem(tmapiRole.getPlayer)

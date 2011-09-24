@@ -1,9 +1,11 @@
 package net.zutha.model.constructs
 
+import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
 
 trait AssociationType extends Interface{
-  def getDirectDefinedRoles: Set[ZRole]
-  def getDefinedRoles: Set[ZRole]
-  def getRoleMinCardinality(role: ZRole): Int
-  def getRoleMaxCardinality(role: ZRole): Int
+  def getAllSuperAssociationTypes: Set[AssociationType]
+  def directDefinedRoles: Set[ZRole]
+  def allDefinedRoles: Set[ZRole]
+  def getRoleCardMin(role: ZRole): ZNonNegativeInteger
+  def getRoleCardMax(role: ZRole): ZUnboundedNNI
 }

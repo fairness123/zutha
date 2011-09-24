@@ -41,20 +41,40 @@ def implements($itemType, $interface)
 end
 
 # ITEM PROPERTY
-def property($item, $propType, $value)
-    ?propReifier isa $propType.
+def property($item, $propType, $value, $reifierZid)
+    $reifierZid isa $propType.
 
     $item
-    $propType: $value ~ ?propReifier.
+    $propType: $value ~ $reifierZid.
 end
-
 # ITEM PROPERTY WITH PERMISSION
-def property($item, $propType, $value, $permLevel)
-    ?propReifier isa $propType;
+def property($item, $propType, $value, $reifierZid, $permLevel)
+    $reifierZid isa $propType;
         zsi:permission-level: $permLevel.
 
     $item
-    $propType: $value ~ ?propReifier.
+    $propType: $value ~ $reifierZid.
+end
+
+
+# IDENTIFIER
+def identifier($item, $uri, $reifierZid)
+    $item $uri.
+    property($item, zsi:identifier, $uri, $reifierZid)
+end
+def identifier($item, $uri, $reifierZid, $permLevel)
+    $item $uri.
+    property($item, zsi:identifier, $uri, $reifierZid, $permLevel)
+end
+
+# EXTERNAL IDENTIFIER
+def external-identifier($item, $uri, $reifierZid)
+    $item $uri.
+    property($item, zsi:external-identifier, $uri, $reifierZid)
+end
+def external-identifier($item, $uri, $reifierZid, $permLevel)
+    $item $uri.
+    property($item, zsi:external-identifier, $uri, $reifierZid, $permLevel)
 end
 
 # ==================== Schema Templates ====================
@@ -211,10 +231,10 @@ end
 # PROPERTY DATA TYPE CONSTRAINT
 def has-datatype($propType, $dataType)
     ?assoc isa zsi:property-datatype-constraint;
-        zsi:datatype: $dataType;
     .
     zsi:property-datatype-constraint(
-        zsi:property-type: $propType
+        zsi:property-type: $propType,
+        zsi:datatype: $dataType
     ) ~ ?assoc
 end
 

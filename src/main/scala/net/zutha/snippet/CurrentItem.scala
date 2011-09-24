@@ -48,45 +48,74 @@ class CurrentItem {
     val assocFieldSets = item.getAssociationFieldSets
 
     def makeFieldGroup(definingType: ZType): NodeSeq => NodeSeq = {
+      val definedAssocFields = assocFieldSets.filter(_.definingType == definingType)
+      val definedProps = propSets.filter(_.definingType == definingType)
+
       def makePropertySet(propSet: PropertySet) = {
         def makeProperty(prop: Property) = {
-          ".property_value *" #> prop.value
+          ".property_value *" #> prop.valueString
         }
         ".property_name *" #> propSet.propertyType.name &
-        ".property *" #> propSet.getProperties.map(makeProperty(_))
+        ".property *" #> propSet.properties.map(makeProperty(_))
       }
 
       def makeCompactAssocSet(assocFieldSet: AssociationFieldSet) = {
-        val otherAssocFields = assocFieldSet.getAssociationFields.flatMap(_.companionAssociationFields)
+        val otherAssocFields = assocFieldSet.associationFields.flatMap(_.companionAssociationFields)
         def makeRoleList(role: ZRole) = {
           ".role_type *" #> role.name &
-          ".role_players" #> makeItemLinkList(otherAssocFields.filter(_.role == role).map(_.parent).toSeq.sortBy(_.zid)) //TODO sort by worth
+          ".role_players" #> {
+            val rolePlayers = otherAssocFields.filter(_.role == role)
+              .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
+            makeItemLinkList(rolePlayers)
+          }
         }
-        val role = assocFieldSet.role
-        val assocType = assocFieldSet.associationType
-        ".association_link [href]" #> "#" &
-        ".role_played *" #> role.name &
-        ".association_type *" #> assocType.name &
-        ".role *" #> assocFieldSet.associationFieldType.otherRoles.map(makeRoleList(_))
+        ".association_set_name *" #> makeAssocSetHeader(assocFieldSet) &
+        ".role *" #> assocFieldSet.otherRoles.map(makeRoleList(_))
+      }
+
+      def makeAssocSetTable(assocFieldSet: AssociationFieldSet) = {
+        val otherRoles = assocFieldSet.otherRoles.toSeq.sortBy(_.name)
+        def makeRow(assocField: AssociationField) = {
+          ".role_players *" #> otherRoles.map{role =>
+            val rolePlayers = assocField.companionAssociationFields.filter(_.role == role)
+              .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
+            makeItemLinkList(rolePlayers)
+          }
+        }
+        ".association_set_name *" #> makeAssocSetHeader(assocFieldSet) &
+        ".role *" #> otherRoles.map{r =>
+          val rolePageLink = "#" //TODO implement rolePageLink
+          SHtml.link(rolePageLink,()=>(),Text(r.name)):NodeSeq
+        } &
+        ".association_row *" #> assocFieldSet.associationFields.map(makeRow(_))
       }
 
       //makeFieldGroup return
       ".field_group_name *" #> ("Fields from " + definingType.name) &
       ".auto_property_set *" #> List.empty &
-      ".property_set *" #> propSets.filter(_.definingType == definingType).map(makePropertySet(_)) &
+      ".property_set *" #> definedProps.map(makePropertySet(_)) &
       ".property *" #> List.empty &
-      ".compact_association_set *" #> assocFieldSets.filter(_.definingType == definingType).map(makeCompactAssocSet(_)) &
-      ".association_set_table *" #> List.empty
+      ".compact_association_set *" #> definedAssocFields.map(makeCompactAssocSet(_)) &
+      ".association_set_table *" #> definedAssocFields.map(makeAssocSetTable(_))
     }
 
     ".field_group *" #> item.getFieldDefiningTypes.toSeq.sortBy(_.zid).map(makeFieldGroup(_))
   }
 
+  private def makeAssocSetHeader(assocFieldSet: AssociationFieldSet) = {
+    val role = assocFieldSet.role
+    val assocType = assocFieldSet.associationType
+    val assocTypeName = assocType.name(role).getOrElse(assocType.name)
+    val assocPageLink = "#" //TODO implement AssociationPage link
+    SHtml.link(assocPageLink,()=>(),Text(assocTypeName))
+  }
+
   private def makeItemLinkList(items: Seq[Item]): NodeSeq => NodeSeq = {
     val intermediate = if(items.isEmpty) items else items.dropRight(1)
     ".intermediate *" #> intermediate.map{t =>
-      ".listval *" #> SHtml.link(t.address,()=>(),Text(t.name))} &
+      ".listval" #> SHtml.link(t.address,()=>(),Text(t.name))} &
     ".last *" #> items.lastOption.map{t =>
-      ".listval *" #> SHtml.link(t.address,()=>(),Text(t.name))}
+      ".listval" #> SHtml.link(t.address,()=>(),Text(t.name))} &
+    ".moreLink" #> "" //TODO implement more link
   }
 } //end of class

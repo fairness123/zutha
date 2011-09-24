@@ -1,7 +1,5 @@
 package net.zutha.model.constructs
 
-import net.zutha.lib.BaseX
-
 class Zid(zid: String) {
   val correctZID = zid match{
     case Zid(repairedZID) => repairedZID

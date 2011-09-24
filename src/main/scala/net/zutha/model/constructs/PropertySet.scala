@@ -5,5 +5,7 @@ trait PropertySet{
   def parentItem: Item
   def definingType: ZType
   def propertyType: PropertyType
-  def getProperties: Set[Property]
+  def properties: Set[Property]
+  def cardMin: Int
+  def cardMax: Int
 }

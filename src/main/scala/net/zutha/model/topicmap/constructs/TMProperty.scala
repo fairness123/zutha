@@ -3,10 +3,15 @@ package net.zutha.model.topicmap.constructs
 import net.zutha.model.constructs.Property
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.util.Helpers._
-import org.tmapi.core.{Topic, Name, Occurrence}
+import org.tmapi.core.{Name, Occurrence}
+import net.zutha.model.exceptions.SchemaViolationException
 
 abstract class TMProperty extends Property {
+
   def toProperty: Property = this
+  def dataTypeItem = propertyType.dataTypeItem
+  def dataType = propertyType.dataType
+  def value = dataType(valueString).getOrElse(throw new SchemaViolationException("property: "+this+" has illegal value: "+valueString))
 }
 
 object TMOccurrenceProperty{
@@ -16,11 +21,9 @@ object TMOccurrenceProperty{
 class TMOccurrenceProperty(occ: Occurrence) extends TMProperty {
   override def toProperty: Property = this
 
-  def propertyType = occ.getType.toItemType
+  def propertyType = occ.getType.toPropertyType
 
-  def value = occ.getValue
-
-  def datatype = occ.getDatatype.toExternalForm
+  def valueString = occ.getValue
 }
 
 object TMNameProperty{
@@ -30,9 +33,7 @@ object TMNameProperty{
 class TMNameProperty protected (name: Name) extends TMProperty {
   override def toProperty: Property = this
 
-  def propertyType = name.getType.toItemType
+  def propertyType = name.getType.toPropertyType
 
-  def value = name.getValue
-
-  def datatype = "http://www.w3.org/2001/XMLSchema#string"
+  def valueString = name.getValue
 }

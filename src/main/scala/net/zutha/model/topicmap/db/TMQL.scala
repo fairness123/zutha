@@ -18,7 +18,7 @@ import de.topicmapslab.tmql4j.components.processor.prepared.IPreparedStatement
 import de.topicmapslab.majortom.model.core.ITopicMap
 
 trait TMQL {
-  def tm: ITopicMap;
+  def tmm: ITopicMap;
 
   private lazy val runtime = TMQLRuntimeFactory.newFactory().newRuntime("tmql-2007")
 
@@ -35,16 +35,16 @@ trait TMQL {
    */
   val prepareStatement = {
     val get = makeCache[String,String,IPreparedStatement](identity, qstr =>
-      runtime.preparedStatement(new TMQLQuery(tm, qstr)))
+      runtime.preparedStatement(new TMQLQuery(tmm, qstr)))
     (qstr: String) => get(qstr)
   } 
 /*  def prepareStatement(qstr: String) = {
-    val query = new TMQLQuery(tm, qstr)
+    val query = new TMQLQuery(tmm, qstr)
     runtime.preparedStatement(query)
   }*/
 
   private def runQuery(qstr : String): IResultSet[_] = {
-    val query = runtime.run(tm,qstr)
+    val query = runtime.run(tmm,qstr)
     val res = query.getResults
     res
   }
@@ -113,54 +113,46 @@ trait TMQL {
     runTopicQuery(q).filterNot(_.isAnonymous).map(_.toItem)
   }
 
-  private def runItemTypeQuery(q: IQuery): Seq[ItemType] = {
-    try runItemQuery(q).map(_.toItemType)
-    catch {
-      case e: TypeConversionException =>
-        throw new IllegalArgumentException("query does not return ItemType results")
-    }
-  }
-
   private def runTypeQuery(q: IQuery): Seq[ZType] = {
     try runItemQuery(q).map(_.toZType)
     catch {
       case e: TypeConversionException =>
-        throw new IllegalArgumentException("query does not return ItemType results")
+        throw new IllegalArgumentException("query does not return ZType results")
     }
   }
-  //---------------- Parameter Queries -----------------
+
+  private def runAssociationQuery(q: IQuery): Seq[Association] = {
+    val rs = q.getResults
+    val results = rs.map{_ match {
+      case res: SimpleResult => res.first match {
+        case assoc: Association => assoc
+        case _ => throw new IllegalArgumentException("query results were not Associations as expected")
+      }
+      case _ => throw new IllegalArgumentException("query did not return TMAPI constructs as expected")
+    }
+    }.toSeq
+    val numResults = results.length
+    results
+  }
+  private def runZAssociationQuery(q: IQuery): Seq[ZAssociation] = {
+    runAssociationQuery(q).filterNot(_.isAnonymous).map(_.toZAssociation)
+  }
+
+  //=========================== Parameter Queries ===========================
+  //=========================================================================
+
   val TRANSITIVE = "%pragma taxonometry tm:transitive "
 
-    /** check if ?item is an instance of ?zdmType
-   *  @params item, zdmType
-   *  @return non-empty result-set if this item is an instance of itemType
+  //------------------- General Queries ---------------------
+
+  /** check if ?item is an instance of ?zType
+   *  @params item, zType
+   *  @return non-empty result-set if this item is an instance of zType
    */
-  def itemIsA(item: Item, zdmType: ZType): Boolean = {
+  def itemIsA(item: Item, zType: ZType): Boolean = {
     val statement = prepareStatement(TRANSITIVE + "?item >> types == ?zdmType")
     statement.setTopic("?item",item)
-    statement.setTopic("?zdmType",zdmType)
-    statement.run()
-    runBooleanQuery(statement)
-  }
-
-  /** check if this Topic is an Anonymous Topic which doesn't exist in the ZDM
-   *  @params topic
-   *  @return true if this topic is an AnonymousTopic
-   */
-  def topicIsAnonymous(topic: Topic): Boolean = {
-    val statement = prepareStatement("?topic >> types == " + ZSI+ANONYMOUS_TOPIC)
-    statement.setTopic("?topic",topic)
-    statement.run()
-    runBooleanQuery(statement)
-  }
-
-  /** check if this Association is has a player which is an Anonymous Topic
-   *  @params association
-   *  @return true if this association is anonymous
-   */
-  def associationIsAnonymous(association: Association): Boolean = {
-    val statement = prepareStatement("?association >> roles >> players " + ZSI+ANONYMOUS_TOPIC)
-    statement.setConstruct("?association",association)
+    statement.setTopic("?zdmType",zType)
     statement.run()
     runBooleanQuery(statement)
   }
@@ -199,7 +191,7 @@ trait TMQL {
    *  @params item, role, assocType, otherRole, playerType
    */
   def traverseAssociation(item: Item, role: ZRole, assocType: AssociationType, otherRole: ZRole, playerType: ZType): Set[Item] = {
-    val statement = prepareStatement(TRANSITIVE + "?item <- ?role << roles ?assocType >> roles ?otherRole -> ?playerType")
+    val statement = prepareStatement(TRANSITIVE + "?item << players ?role << roles ?assocType >> roles ?otherRole >> players ?playerType")
     statement.setTopic("?item",item)
     statement.setTopic("?role",role)
     statement.setTopic("?assocType",assocType)
@@ -208,4 +200,47 @@ trait TMQL {
     statement.run()
     runItemQuery(statement).toSet
   }
+
+  /** get all associations of type assocType with the given (role,player) pairs */
+  def findAssociationsTMQL(assocType: AssociationType, strict: Boolean, rolePlayers:(ZRole,Item)*): Set[ZAssociation] = {
+    var args = (1 to rolePlayers.length).map(i => "?role"+i+" : ?player"+i)
+    if(!strict) args :+= ("...")
+    val q = TRANSITIVE + "?assocType" + args.mkString("(",", ",")")
+    val statement = prepareStatement(q)
+    statement.setTopic("?assocType",assocType)
+    (1 to rolePlayers.length).foreach{i =>
+      statement.setTopic("?role"+i,rolePlayers(i-1)._1)
+      statement.setTopic("?player"+i,rolePlayers(i-1)._2)
+    }
+    statement.run()
+    statement.run()
+    val rawQuery = statement.getNonParameterizedQueryString
+    runZAssociationQuery(statement).toSet
+  }
+
+
+  //------------------- Specialized Queries ---------------------
+
+  /** check if this Topic is an Anonymous Topic which doesn't exist in the ZDM
+   *  @params topic
+   *  @return true if this topic is an AnonymousTopic
+   */
+  def topicIsAnonymous(topic: Topic): Boolean = {
+    val statement = prepareStatement("?topic >> types == " + ZSI+ANONYMOUS_TOPIC)
+    statement.setTopic("?topic",topic)
+    statement.run()
+    runBooleanQuery(statement)
+  }
+
+  /** check if this Association is has a player which is an Anonymous Topic
+   *  @params association
+   *  @return true if this association is anonymous
+   */
+  def associationIsAnonymous(association: Association): Boolean = {
+    val statement = prepareStatement("?association >> roles >> players " + ZSI+ANONYMOUS_TOPIC)
+    statement.setConstruct("?association",association)
+    statement.run()
+    runBooleanQuery(statement)
+  }
+
 }

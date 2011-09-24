@@ -11,6 +11,7 @@ import net.zutha.model.db.DB.db
 import de.topicmapslab.majortom.model.core.IScope
 import net.zutha.model.exceptions.SchemaViolationException
 import org.tmapi.core.{Name, Topic}
+import net.zutha.model.datatypes.{PropertyValue, DataType}
 
 object TMItem{
   val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
@@ -74,11 +75,10 @@ class TMItem protected (topic: Topic) extends Item{
   }
 
   // -------------- names --------------
-
   def names(scope: ZScope):Set[String] = topic.getNames(scope:IScope).toSet.map((_:Name).getValue)
   def names(scopeItems: Item*):Set[String] = names(TMScope(scopeItems.toSet))
   def allNames:Set[String] = topic.getNames.toSet.map((_:Name).getValue)
-  def unconstrainedNames:Set[String] = names(TMScope(Set.empty))
+  def unconstrainedNames:Set[String] = names(TMScope())
 
   def name(scope: ZScope) = names(scope).headOption
   def name(scopeItems: Item*) = names(TMScope(scopeItems.toSet)).headOption
@@ -107,9 +107,9 @@ class TMItem protected (topic: Topic) extends Item{
   // -------------- fields --------------
   def getPropertySets = {
     getFieldDefiningTypes.flatMap{definingType =>
-      definingType.getDefinedProperties
+      definingType.getDefinedPropertyTypes
         .filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
-        .map(propType => new TMPropertySet(this,propType,definingType))
+        .map(propType => TMPropertySet(this,propType,definingType))
     }
   }
 
@@ -128,15 +128,24 @@ class TMItem protected (topic: Topic) extends Item{
     occurrences
   }
 
+  def getPropertyValues(propType: PropertyType): Set[PropertyValue] = {
+    getProperties(propType).map(prop => prop.value)
+  }
+
+  def getProperty(propType: PropertyType) = getProperties(propType).headOption
+
+  def getPropertyValue(propType: PropertyType): Option[PropertyValue] =
+    getPropertyValues(propType).headOption
+
+
   def getAssociationFieldSets = {
     getFieldDefiningTypes.flatMap{definingType =>
-      definingType.getDefinedAssociationFields
-        .map{case TMAssociationFieldType(role,assocType) => TMAssociationFieldSet(definingType,this,role,assocType)}
+      definingType.getDefinedAssociationFieldTypes.map{TMAssociationFieldSet(this,_)}
     }
   }
 
-  def getAssociationFields(role: ZRole, assocType: AssociationType) = {
-    val rolesPlayed = topic.getRolesPlayed(role, assocType).toSet
+  def getAssociationFields(assocFieldType: AssociationFieldType) = {
+    val rolesPlayed = topic.getRolesPlayed(assocFieldType.role, assocFieldType.associationType).toSet
     val visibleRolesPlayed = rolesPlayed.filterNot(_.getParent.isAnonymous)
     visibleRolesPlayed.map{r => TMAssociationField(r)}
   }
