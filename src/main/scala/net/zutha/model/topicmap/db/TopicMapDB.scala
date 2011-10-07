@@ -1,10 +1,13 @@
 package net.zutha.model.topicmap.db
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable.Map
 import org.tmapi.core._
 import org.tmapix.io.CTMTopicMapReader
 import tools.nsc.io.{File}
 import de.topicmapslab.majortom.model.transaction.ITransaction
+import de.topicmapslab.majortom.model.core.{ITopicMapSystem}
+import net.liftweb.common.{Loggable}
 
 import net.zutha.model.constants._
 import ZuthaConstants._
@@ -15,9 +18,7 @@ import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB
 import net.zutha.model.exceptions.SchemaItemMissingException
-import net.liftweb.common.Loggable
-import de.topicmapslab.majortom.model.core.{IAssociation, ITopicMapSystem}
-import net.zutha.model.topicmap.constructs.TMAssociation
+
 
 object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
   val ENABLE_TRANSACTIONS = true
@@ -88,16 +89,16 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     topic.addZID(getNextZID)
 
     //commit proposed item
-    if(ENABLE_TRANSACTIONS) txn.asInstanceOf[ITransaction].commit
+    if(ENABLE_TRANSACTIONS) txn.asInstanceOf[ITransaction].commit()
   }
 
-  def printTMLocators = {
+  def printTMLocators(){
     for(loc <- sys.getLocators) {
       println (loc.getReference)
     }
   }
 
-  def generateSchema() = {
+  def generateSchema(){
     //open current schema.ctm file
     val schema_file = File(TM_DATA_PATH + "schema.ctm")
 
@@ -112,14 +113,23 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
         schemaMod < ctm_templates_file.lastModified){
 
       //read schema_gen.ctm, schema_templates.ctm to string
-      val schema_gen = schema_gen_file.slurp
-      val ctm_templates = ctm_templates_file.slurp
+      val schema_gen = schema_gen_file.slurp()
+      val ctm_templates = ctm_templates_file.slurp()
 
       //insert ctm_templates
       val schema_with_templates = schema_gen.replace("%include schema_templates.ctm",ctm_templates)
 
-      //replace %zid% markers with unique ZIDs
-      val schema = "%zid%".r.replaceAllIn(schema_with_templates,(m => getNextZID.toString))
+      //Replace %zid% markers with unique ZIDs
+      //For markers of the form %zid%<tag>%,
+      // replace all markers with the same tag with an identical ZID
+      var namedZidPlaceholderMap = Map[String,String]()
+      val schema = """(%zid%)([\w]+%)?""".r.replaceAllIn(schema_with_templates,{m =>
+        def newZID = "zid:"+getNextZID.toString
+        m.group(2) match {
+          case tag:String => namedZidPlaceholderMap.getOrElseUpdate(tag,newZID)
+          case _ => newZID //this is an anonymous ZID placeholder
+        }
+      })
 
       //save transformed schema_gen as schema.ctm
       schema_file.writeAll(schema)
@@ -128,7 +138,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     //make a topic map from the ctm schema
     val source: java.io.File = schema_file.jfile
     val reader: CTMTopicMapReader = new CTMTopicMapReader(tmm, source,ZUTHA_TOPIC_MAP_URI)
-    reader.read
+    reader.read()
 
     logger.info("database has been reset back to schema")
   }

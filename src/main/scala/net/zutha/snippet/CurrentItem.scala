@@ -17,7 +17,7 @@ class CurrentItem {
       repairedZID <- Zid.repair(zid) ?~ "an invalid zid was provided"
       item <- DB.db.getItem(Zid(repairedZID)) ?~ "no item with the specifed zid can be found"
     } yield (item)) match{
-      case Full(item) => item
+      case Full(itm) => itm
       case Failure(msg, _, _) => throw new SnippetExecutionException(msg)
       case _ => throw new SnippetExecutionException("something went wrong looking up item by zid")
     }
@@ -94,8 +94,8 @@ class CurrentItem {
       ".field_group_name *" #> ("Fields from " + definingType.name) &
       ".auto_property_set *" #> List.empty &
       ".property_set *" #> definedProps.map(makePropertySet(_)) &
-      ".property *" #> List.empty &
-      ".compact_association_set *" #> definedAssocFields.map(makeCompactAssocSet(_)) &
+      ".single_property *" #> List.empty &
+      ".compact_association_set *" #> List.empty & //definedAssocFields.map(makeCompactAssocSet(_)) &
       ".association_set_table *" #> definedAssocFields.map(makeAssocSetTable(_))
     }
 

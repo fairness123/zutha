@@ -23,7 +23,7 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
 
   def hasSuperType(superType: ZType): Boolean = getAllSuperTypes.contains(superType)
 
-  def getAllSuperTypes: Set[ZType] = {
+  lazy val getAllSuperTypes: Set[ZType] = { //TODO allow an item's supertypes to be modified
     val supertypes = TopicMapDB.allSupertypesOfItem(this) + this
     supertypes
   }

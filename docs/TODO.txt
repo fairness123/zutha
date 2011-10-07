@@ -1,5 +1,9 @@
 --------------------- Code ---------------------
 
+>>> optimization <<<
+Use index for supertype-subtype and type-instance associations
+Use a more efficient Topic Mab engine than MaJorToM
+
 
 --------------------- Schema ---------------------
 default-permission-level in field-declarations (has-property, plays-role)

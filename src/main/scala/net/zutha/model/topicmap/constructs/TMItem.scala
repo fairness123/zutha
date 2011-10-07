@@ -57,7 +57,8 @@ class TMItem protected (topic: Topic) extends Item{
       .filter{_.startsWith(ZID_PREFIX.toString)}.map{_.replace(ZID_PREFIX.toString,"")}
       .toSet
     //every item must have at least one ZID
-    if (zids.size == 0) throw new Exception("item has no ZIDs")
+    if (zids.size == 0)
+      throw new Exception("item has no ZIDs")
 
     try{
       zids.map{Zid(_).toString}
@@ -69,7 +70,7 @@ class TMItem protected (topic: Topic) extends Item{
 
   def zid: String = getZIDs.toSeq.sorted.head
 
-  def addZID(zid: Zid) = {
+  def addZID(zid: Zid){
     val zidLoc = topic.getTopicMap.createLocator(ZID_PREFIX + zid)
     topic.addSubjectIdentifier(zidLoc)
   }
@@ -84,7 +85,10 @@ class TMItem protected (topic: Topic) extends Item{
   def name(scopeItems: Item*) = names(TMScope(scopeItems.toSet)).headOption
   def name = unconstrainedNames.headOption match {
     case Some(str) => str
-    case None => throw new SchemaViolationException("item '" + this + "' has no name")
+    case None => { //TODO implement autoNames
+      "Item " + zid
+      //throw new SchemaViolationException("item '" + this + "' has no name")
+    }
   }
 
   // -------------- Zuthanet Address --------------
@@ -116,7 +120,7 @@ class TMItem protected (topic: Topic) extends Item{
   def getProperties(propType: PropertyType): Set[Property] = {
     //check if propType is a name
     if(propType.hasSuperType(db.siNAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
-      val names = topic.getNames(propType).map(_.toProperty).toSet
+      val names = topic.getNames.map(_.toProperty).toSet
       return names
     }
 
