@@ -1,9 +1,7 @@
 package net.zutha.model.constants
-import ZuthaConstants._
 
 object SchemaIdentifier extends Enumeration {
   type SchemaIdentifier = Value
-  val ZSI = ZSI_PREFIX
 
   //types of item types
   val TYPE = Value("type")
@@ -25,11 +23,14 @@ object SchemaIdentifier extends Enumeration {
   val ASSOCIATION_ROLE_CONSTRAINT = Value("association-role-constraint")
   val ABSTRACT_CONSTRAINT = Value("abstract-constraint")
   val PROPERTY_DATATYPE_CONSTRAINT = Value("property-datatype-constraint")
-  
+  val OVERRIDES_DECLARATION = Value("overrides-declaration")
+
   //role types
   val FIELD_DECLARER = Value("field-declarer")
   val PROPERTY_DECLARER = Value("property-declarer")
   val ASSOCIATION_FIELD_DECLARER = Value("association-field-declarer")
+  val OVERRIDDEN_DECLARATION = Value("overridden-declaration")
+  val OVERRIDING_DECLARATION = Value("overriding-declaration")
 
   //property types
   val ROLE_CARD_MIN = Value("role-card-min")
@@ -44,10 +45,5 @@ object SchemaIdentifier extends Enumeration {
   //datatypes
   val NON_NEGATIVE_INTEGER = Value("non-negative-integer")
   val UNBOUNDED_NON_NEGATIVE_INTEGER = Value("unbounded-non-negative-integer")
-
-  // Topic Map implementation Constructs
-  val ANONYMOUS_TOPIC = Value("topicmap/anonymous-topic")
-  val REIFIED_ZDM_ASSOCIATION = Value("topicmap/reified-zdm-association")
-  val ANONYMOUS_TOPIC_LINK = Value("topicmap/anonymous-topic-link")
 
 }

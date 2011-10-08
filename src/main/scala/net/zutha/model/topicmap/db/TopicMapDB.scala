@@ -11,7 +11,7 @@ import net.liftweb.common.{Loggable}
 
 import net.zutha.model.constants._
 import ZuthaConstants._
-import SchemaIdentifier._
+import SchemaIdentifier.SchemaIdentifier
 import ApplicationConstants._
 import net.zutha.model.{ProposedItem}
 import net.zutha.model.topicmap.TMConversions._
@@ -49,7 +49,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  def getSchemaItem(identifier: SchemaIdentifier): Item = tmm.lookupTopicBySI(ZSI_PREFIX + identifier.toString) match {
+  protected def getSchemaItem(identifier: SchemaIdentifier): Item = tmm.lookupTopicBySI(ZSI_PREFIX + identifier.toString) match {
     case Some(topic) => topic.toItem
     case None => throw new SchemaItemMissingException
   }
@@ -143,6 +143,12 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     logger.info("database has been reset back to schema")
   }
 
+  /** get all associations of type assocType with the given (role,player) pairs
+   *  @param assocType matched associations must have this type (transitive)
+   *  @param strict If true, matched associations must have exactly the set of rolePlayers given.
+   *    If false, matched associations  must have at least the set of rolePlayers given
+   *  @param rolePlayers a set of (Role,Player) pairs that matched associations must contain
+   **/
   def findAssociations(assocType: AssociationType, strict: Boolean, rolePlayers:(ZRole,Item)*) = {
     val requiredRolePlayers = rolePlayers.toSet
     val allAssoc = tmm.getAssociations[Association](assocType:Topic).toSet.map((a:Association) => a.toZAssociation)

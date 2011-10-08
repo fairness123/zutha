@@ -6,5 +6,4 @@ object ZuthaConstants{
   //Prefixes
   val ZID_PREFIX = "http://zutha.net/item/"
   val ZSI_PREFIX = "http://psi.zutha.net/"
-  val ZTM_PREFIX = ZSI_PREFIX + "topicmap/"
 }

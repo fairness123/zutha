@@ -19,8 +19,8 @@ class TMPropertyType protected (topic: Topic) extends TMInterface(topic) with Pr
   def dataTypeItem: Item = {
     //TODO resolve override rules
     getAllSuperTypes.flatMap(propType => TopicMapDB.traverseAssociation(propType,db.siPROPERTY_TYPE.toRole,
-      db.siPROPERTY_DATATYPE_CONSTRAINT,db.siDATATYPE.toRole,db.siDATATYPE))
-      .headOption.getOrElse(throw new SchemaViolationException("propertyType: "+this+" is missing a datatype declaration"))
+      db.siPROPERTY_DATATYPE_CONSTRAINT,db.siDATATYPE.toRole))
+      .headOption.getOrElse(throw new SchemaViolationException("propertyType: "+this.name+" is missing a datatype declaration"))
   }
 
   def dataType = DataType(dataTypeItem)

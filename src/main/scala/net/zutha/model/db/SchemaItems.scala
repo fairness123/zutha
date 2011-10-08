@@ -31,11 +31,14 @@ trait SchemaItems {
   lazy val siASSOCIATION_ROLE_CONSTRAINT: AssociationType = getSchemaItem(ASSOCIATION_ROLE_CONSTRAINT).toAssociationType
   lazy val siABSTRACT_CONSTRAINT: AssociationType = getSchemaItem(ABSTRACT_CONSTRAINT).toAssociationType
   lazy val siPROPERTY_DATATYPE_CONSTRAINT: AssociationType = getSchemaItem(PROPERTY_DATATYPE_CONSTRAINT).toAssociationType
+  lazy val siOVERRIDES_DECLARATION: AssociationType = getSchemaItem(OVERRIDES_DECLARATION).toAssociationType
 
   //roles
   lazy val siFIELD_DECLARER: ZRole = getSchemaItem(FIELD_DECLARER).toRole
   lazy val siPROPERTY_DECLARER: ZRole = getSchemaItem(PROPERTY_DECLARER).toRole
   lazy val siASSOCIATION_FIELD_DECLARER: ZRole = getSchemaItem(ASSOCIATION_FIELD_DECLARER).toRole
+  lazy val siOVERRIDING_DECLARATION: ZRole = getSchemaItem(OVERRIDING_DECLARATION).toRole
+  lazy val siOVERRIDDEN_DECLARATION: ZRole = getSchemaItem(OVERRIDDEN_DECLARATION).toRole
 
   //property types
   lazy val siROLE_CARD_MIN: PropertyType = getSchemaItem(ROLE_CARD_MIN).toPropertyType

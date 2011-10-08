@@ -4,10 +4,8 @@ import scala.collection.JavaConversions._
 import org.tmapi.core.Topic
 
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.model.constants.{SchemaIdentifier => SI}
 import net.zutha.model.db.DB.db
 import net.zutha.model.topicmap.db.TopicMapDB
-import TopicMapDB.{getSchemaItem => ZSI}
 import net.zutha.model.constructs.{ZType}
 import net.zutha.util.Helpers._
 
@@ -17,7 +15,7 @@ object TMType{
 }
 class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
   def isAbstract: Boolean = {
-    val abstractConstAssoc = topic.getRolesPlayed(ZSI(SI.TYPE),ZSI(SI.ABSTRACT_CONSTRAINT))
+    val abstractConstAssoc = topic.getRolesPlayed(db.siTYPE,db.siABSTRACT_CONSTRAINT)
     !abstractConstAssoc.isEmpty
   }
 
@@ -36,9 +34,10 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
   }
 
   def getDefinedPropertyTypes = {
-    TopicMapDB.traverseAssociation(topic,db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION,
-      db.siPROPERTY_TYPE.toRole,db.siPROPERTY_TYPE).map(_.toPropertyType)
-
+    val definedPropTypes = TopicMapDB.traverseAssociation(topic,db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION,
+      db.siPROPERTY_TYPE.toRole).map(_.toPropertyType)
+    definedPropTypes
+    
 //    val propDefRoles = topic.getRolesPlayed(db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION).toSet
 //    propDefRoles.map{_.getParent.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType}
   }

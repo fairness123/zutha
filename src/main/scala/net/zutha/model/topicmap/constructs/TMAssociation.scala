@@ -18,13 +18,21 @@ class TMAssociation protected (association: Association) extends ZAssociation{
   lazy val reifier = association.getReifier
   def getAssociationType = TMAssociationType(association.getType)
   def getAssociationFields: Set[AssociationField] = association.getRoles.toSet.map(TMAssociationField(_:Role))
-  def getRoles = association.getRoleTypes.toSet.map(TMRole(_:Topic))
+  def getPlayedRoles = association.getRoleTypes.toSet.map(TMRole(_:Topic))
   def getAllPlayers = association.getRoles.toSet.map((role:Role) => role.getPlayer.toItem)
   def getPlayers(role: ZRole): Set[Item] = association.getRoles(role).map(_.getPlayer.toItem).toSet
-  def getRolePlayers: Set[(ZRole,Item)] = getRoles.flatMap{r => getPlayers(r).map(p => (r,p))}
+  def getRolePlayers: Set[(ZRole,Item)] = getPlayedRoles.flatMap{r => getPlayers(r).map(p => (r,p))}
 
   def getProperties(propType: PropertyType) = reifier.getProperties(propType)
   def getPropertyValues(propType: PropertyType) = reifier.getPropertyValues(propType)
   def getProperty(propType: PropertyType) = reifier.getProperty(propType)
   def getPropertyValue(propType: PropertyType) = reifier.getPropertyValue(propType)
+
+
+  def overriddenBy:Set[ZAssociation] = {
+    val ovDeclRoles = association.getReifier.getRolesPlayed(db.siOVERRIDDEN_DECLARATION,db.siOVERRIDES_DECLARATION).toSet
+    val overriders = ovDeclRoles.map(_.getParent.getRoles(db.siOVERRIDING_DECLARATION).head.getPlayer
+      .getReified.asInstanceOf[Association].toZAssociation)
+    overriders
+  }
 }

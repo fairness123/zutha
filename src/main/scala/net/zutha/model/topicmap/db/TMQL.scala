@@ -13,7 +13,7 @@ import de.topicmapslab.tmql4j.components.processor.results.tmdm.SimpleResult
 import org.tmapi.core.{Topic, Association}
 import net.zutha.model.exceptions.TypeConversionException
 import net.zutha.model.constructs._
-import net.zutha.model.constants.SchemaIdentifier._
+import net.zutha.model.constants.ZuthaConstants._
 import de.topicmapslab.tmql4j.components.processor.prepared.IPreparedStatement
 import de.topicmapslab.majortom.model.core.ITopicMap
 
@@ -190,18 +190,24 @@ trait TMQL {
   /** get all players of ?otherRole of type ?playerType in associations of type ?assocType where ?item plays the role ?role
    *  @params item, role, assocType, otherRole, playerType
    */
-  def traverseAssociation(item: Item, role: ZRole, assocType: AssociationType, otherRole: ZRole, playerType: ZType): Set[Item] = {
-    val statement = prepareStatement(TRANSITIVE + "?item << players ?role << roles ?assocType >> roles ?otherRole >> players ?playerType")
+  //TODO replace with TMAPI implementation: TMQL does not use transitivity on playerType
+  def traverseAssociation(item: Item, role: ZRole, assocType: AssociationType, otherRole: ZRole): Set[Item] = {
+    val statement = prepareStatement(TRANSITIVE +
+      "?item << players ?role << roles ?assocType >> roles ?otherRole >> players")
     statement.setTopic("?item",item)
     statement.setTopic("?role",role)
     statement.setTopic("?assocType",assocType)
     statement.setTopic("?otherRole",otherRole)
-    statement.setTopic("?playerType",playerType)
     statement.run()
     runItemQuery(statement).toSet
   }
 
-  /** get all associations of type assocType with the given (role,player) pairs */
+  /** get all associations of type assocType with the given (role,player) pairs
+   *  @param assocType matched associations must have this type (transitive)
+   *  @param strict If true, matched associations must have exactly the set of rolePlayers given.
+   *    If false, matched associations  must have at least the set of rolePlayers given
+   *  @param rolePlayers a set of (Role,Player) pairs that matched associations must contain
+   **/
   def findAssociationsTMQL(assocType: AssociationType, strict: Boolean, rolePlayers:(ZRole,Item)*): Set[ZAssociation] = {
     var args = (1 to rolePlayers.length).map(i => "?role"+i+" : ?player"+i)
     if(!strict) args :+= ("...")
@@ -226,7 +232,7 @@ trait TMQL {
    *  @return true if this topic is an AnonymousTopic
    */
   def topicIsAnonymous(topic: Topic): Boolean = {
-    val statement = prepareStatement("?topic >> types == " + ZSI+ANONYMOUS_TOPIC)
+    val statement = prepareStatement("?topic >> types == " + ZSI_PREFIX+"topicmap/anonymous-topic")
     statement.setTopic("?topic",topic)
     statement.run()
     runBooleanQuery(statement)
@@ -237,7 +243,7 @@ trait TMQL {
    *  @return true if this association is anonymous
    */
   def associationIsAnonymous(association: Association): Boolean = {
-    val statement = prepareStatement("?association >> roles >> players " + ZSI+ANONYMOUS_TOPIC)
+    val statement = prepareStatement("?association >> roles >> players " + ZSI_PREFIX+"topicmap/anonymous-topic")
     statement.setConstruct("?association",association)
     statement.run()
     runBooleanQuery(statement)

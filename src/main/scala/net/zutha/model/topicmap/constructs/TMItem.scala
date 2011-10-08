@@ -110,11 +110,12 @@ class TMItem protected (topic: Topic) extends Item{
 
   // -------------- fields --------------
   def getPropertySets = {
-    getFieldDefiningTypes.flatMap{definingType =>
+    val propSets: Set[PropertySet] = getFieldDefiningTypes.flatMap{definingType =>
       definingType.getDefinedPropertyTypes
         .filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
         .map(propType => TMPropertySet(this,propType,definingType))
     }
+    propSets
   }
 
   def getProperties(propType: PropertyType): Set[Property] = {
