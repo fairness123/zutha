@@ -1224,253 +1224,253 @@ zsi:field-with-scope-item-declaration zid:0ET; isa zsi:reified-association-type;
 
     name("Field with Scope Item Declaration",zid:0EV);
     name("Has Field(s) scoped by Item",zsi:field-declarer,zid:0EW);
-    - zsi:modifiable-name: "Used by Item Type, scoped by Item" @zsi:field-type;
-    name("Item has Field(s) scoped by Item",zsi:scope-item,zid:0EX);
+    name("Used by Field Declarer, scoped by Item",zsi:field-type,zid:0EX);
+    name("Item has Field(s) scoped by Item",zsi:scope-item,zid:0EY);
 
-    has-role(zsi:field-declarer,1,1,zid:0EY);
-    has-role(zsi:field-type,1,1,zid:0F0);
-    has-role(zsi:scope-item,1,1,zid:0F1);
-    has-property(zsi:field-card-min,1,1,zid:0F2);
-    has-property(zsi:field-card-max,1,1,zid:0F3);
+    has-role(zsi:field-declarer,1,1,zid:0F0);
+    has-role(zsi:field-type,1,1,zid:0F1);
+    has-role(zsi:scope-item,1,1,zid:0F2);
+    has-property(zsi:field-card-min,1,1,zid:0F3);
+    has-property(zsi:field-card-max,1,1,zid:0F4);
 .
 
 # FIELD WITH SCOPE ITEM TYPE DECLARATION
-zsi:field-with-scope-item-type-declaration zid:0F4; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0F5);
+zsi:field-with-scope-item-type-declaration zid:0F5; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,zid:0F6);
 
-    name("Field with Scope Item Type Declaration",zid:0F6);
-    name("Has Field(s) scoped by Item of Type",zsi:item-type,zid:0F7);
-    name("Used by Item Type scoped by Item of Type",zsi:field-type,zid:0F8);
-    name("Item has Field(s) scoped by Item of this Type",zsi:scope-item-type,zid:0F9);
+    name("Field with Scope Item Type Declaration",zid:0F7);
+    name("Has Field(s) scoped by Item of Type",zsi:field-declarer,zid:0F8);
+    name("Used by Field Declarer, scoped by Item Type",zsi:field-type,zid:0F9);
+    name("Item has Field(s) scoped by Item of this Type",zsi:scope-item-type,zid:0FA);
 
-    has-role(zsi:field-declarer,1,1,zid:0FA);
-    has-role(zsi:field-type,1,1,zid:0FB);
-    has-role(zsi:scope-item-type,1,1,zid:0FC);
-    has-property(zsi:field-card-min,1,1,zid:0FD);
-    has-property(zsi:field-card-max,1,1,zid:0FE);
+    has-role(zsi:field-declarer,1,1,zid:0FB);
+    has-role(zsi:field-type,1,1,zid:0FC);
+    has-role(zsi:scope-item-type,1,1,zid:0FD);
+    has-property(zsi:field-card-min,1,1,zid:0FE);
+    has-property(zsi:field-card-max,1,1,zid:0FF);
 .
 
 # UNIQUE VALUE CONSTRAINT
-zsi:unique-value-constraint zid:0FF; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0FG);
+zsi:unique-value-constraint zid:0FG; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,zid:0FH);
 
-    name("Unique Value Constraint",zid:0FH);
-    name("Has Unique Value",zsi:property-type,zid:0FJ);
+    name("Unique Value Constraint",zid:0FJ);
+    name("Has Unique Value",zsi:property-type,zid:0FK);
 
-    has-role(zsi:property-type,1,1,zid:0FK);
+    has-role(zsi:property-type,1,1,zid:0FL);
 .
 
 # PROPERTY DATA TYPE CONSTRAINT
-zsi:property-datatype-constraint zid:0FL; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0FM);
+zsi:property-datatype-constraint zid:0FM; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,zid:0FN);
 
-    name("Property Data Type Constraint",zid:0FN);
-    name("Has Datatype",zsi:property-type,zid:0FP);
+    name("Property Data Type Constraint",zid:0FP);
+    name("Has Datatype",zsi:property-type,zid:0FQ);
 
-    has-role(zsi:property-type,1,1,zid:0FQ);
-    has-role(zsi:datatype,1,1,zid:0FR);
+    has-role(zsi:property-type,1,1,zid:0FR);
+    has-role(zsi:datatype,1,1,zid:0FT);
 .
 
 # REGULAR EXPRESSION CONSTRAINT
-zsi:regular-expression-constraint zid:0FT; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0FU);
+zsi:regular-expression-constraint zid:0FU; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,zid:0FV);
 
-    name("Regular Expression Constraint",zid:0FV);
-    name("Matches Regexp",zsi:property-type,zid:0FW);
+    name("Regular Expression Constraint",zid:0FW);
+    name("Matches Regexp",zsi:property-type,zid:0FX);
 
-    has-role(zsi:property-type,1,1,zid:0FX);
-    has-property(zsi:regexp,1,1,zid:0FY);
+    has-role(zsi:property-type,1,1,zid:0FY);
+    has-property(zsi:regexp,1,1,zid:0G0);
 .
 
 # ==================== Schema Roles ====================
 
 # ROOT ITEM
-zsi:root-item zid:0G0; isa zsi:role;
-    name("Root Item",zid:0G1);
+zsi:root-item zid:0G1; isa zsi:role;
+    name("Root Item",zid:0G2);
 .
 
 # SCOPE ITEM
-zsi:scope-item zid:0G2; isa zsi:role;
-    name("Scope Item",zid:0G3);
+zsi:scope-item zid:0G3; isa zsi:role;
+    name("Scope Item",zid:0G4);
 .
 
 # SCOPE ITEM TYPE
-zsi:scope-item-type zid:0G4; isa zsi:role;
-    name("Scope Item Type",zid:0G5);
+zsi:scope-item-type zid:0G5; isa zsi:role;
+    name("Scope Item Type",zid:0G6);
 .
 
 # OVERRIDING DECLARATION
-zsi:overriding-declaration zid:0G6; isa zsi:role;
-    name("Overriding Declaration",zid:0G7);
+zsi:overriding-declaration zid:0G7; isa zsi:role;
+    name("Overriding Declaration",zid:0G8);
 .
 
 # OVERRIDDEN DECLARATION
-zsi:overridden-declaration zid:0G8; isa zsi:role;
-    name("Overridden Declaration",zid:0G9);
+zsi:overridden-declaration zid:0G9; isa zsi:role;
+    name("Overridden Declaration",zid:0GA);
 .
 
 # ==================== Schema Property Types ====================
 
 # REGEXP
-zsi:regexp zid:0GA; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0GB);
+zsi:regexp zid:0GB; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,zid:0GC);
 
-    external-identifier(tmcl:regexp, zid:0GC);
-    name("Regular Expression",zid:0GD);
-    name("regexp",zsi:constrained-item-type,zid:0GE);
+    external-identifier(tmcl:regexp, zid:0GD);
+    name("Regular Expression",zid:0GE);
+    name("regexp",zsi:constrained-item-type,zid:0GF);
 
-    has-datatype(xsd:string,zid:0GF);
+    has-datatype(xsd:string,zid:0GG);
 .
 
 # MIN CARDINALITY
-zsi:card-min zid:0GG; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0GH);
+zsi:card-min zid:0GH; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,zid:0GJ);
 
-    external-identifier(tmcl:card-min, zid:0GJ);
-    name("Min Cardinality",zid:0GK);
-    name("Min",zsi:constrained-item-type,zid:0GL);
+    external-identifier(tmcl:card-min, zid:0GK);
+    name("Min Cardinality",zid:0GL);
+    name("Min",zsi:constrained-item-type,zid:0GM);
 
-    has-datatype(xsd:nonNegativeInteger,zid:0GM);
+    has-datatype(xsd:nonNegativeInteger,zid:0GN);
 .
 
 # MAX CARDINALITY
-zsi:card-max zid:0GN; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0GP);
+zsi:card-max zid:0GP; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,zid:0GQ);
 
-    external-identifier(tmcl:card-max, zid:0GQ);
-    name("Max Cardinality",zid:0GR);
-    name("Max",zsi:constrained-item-type,zid:0GT);
+    external-identifier(tmcl:card-max, zid:0GR);
+    name("Max Cardinality",zid:0GT);
+    name("Max",zsi:constrained-item-type,zid:0GU);
 
-    has-datatype(iso:ctm-integer,zid:0GU);
+    has-datatype(iso:ctm-integer,zid:0GV);
 .
 
 # ROLE MIN CARDINALITY
 zsi:role-card-min
-    kind-of(zsi:card-min,zid:0GV);
-    zid:0GW; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,zid:0GW);
+    zid:0GX; isa zsi:reified-property-type;
 
-    name("Role Min Cardinality",zid:0GX);
+    name("Role Min Cardinality",zid:0GY);
 .
 
 # ROLE MAX CARDINALITY
-zsi:role-card-max zid:0GY; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0H0);
+zsi:role-card-max zid:0H0; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,zid:0H1);
 
-    name("Role Max Cardinality",zid:0H1);
+    name("Role Max Cardinality",zid:0H2);
 .
 
 # FIELD MIN CARDINALITY
-zsi:field-card-min zid:0H2; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0H3);
+zsi:field-card-min zid:0H3; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,zid:0H4);
 
-    name("Field Min Cardinality",zid:0H4);
+    name("Field Min Cardinality",zid:0H5);
 .
 
 # FIELD MAX CARDINALITY
-zsi:association-card-max zid:0H5; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0H6);
+zsi:field-card-max zid:0H6; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,zid:0H7);
 
-    name("Field Max Cardinality",zid:0H7);
+    name("Field Max Cardinality",zid:0H8);
 .
 
 # ASSOCIATION MIN CARDINALITY
-zsi:association-card-min zid:0H8; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-min,zid:0H9);
+zsi:association-card-min zid:0H9; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-min,zid:0HA);
 
-    name("Association Min Cardinality",zid:0HA);
+    name("Association Min Cardinality",zid:0HB);
 .
 
 # ASSOCIATION MAX CARDINALITY
-zsi:association-card-max zid:0HB; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-max,zid:0HC);
+zsi:association-card-max zid:0HC; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-max,zid:0HD);
 
-    name("Association Max Cardinality",zid:0HD);
+    name("Association Max Cardinality",zid:0HE);
 .
 
 # PROPERTY MIN CARDINALITY
-zsi:property-card-min zid:0HE; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-min,zid:0HF);
+zsi:property-card-min zid:0HF; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-min,zid:0HG);
 
-    name("Property Min Cardinality",zid:0HG);
+    name("Property Min Cardinality",zid:0HH);
 .
 
 # PROPERTY MAX CARDINALITY
-zsi:property-card-max zid:0HH; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-max,zid:0HJ);
+zsi:property-card-max zid:0HJ; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-max,zid:0HK);
 
-    name("Property Max Cardinality",zid:0HK);
+    name("Property Max Cardinality",zid:0HL);
 .
 
 # REIFIER MIN CARDINALITY
-zsi:reifier-card-min zid:0HL; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0HM);
+zsi:reifier-card-min zid:0HM; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,zid:0HN);
 
-    name("Reifier Min Cardinality",zid:0HN);
+    name("Reifier Min Cardinality",zid:0HP);
 .
 
 # REIFIER MAX CARDINALITY
-zsi:reifier-card-max zid:0HP; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0HQ);
+zsi:reifier-card-max zid:0HQ; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,zid:0HR);
 
-    name("Reifier Max Cardinality",zid:0HR);
+    name("Reifier Max Cardinality",zid:0HT);
 .
 
 # SCOPE ITEM MIN CARDINALITY
-zsi:scope-item-card-min zid:0HT; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0HU);
+zsi:scope-item-card-min zid:0HU; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,zid:0HV);
 
-    name("Scope Item Min Cardinality",zid:0HV);
+    name("Scope Item Min Cardinality",zid:0HW);
 .
 
 # SCOPE ITEM MAX CARDINALITY
-zsi:scope-item-card-max zid:0HW; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0HX);
+zsi:scope-item-card-max zid:0HX; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,zid:0HY);
 
-    name("Scope Item Max Cardinality",zid:0HY);
+    name("Scope Item Max Cardinality",zid:0J0);
 .
 
 # SCOPE ITEM TYPE MIN CARDINALITY
-zsi:scope-item-type-card-min zid:0J0; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0J1);
+zsi:scope-item-type-card-min zid:0J1; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,zid:0J2);
 
-    name("Scope Item Type Min Cardinality",zid:0J2);
+    name("Scope Item Type Min Cardinality",zid:0J3);
 .
 
 # SCOPE ITEM TYPE MAX CARDINALITY
-zsi:scope-item-type-card-max zid:0J3; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0J4);
+zsi:scope-item-type-card-max zid:0J4; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,zid:0J5);
 
-    name("Scope Item Type Max Cardinality",zid:0J5);
+    name("Scope Item Type Max Cardinality",zid:0J6);
 .
 
 # ==================== Data Types ====================
 
 # STRING
-zsi:string zid:0J6; isa zsi:datatype;
+zsi:string zid:0J7; isa zsi:datatype;
 
-    external-identifier(xsd:string, zid:0J7);
-    name("String",zid:0J8);
+    external-identifier(xsd:string, zid:0J8);
+    name("String",zid:0J9);
 .
 
 # ANY URI
-zsi:any-uri zid:0J9; isa zsi:datatype;
+zsi:any-uri zid:0JA; isa zsi:datatype;
 
-    external-identifier(xsd:anyURI, zid:0JA);
-    name("String",zid:0JB);
+    external-identifier(xsd:anyURI, zid:0JB);
+    name("String",zid:0JC);
 .
 
 # NON-NEGATIVE INTEGER
-zsi:non-negative-integer zid:0JC; isa zsi:datatype;
+zsi:non-negative-integer zid:0JD; isa zsi:datatype;
 
-    external-identifier(xsd:nonNegativeInteger, zid:0JD);
-    name("Non-Negative Integer",zid:0JE);
+    external-identifier(xsd:nonNegativeInteger, zid:0JE);
+    name("Non-Negative Integer",zid:0JF);
 .
 
 # UNBOUNDED NON-NEGATIVE INTEGER
-zsi:unbounded-non-negative-integer zid:0JF; isa zsi:datatype;
+zsi:unbounded-non-negative-integer zid:0JG; isa zsi:datatype;
 
-    external-identifier(iso:ctm-integer, zid:0JG);
-    name("Unbounded Non-Negative Integer",zid:0JH);
+    external-identifier(iso:ctm-integer, zid:0JH);
+    name("Unbounded Non-Negative Integer",zid:0JJ);
 .
 
 # ==================== Topic Map Implementation Constructs ====================

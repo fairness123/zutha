@@ -938,7 +938,7 @@ zsi:field-with-scope-item-declaration %zid%; isa zsi:reified-association-type;
 
     name("Field with Scope Item Declaration",%zid%);
     name("Has Field(s) scoped by Item",zsi:field-declarer,%zid%);
-    - zsi:modifiable-name: "Used by Item Type, scoped by Item" @zsi:field-type;
+    name("Used by Field Declarer, scoped by Item",zsi:field-type,%zid%);
     name("Item has Field(s) scoped by Item",zsi:scope-item,%zid%);
 
     has-role(zsi:field-declarer,1,1,%zid%);
@@ -953,8 +953,8 @@ zsi:field-with-scope-item-type-declaration %zid%; isa zsi:reified-association-ty
     kind-of(zsi:schema-declaration,%zid%);
 
     name("Field with Scope Item Type Declaration",%zid%);
-    name("Has Field(s) scoped by Item of Type",zsi:item-type,%zid%);
-    name("Used by Item Type scoped by Item of Type",zsi:field-type,%zid%);
+    name("Has Field(s) scoped by Item of Type",zsi:field-declarer,%zid%);
+    name("Used by Field Declarer, scoped by Item Type",zsi:field-type,%zid%);
     name("Item has Field(s) scoped by Item of this Type",zsi:scope-item-type,%zid%);
 
     has-role(zsi:field-declarer,1,1,%zid%);
@@ -1081,7 +1081,7 @@ zsi:field-card-min %zid%; isa zsi:reified-property-type;
 .
 
 # FIELD MAX CARDINALITY
-zsi:association-card-max %zid%; isa zsi:reified-property-type;
+zsi:field-card-max %zid%; isa zsi:reified-property-type;
     kind-of(zsi:card-max,%zid%);
 
     name("Field Max Cardinality",%zid%);

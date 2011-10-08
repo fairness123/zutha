@@ -59,35 +59,35 @@ class CurrentItem {
         ".property *" #> propSet.properties.map(makeProperty(_))
       }
 
-      def makeCompactAssocSet(assocFieldSet: AssociationFieldSet) = {
-        val otherAssocFields = assocFieldSet.associationFields.flatMap(_.companionAssociationFields)
-        def makeRoleList(role: ZRole) = {
-          ".role_type *" #> role.name &
-          ".role_players" #> {
-            val rolePlayers = otherAssocFields.filter(_.role == role)
-              .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
-            makeItemLinkList(rolePlayers)
-          }
-        }
-        ".association_set_name *" #> makeAssocSetHeader(assocFieldSet) &
-        ".role *" #> assocFieldSet.otherRoles.map(makeRoleList(_))
-      }
-
       def makeAssocSetTable(assocFieldSet: AssociationFieldSet) = {
         val otherRoles = assocFieldSet.otherRoles.toSeq.sortBy(_.name)
+        val propTypes = assocFieldSet.associationType.getDefinedPropertyTypes.toSeq.sortBy(_.name)
+        def makeMemberTypeList = {
+          val rolesNS = otherRoles.map{r =>
+            val rolePageLink = "#" //TODO implement rolePageLink
+            SHtml.link(rolePageLink,()=>(),Text(r.name)):NodeSeq
+          }
+          val propTypesNS = propTypes.map{p => Text(p.name)}
+          rolesNS++propTypesNS
+        }
+
         def makeRow(assocField: AssociationField) = {
-          ".role_players *" #> otherRoles.map{role =>
-            val rolePlayers = assocField.companionAssociationFields.filter(_.role == role)
-              .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
-            makeItemLinkList(rolePlayers)
+          ".members *" #> {
+            val rolePlayersNS = otherRoles.map{role =>
+              val rolePlayers = assocField.companionAssociationFields.filter(_.role == role)
+                .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
+              makeItemLinkList(rolePlayers)
+            }
+            val propValsNS = propTypes.map{propType =>
+              val propVals: Seq[NodeSeq] = assocField.association.getProperties(propType).toSeq.map(pv => Text(pv.valueString))
+              makeElemList(propVals)
+            }
+            rolePlayersNS++propValsNS
           }
         }
         ".association_set_name *" #> makeAssocSetHeader(assocFieldSet) &
-        ".role *" #> otherRoles.map{r =>
-          val rolePageLink = "#" //TODO implement rolePageLink
-          SHtml.link(rolePageLink,()=>(),Text(r.name)):NodeSeq
-        } &
-        ".association_row *" #> assocFieldSet.associationFields.map(makeRow(_))
+        ".member_type *" #> makeMemberTypeList &
+        ".association_row *" #> assocFieldSet.associationFields.toSeq.map(makeRow(_))
       }
 
       //makeFieldGroup return
@@ -95,7 +95,6 @@ class CurrentItem {
       ".auto_property_set *" #> List.empty &
       ".property_set *" #> definedProps.map(makePropertySet(_)) &
       ".single_property *" #> List.empty &
-      ".compact_association_set *" #> List.empty & //definedAssocFields.map(makeCompactAssocSet(_)) &
       ".association_set_table *" #> definedAssocFields.map(makeAssocSetTable(_))
     }
 
@@ -110,12 +109,15 @@ class CurrentItem {
     SHtml.link(assocPageLink,()=>(),Text(assocTypeName))
   }
 
-  private def makeItemLinkList(items: Seq[Item]): NodeSeq => NodeSeq = {
-    val intermediate = if(items.isEmpty) items else items.dropRight(1)
-    ".intermediate *" #> intermediate.map{t =>
-      ".listval" #> SHtml.link(t.address,()=>(),Text(t.name))} &
-    ".last *" #> items.lastOption.map{t =>
-      ".listval" #> SHtml.link(t.address,()=>(),Text(t.name))} &
-    ".moreLink" #> "" //TODO implement more link
+  private def makeElemList(elems: Seq[NodeSeq]): NodeSeq => NodeSeq = {
+    val intermediate = if(elems.isEmpty) elems else elems.dropRight(1)
+    ".intermediate *" #> intermediate.map{elem =>
+      ".listval" #> elem} &
+    ".last *" #> elems.lastOption.map{elem =>
+      ".listval" #> elem}
+  }
+  private def makeItemLinkList(items: Seq[Item]) = {
+    val elems = items.map{t => SHtml.link(t.address,()=>(),Text(t.name))}
+    makeElemList(elems)
   }
 } //end of class
