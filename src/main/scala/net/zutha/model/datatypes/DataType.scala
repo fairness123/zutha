@@ -1,15 +1,15 @@
 package net.zutha.model.datatypes
 
 import net.zutha.model.db.DB.db
-import net.zutha.model.constructs.Item
+import net.zutha.model.constructs.ZItem
 
 object DataType{
-  private val dataTypeMap = Map[Item,DataType](
+  private val dataTypeMap = Map[ZItem,DataType](
     db.siNonNegativeInteger -> ZNonNegativeInteger,
     db.siUnboundedNonNegativeInteger -> ZUnboundedNNI
   )
   
-  def apply(dataTypeItem: Item): DataType = {
+  def apply(dataTypeItem: ZItem): DataType = {
     dataTypeMap(dataTypeItem)
   }
 }

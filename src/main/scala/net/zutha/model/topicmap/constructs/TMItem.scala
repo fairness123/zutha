@@ -17,39 +17,39 @@ object TMItem{
   val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
   def apply(topic: Topic):TMItem = getItem(topic)
 }
-class TMItem protected (topic: Topic) extends Item{
+class TMItem protected (topic: Topic) extends ZItem{
   val tm = topic.getTopicMap
 
   // -------------- Common method overrides --------------
   override def hashCode() = ("http://zutha.net/majortomTopic/" + topic.getId).hashCode()
 
   override def equals(obj:Any) = obj match {
-    case item: Item => item.hashCode == hashCode
+    case item: ZItem => item.hashCode == hashCode
     case topic: Topic => topic.toItem.hashCode == hashCode
     case _ => false
   }
 
   // -------------- Conversion --------------
   def toTopic = topic
-  def toItem: Item = this
+  def toItem: ZItem = this
 
   lazy val isZType = TopicMapDB.itemIsA(this,db.siTYPE)
   def toZType: ZType = TMType(topic)
 
   lazy val isItemType = TopicMapDB.itemIsA(this,db.siITEM_TYPE)
-  def toItemType: ItemType = TMItemType(topic)
+  def toItemType: ZItemType = TMItemType(topic)
 
   lazy val isInterface = TopicMapDB.itemIsA(this,db.siINTERFACE)
-  def toInterface: Interface = TMInterface(topic)
+  def toInterface: ZInterface = TMInterface(topic)
 
   lazy val isRole = TopicMapDB.itemIsA(this,db.siROLE)
   def toRole: ZRole = TMRole(topic)
 
   lazy val isAssociationType = TopicMapDB.itemIsA(this,db.siASSOCIATION_TYPE)
-  def toAssociationType: AssociationType = TMAssociationType(topic)
+  def toAssociationType: ZAssociationType = TMAssociationType(topic)
 
   lazy val isPropertyType = TopicMapDB.itemIsA(this,db.siPROPERTY_TYPE)
-  def toPropertyType: PropertyType = TMPropertyType(topic)
+  def toPropertyType: ZPropertyType = TMPropertyType(topic)
 
   // -------------- ZIDs --------------
   lazy val ZIDs: Set[String] = {
@@ -77,23 +77,18 @@ class TMItem protected (topic: Topic) extends Item{
 
   // -------------- names --------------
   def names(scope: ZScope):Set[String] = topic.getNames(scope:IScope).toSet.map((_:Name).getValue)
-  def names(scopeItems: Item*):Set[String] = names(TMScope(scopeItems.toSet))
+  def names(scopeItems: ZItem*):Set[String] = names(TMScope(scopeItems.toSet))
   def allNames:Set[String] = topic.getNames.toSet.map((_:Name).getValue)
   def unconstrainedNames:Set[String] = names(TMScope())
 
   def name(scope: ZScope) = names(scope).headOption
-  def name(scopeItems: Item*) = names(TMScope(scopeItems.toSet)).headOption
+  def name(scopeItems: ZItem*) = names(TMScope(scopeItems.toSet)).headOption
   def name = unconstrainedNames.headOption match {
     case Some(str) => str
     case None => { //TODO implement autoNames
       "Item " + zid
       //throw new SchemaViolationException("item '" + this + "' has no name")
     }
-  }
-
-  // -------------- Zuthanet Address --------------
-  def address: String = {
-    "/item/" + zid + "/" + name
   }
   
   // -------------- types --------------
@@ -110,7 +105,7 @@ class TMItem protected (topic: Topic) extends Item{
 
   // -------------- fields --------------
   def getPropertySets = {
-    val propSets: Set[PropertySet] = getFieldDefiningTypes.flatMap{definingType =>
+    val propSets: Set[ZPropertySet] = getFieldDefiningTypes.flatMap{definingType =>
       definingType.getDefinedPropertyTypes
         .filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
         .map(propType => TMPropertySet(this,propType,definingType))
@@ -118,7 +113,7 @@ class TMItem protected (topic: Topic) extends Item{
     propSets
   }
 
-  def getProperties(propType: PropertyType): Set[Property] = {
+  def getProperties(propType: ZPropertyType): Set[ZProperty] = {
     //check if propType is a name
     if(propType.hasSuperType(db.siNAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
       val names = topic.getNames.map(_.toProperty).toSet
@@ -133,13 +128,13 @@ class TMItem protected (topic: Topic) extends Item{
     occurrences
   }
 
-  def getPropertyValues(propType: PropertyType): Set[PropertyValue] = {
+  def getPropertyValues(propType: ZPropertyType): Set[PropertyValue] = {
     getProperties(propType).map(prop => prop.value)
   }
 
-  def getProperty(propType: PropertyType) = getProperties(propType).headOption
+  def getProperty(propType: ZPropertyType) = getProperties(propType).headOption
 
-  def getPropertyValue(propType: PropertyType): Option[PropertyValue] =
+  def getPropertyValue(propType: ZPropertyType): Option[PropertyValue] =
     getPropertyValues(propType).headOption
 
 
@@ -149,7 +144,7 @@ class TMItem protected (topic: Topic) extends Item{
     }
   }
 
-  def getAssociationFields(assocFieldType: AssociationFieldType) = {
+  def getAssociationFields(assocFieldType: ZAssociationFieldType) = {
     val rolesPlayed = topic.getRolesPlayed(assocFieldType.role, assocFieldType.associationType).toSet
     val visibleRolesPlayed = rolesPlayed.filterNot(_.getParent.isAnonymous)
     visibleRolesPlayed.map{r => TMAssociationField(r)}

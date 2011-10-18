@@ -2,7 +2,7 @@ package net.zutha.model.constructs
 
 import net.zutha.model.datatypes.{DataType}
 
-trait PropertyType extends Interface{
-  def dataTypeItem: Item
+trait ZPropertyType extends ZInterface{
+  def dataTypeItem: ZItem
   def dataType: DataType
 }

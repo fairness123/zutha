@@ -2,11 +2,11 @@ package net.zutha.model.topicmap.constructs
 
 import net.zutha.model.constructs._
 
-case class TMAssociationFieldSet(parentItem: Item, associationFieldType: AssociationFieldType) extends AssociationFieldSet{
+case class TMAssociationFieldSet(parentItem: ZItem, associationFieldType: ZAssociationFieldType) extends ZAssociationFieldSet{
 
   def definingType: ZType = associationFieldType.definingType
   def role: ZRole = associationFieldType.role
-  def associationType: AssociationType = associationFieldType.associationType
+  def associationType: ZAssociationType = associationFieldType.associationType
   def associationFields = parentItem.getAssociationFields(associationFieldType)
 
   def cardMin = associationFieldType.cardMin

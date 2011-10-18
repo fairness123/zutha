@@ -9,26 +9,18 @@ import net.liftweb.common._
 import Box._
 import net.liftweb.http.{SHtml, SnippetExecutionException, S}
 import model.constructs._
+import lib.uri.{ItemLoc, ItemInfo}
 
-class CurrentItem {
+class ItemPage(itemInfo: ItemInfo) {
 
-  private lazy val item: Item = (for {
-      zid <- S.param("zid") ?~ "no zid param was given"
-      repairedZID <- Zid.repair(zid) ?~ "an invalid zid was provided"
-      item <- DB.db.getItem(Zid(repairedZID)) ?~ "no item with the specifed zid can be found"
-    } yield (item)) match{
-      case Full(itm) => itm
-      case Failure(msg, _, _) => throw new SnippetExecutionException(msg)
-      case _ => throw new SnippetExecutionException("something went wrong looking up item by zid")
-    }
+  private val item: ZItem = itemInfo.item
 
   def pageTitle(content: NodeSeq): NodeSeq = {
-    val name = S.param("name") openOr "<no name>"
     val viewStr = S.attr("view") match {
       case Full(view) => " - " + view
       case _ => ""
     }
-    Text("Zutha.net - "+ name +viewStr)
+    Text("Zutha.net - " + item.name + viewStr)
   }
 
   def summary: NodeSeq => NodeSeq = {
@@ -51,15 +43,15 @@ class CurrentItem {
       val definedAssocFields = assocFieldSets.filter(_.definingType == definingType)
       val definedProps = propSets.filter(_.definingType == definingType)
 
-      def makePropertySet(propSet: PropertySet) = {
-        def makeProperty(prop: Property) = {
+      def makePropertySet(propSet: ZPropertySet) = {
+        def makeProperty(prop: ZProperty) = {
           ".property_value *" #> prop.valueString
         }
         ".property_name *" #> propSet.propertyType.name &
         ".property *" #> propSet.properties.map(makeProperty(_))
       }
 
-      def makeAssocSetTable(assocFieldSet: AssociationFieldSet) = {
+      def makeAssocSetTable(assocFieldSet: ZAssociationFieldSet) = {
         val otherRoles = assocFieldSet.otherRoles.toSeq.sortBy(_.name)
         val propTypes = assocFieldSet.associationType.getDefinedPropertyTypes.toSeq.sortBy(_.name)
         def makeMemberTypeList = {
@@ -71,7 +63,7 @@ class CurrentItem {
           rolesNS++propTypesNS
         }
 
-        def makeRow(assocField: AssociationField) = {
+        def makeRow(assocField: ZAssociationField) = {
           ".members *" #> {
             val rolePlayersNS = otherRoles.map{role =>
               val rolePlayers = assocField.companionAssociationFields.filter(_.role == role)
@@ -101,7 +93,7 @@ class CurrentItem {
     ".field_group *" #> item.getFieldDefiningTypes.toSeq.sortBy(_.zid).map(makeFieldGroup(_))
   }
 
-  private def makeAssocSetHeader(assocFieldSet: AssociationFieldSet) = {
+  private def makeAssocSetHeader(assocFieldSet: ZAssociationFieldSet) = {
     val role = assocFieldSet.role
     val assocType = assocFieldSet.associationType
     val assocTypeName = assocType.name(role).getOrElse(assocType.name)
@@ -116,8 +108,8 @@ class CurrentItem {
     ".last *" #> elems.lastOption.map{elem =>
       ".listval" #> elem}
   }
-  private def makeItemLinkList(items: Seq[Item]) = {
-    val elems = items.map{t => SHtml.link(t.address,()=>(),Text(t.name))}
+  private def makeItemLinkList(items: Seq[ZItem]) = {
+    val elems = items.map{t => SHtml.link(ItemLoc.makeUri(t),()=>(),Text(t.name))}
     makeElemList(elems)
   }
 } //end of class

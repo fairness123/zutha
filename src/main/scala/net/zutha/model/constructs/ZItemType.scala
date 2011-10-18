@@ -1,5 +1,5 @@
 package net.zutha.model.constructs
 
-trait ItemType extends ZType {
+trait ZItemType extends ZType {
 
 }

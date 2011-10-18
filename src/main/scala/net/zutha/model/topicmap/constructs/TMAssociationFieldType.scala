@@ -6,7 +6,7 @@ import net.zutha.model.db.DB._
 import javax.naming.directory.SchemaViolationException
 import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
 
-case class TMAssociationFieldType(definingType: ZType, role:ZRole, associationType:AssociationType) extends AssociationFieldType{
+case class TMAssociationFieldType(definingType: ZType, role:ZRole, associationType:ZAssociationType) extends ZAssociationFieldType{
   def companionAssociationFieldTypes = otherRoles.map(r => TMAssociationFieldType(definingType,r,associationType))
 
   lazy val declarationAssociation = TopicMapDB.findAssociations(db.siASSOCIATION_FIELD_DECLARATION,true,

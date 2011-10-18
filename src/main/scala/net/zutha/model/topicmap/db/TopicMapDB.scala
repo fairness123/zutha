@@ -49,7 +49,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  protected def getSchemaItem(identifier: SchemaIdentifier): Item = tmm.lookupTopicBySI(ZSI_PREFIX + identifier.toString) match {
+  protected def getSchemaItem(identifier: SchemaIdentifier): ZItem = tmm.lookupTopicBySI(ZSI_PREFIX + identifier.toString) match {
     case Some(topic) => topic.toItem
     case None => throw new SchemaItemMissingException
   }
@@ -149,7 +149,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
    *    If false, matched associations  must have at least the set of rolePlayers given
    *  @param rolePlayers a set of (Role,Player) pairs that matched associations must contain
    **/
-  def findAssociations(assocType: AssociationType, strict: Boolean, rolePlayers:(ZRole,Item)*) = {
+  def findAssociations(assocType: ZAssociationType, strict: Boolean, rolePlayers:(ZRole,ZItem)*) = {
     val requiredRolePlayers = rolePlayers.toSet
     val allAssoc = tmm.getAssociations[Association](assocType:Topic).toSet.map((a:Association) => a.toZAssociation)
     val results = allAssoc.filter{assoc =>

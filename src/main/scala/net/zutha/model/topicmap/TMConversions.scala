@@ -15,9 +15,9 @@ object TMConversions {
 
   // --------------------- ZDM => TMAPI ---------------------
   // ZDM Item => tmapi Topic
-  implicit def itemToTopic(item: Item) = item.asInstanceOf[TMItem].toTopic
+  implicit def itemToTopic(item: ZItem) = item.asInstanceOf[TMItem].toTopic
   // ZDM ItemType => tmapi Topic
-  implicit def itemTypeToTopic(itemType: ItemType) = itemType.asInstanceOf[TMItemType].toTopic
+  implicit def itemTypeToTopic(itemType: ZItemType) = itemType.asInstanceOf[TMItemType].toTopic
   // ZDM Role => tmapi Topic
   implicit def roleToTopic(role: ZRole) = role.asInstanceOf[TMRole].toTopic
   // ZDM Association => tmapi Association

@@ -4,6 +4,11 @@ object ApplicationConstants {
   val TM_DATA_PATH = "src/main/resources/tm_data/"
 
   val HTML_EXT = "html"
+  val ZID_NAME_SEP = "::"
+
+  val DEFAULT_ITEM_VIEW = "details"
+  val DEFAULT_ASSOC_VIEW = "assoc-table"
+  val DEFAULT_ROLE_VIEW = "role-player-list"
 
   val THIS_HOST_ID                = "0"
   val THIS_HOST_URI               = "http://" + THIS_HOST_ID + ".zutha.net/"

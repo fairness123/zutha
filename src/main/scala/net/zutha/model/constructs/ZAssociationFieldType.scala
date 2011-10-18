@@ -3,10 +3,10 @@ package net.zutha.model.constructs
 import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZNonNegativeInteger, Infinity, Finite, ZUnboundedNNI}
 
-trait AssociationFieldType{
+trait ZAssociationFieldType{
   def definingType: ZType
   def role: ZRole
-  def associationType: AssociationType
+  def associationType: ZAssociationType
 
   /**
    * @return a Set containing the other Roles that can be played in this field's Association.
@@ -22,7 +22,7 @@ trait AssociationFieldType{
     }
   }
 
-  def companionAssociationFieldTypes: Set[AssociationFieldType]
+  def companionAssociationFieldTypes: Set[ZAssociationFieldType]
 
   def declarationAssociation: ZAssociation
   def cardMin: ZNonNegativeInteger

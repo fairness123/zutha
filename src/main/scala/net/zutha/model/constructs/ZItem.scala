@@ -7,22 +7,22 @@ import net.zutha.model.datatypes.{PropertyValue, DataType}
 * and open the template in the editor.
 */
 
-trait Item {
+trait ZItem {
   // -------------- conversion --------------
   def isZType: Boolean
   def toZType: ZType
 
   def isItemType: Boolean
-  def toItemType: ItemType
+  def toItemType: ZItemType
 
   def isInterface: Boolean
-  def toInterface: Interface
+  def toInterface: ZInterface
 
   def isAssociationType: Boolean
-  def toAssociationType: AssociationType
+  def toAssociationType: ZAssociationType
 
   def isPropertyType: Boolean
-  def toPropertyType: PropertyType
+  def toPropertyType: ZPropertyType
 
   def isRole: Boolean
   def toRole: ZRole
@@ -36,7 +36,7 @@ trait Item {
   /** @return a set of names having the given scope */
   def names(scope: ZScope):Set[String]
   /** @return a set of names having the scope specified by the given list of Items*/
-  def names(scopeItems: Item*):Set[String]
+  def names(scopeItems: ZItem*):Set[String]
   /** @return all names in any scope*/
   def allNames:Set[String]
   /** @return all names in the unconstrained scope*/
@@ -44,7 +44,13 @@ trait Item {
   /** @return this item's primary name in the given scope or None*/
   def name(scope: ZScope): Option[String]
   /** @return this item's primary name in the given scope or None*/
-  def name(scopeItems: Item*): Option[String]
+  def name(scopeItems: ZItem*): Option[String]
+  /** @return this item's primary name in the given scope if it exists,
+   * otherwise return the primary name in the Unconstrained Scope */
+  def nameF(scope: ZScope): String = name(scope).getOrElse(name)
+  /** @return this item's primary name in the given scope if it exists,
+   * otherwise return the primary name in the Unconstrained Scope */
+  def nameF(scopeItems: ZItem*): String = name(scopeItems:_*).getOrElse(name)
   /** @return this item's primary name in the unconstrained scope */
   def name: String;
 
@@ -55,19 +61,15 @@ trait Item {
   def getFieldDefiningTypes: Set[ZType];
 
   // -------------- fields --------------
-  def getPropertySets: Set[PropertySet]
-  def getProperties(propType: PropertyType): Set[Property]
-  def getPropertyValues(propType: PropertyType): Set[PropertyValue]
-  def getProperty(propType: PropertyType): Option[Property]
-  def getPropertyValue(propType: PropertyType): Option[PropertyValue]
+  def getPropertySets: Set[ZPropertySet]
+  def getProperties(propType: ZPropertyType): Set[ZProperty]
+  def getPropertyValues(propType: ZPropertyType): Set[PropertyValue]
+  def getProperty(propType: ZPropertyType): Option[ZProperty]
+  def getPropertyValue(propType: ZPropertyType): Option[PropertyValue]
 
-  def getAssociationFieldSets: Set[AssociationFieldSet]
-  def getAssociationFields(assocFieldType: AssociationFieldType): Set[AssociationField]
+  def getAssociationFieldSets: Set[ZAssociationFieldSet]
+  def getAssociationFields(assocFieldType: ZAssociationFieldType): Set[ZAssociationField]
 
-  // -------------- zutha.net-specific properties --------------
-
-  // web address of form: /item/<zid>/<name>
-  def address: String;
 }
 
 

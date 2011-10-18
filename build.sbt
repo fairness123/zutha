@@ -10,8 +10,10 @@ seq(webSettings :_*)
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-//for JRebel
-jettyScanDirs := Nil
+
+jettyScanDirs := Nil //for JRebel
+
+jettyPort := 8081
   
 resolvers ++= Seq(
     "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",

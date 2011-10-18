@@ -42,7 +42,7 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
 //    propDefRoles.map{_.getParent.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType}
   }
 
-  /** @return a Seq[AssociationFieldType] representing the
+  /** @return a Seq[ZAssociationFieldType] representing the
    *  association fields defined by this Type
    */
   def getDefinedAssociationFieldTypes = {

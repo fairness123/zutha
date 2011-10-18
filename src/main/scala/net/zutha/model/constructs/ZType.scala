@@ -1,7 +1,7 @@
 package net.zutha.model.constructs
 
 
-trait ZType extends Item{
+trait ZType extends ZItem{
   //type information
   def isAbstract: Boolean;
   def hasSuperType(superType: ZType): Boolean
@@ -11,7 +11,7 @@ trait ZType extends Item{
 
   // field definition
   def definesFields: Boolean;
-//  def getDefinedFields: Seq[ItemType];
-  def getDefinedPropertyTypes: Set[PropertyType];
-  def getDefinedAssociationFieldTypes: Set[AssociationFieldType];
+//  def getDefinedFields: Seq[ZItemType];
+  def getDefinedPropertyTypes: Set[ZPropertyType];
+  def getDefinedAssociationFieldTypes: Set[ZAssociationFieldType];
 }
