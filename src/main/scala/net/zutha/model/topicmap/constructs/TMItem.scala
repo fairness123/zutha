@@ -145,7 +145,10 @@ class TMItem protected (topic: Topic) extends ZItem{
   }
 
   def getAssociationFields(assocFieldType: ZAssociationFieldType) = {
-    val rolesPlayed = topic.getRolesPlayed(assocFieldType.role, assocFieldType.associationType).toSet
+    getAssociationFields(assocFieldType.role, assocFieldType.associationType)
+  }
+  def getAssociationFields(role: ZRole, assocType: ZAssociationType) = {
+    val rolesPlayed = topic.getRolesPlayed(role, assocType).toSet
     val visibleRolesPlayed = rolesPlayed.filterNot(_.getParent.isAnonymous)
     visibleRolesPlayed.map{r => TMAssociationField(r)}
   }

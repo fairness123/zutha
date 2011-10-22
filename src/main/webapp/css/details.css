@@ -1,38 +1,5 @@
 
 
-/**************** Toolbar *********************/
-#toolbar{
-    height:2em;
-}
-
-#edit{
-    float:right;
-}
-#edit form{
-    float:right;
-    margin-right:2px;
-}
-#edit form input[type="submit"]{
-    width: 4em;
-    height: 2em;
-}
-
-/**************** Container *********************/
-#container {
-    margin:1px auto 5px;
-    padding: 10px 10px 40px;
-    max-width:1080px;
-    min-width:100px;
-    background-color:#153A8E;
-    font-family:arial;
-}
-
-.item {
-    position:relative;
-    background-color:white;
-    padding:10px 10px 4px;
-}
-
 /**************** Fields *********************/
 .fields{
     padding-left:0;

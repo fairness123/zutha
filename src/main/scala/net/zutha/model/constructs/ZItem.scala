@@ -69,7 +69,7 @@ trait ZItem {
 
   def getAssociationFieldSets: Set[ZAssociationFieldSet]
   def getAssociationFields(assocFieldType: ZAssociationFieldType): Set[ZAssociationField]
-
+  def getAssociationFields(role: ZRole, assocType: ZAssociationType): Set[ZAssociationField]
 }
 
 
