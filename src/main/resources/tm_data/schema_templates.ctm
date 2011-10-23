@@ -32,26 +32,7 @@ def has-trait($item, $trait, $reifier)
     )
 end
 
-# ITEM TYPE IMPLEMENTS INTERFACE
-def implements($itemType, $interface, $reifier)
-    $reifier isa zsi:item-type-implements-interface;
-    .
-    zsi:item-type-implements-interface(
-        zsi:item-type: $itemType,
-        zsi:interface: $interface
-    ) ~ $reifier
-
-    #topic map implementation
-    ?anon isa ztm:anonymous-topic;
-        ako $interface.
-    $itemType ako ?anon.
-    ztm:anonymous-topic-link(
-        ztm:reified-zdm-association: $reifier,
-        ztm:anonymous-topic: ?anon
-    )
-end
-
-# ITEM PROPERTY
+# PROPERTY
 def property($item, $propType, $value, $reifier)
     $reifier isa $propType
     .

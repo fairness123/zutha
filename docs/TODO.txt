@@ -1,3 +1,10 @@
+--------------------- UI ---------------------
+Hide empty field-sets
+other roles/properties in role-player-list items
+list scope items after properties
+more compact worth bars
+
+
 --------------------- Code ---------------------
 
 >>> optimization <<<
@@ -9,7 +16,7 @@ Use a more efficient Topic Mab engine than MaJorToM
 default-permission-level in field-declarations (has-property, plays-role)
 is-inherited property on schema-rules
 may-be-unknown property in has-property and has-role associations
-overrides association between reified associations such as field-declaration and association-role-constraint
+*DONE* overrides association between reified associations such as field-declaration and association-role-constraint
 
 --------------------- Zutha Google Group posts ---------------------
 
