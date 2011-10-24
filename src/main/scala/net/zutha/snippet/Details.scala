@@ -10,19 +10,21 @@ import lib.uri.{AssocLoc, RoleLoc, ItemInfo}
 class Details(itemInfo: ItemInfo) {
 
   private val item: ZItem = itemInfo.item
-  private val propSets = item.getPropertySets
-  private val assocFieldSets = item.getAssociationFieldSets
-
+  private val propSets = item.getNonEmptyPropertySetsGrouped
+  private val assocFieldSets = item.getNonEmptyAssociationFieldSetsGrouped
+  private val fieldDefiningTypes = propSets.keySet union assocFieldSets.keySet
+  
   def render: NodeSeq => NodeSeq = {
-    ".field_group *" #> item.getFieldDefiningTypes.toSeq.sortBy(_.zid).map(makeFieldGroup(_))
+    ".field_group *" #> fieldDefiningTypes.toSeq.sortBy(_.zid).map(makeFieldGroup(_))
   }
 
   /** Render the set of fields that were defined by definingType */
   private def makeFieldGroup(definingType: ZType): NodeSeq => NodeSeq = {
-    val definedAssocFields = assocFieldSets.filter(_.definingType == definingType)
-    val definedProps = propSets.filter(_.definingType == definingType)
+    val definedAssocFields: Seq[ZAssociationFieldSet] = assocFieldSets.getOrElse(definingType,Set.empty)
+      .toSeq.sortBy(_.associationType.zid)
+    val definedProps: Seq[ZPropertySet] = propSets.getOrElse(definingType,Set.empty)
+      .toSeq.sortBy(_.propertyType.zid)
 
-    //makeFieldGroup return
     ".field_group_name *" #> ("Fields from " + definingType.name) &
     ".auto_property_set *" #> List.empty &
     ".property_set *" #> definedProps.map(makePropertySet(_)) &

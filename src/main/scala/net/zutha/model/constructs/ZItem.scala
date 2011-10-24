@@ -62,12 +62,16 @@ trait ZItem {
 
   // -------------- fields --------------
   def getPropertySets: Set[ZPropertySet]
+  def getPropertySetsGrouped: Map[ZType,Set[ZPropertySet]]
+  def getNonEmptyPropertySetsGrouped: Map[ZType,Set[ZPropertySet]]
   def getProperties(propType: ZPropertyType): Set[ZProperty]
   def getPropertyValues(propType: ZPropertyType): Set[PropertyValue]
   def getProperty(propType: ZPropertyType): Option[ZProperty]
   def getPropertyValue(propType: ZPropertyType): Option[PropertyValue]
 
   def getAssociationFieldSets: Set[ZAssociationFieldSet]
+  def getAssociationFieldSetsGrouped: Map[ZType,Set[ZAssociationFieldSet]]
+  def getNonEmptyAssociationFieldSetsGrouped: Map[ZType,Set[ZAssociationFieldSet]]
   def getAssociationFields(assocFieldType: ZAssociationFieldType): Set[ZAssociationField]
   def getAssociationFields(role: ZRole, assocType: ZAssociationType): Set[ZAssociationField]
 }

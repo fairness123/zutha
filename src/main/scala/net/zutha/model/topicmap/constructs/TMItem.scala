@@ -104,14 +104,25 @@ class TMItem protected (topic: Topic) extends ZItem{
   }
 
   // -------------- fields --------------
-  def getPropertySets = {
-    val propSets: Set[ZPropertySet] = getFieldDefiningTypes.flatMap{definingType =>
-      definingType.getDefinedPropertyTypes
-        .filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
+
+  def getPropertySetsGrouped = {
+    val kvPairs: Set[(ZType,Set[ZPropertySet])] = getFieldDefiningTypes.map{definingType =>
+      val propSets: Set[ZPropertySet] = definingType.getDefinedPropertyTypes
+        //.filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
         .map(propType => TMPropertySet(this,propType,definingType))
+      (definingType,propSets)
     }
-    propSets
+    kvPairs.toMap
   }
+
+  def getNonEmptyPropertySetsGrouped = getPropertySetsGrouped.flatMap{
+    case (definingType,propSets) => propSets.filterNot(_.isEmpty) match{
+      case propSet if propSet.isEmpty => None
+      case propSet => Some(definingType,propSet)
+    }
+  }
+
+  def getPropertySets = getPropertySetsGrouped.flatMap(_._2).toSet
 
   def getProperties(propType: ZPropertyType): Set[ZProperty] = {
     //check if propType is a name
@@ -138,11 +149,22 @@ class TMItem protected (topic: Topic) extends ZItem{
     getPropertyValues(propType).headOption
 
 
-  def getAssociationFieldSets = {
-    getFieldDefiningTypes.flatMap{definingType =>
-      definingType.getDefinedAssociationFieldTypes.map{TMAssociationFieldSet(this,_)}
+  def getAssociationFieldSetsGrouped = {
+    val kvPairs: Set[(ZType,Set[ZAssociationFieldSet])] = getFieldDefiningTypes.map{definingType =>
+      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.getDefinedAssociationFieldTypes.map{TMAssociationFieldSet(this,_)}
+      (definingType,assocFieldSets)
+    }
+    kvPairs.toMap
+  }
+
+  def getNonEmptyAssociationFieldSetsGrouped = getAssociationFieldSetsGrouped.flatMap{
+    case (definingType,assocFieldSets) => assocFieldSets.filterNot(_.isEmpty) match{
+      case assocFieldSet if assocFieldSet.isEmpty => None
+      case assocFieldSet => Some(definingType,assocFieldSet)
     }
   }
+
+  def getAssociationFieldSets = getAssociationFieldSetsGrouped.flatMap(_._2).toSet
 
   def getAssociationFields(assocFieldType: ZAssociationFieldType) = {
     getAssociationFields(assocFieldType.role, assocFieldType.associationType)

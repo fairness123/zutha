@@ -289,6 +289,7 @@ zsi:reified-auto-property-type %zid%; isa zsi:item-type;
 zsi:construct %zid%; isa zsi:construct-type;
     name("Construct",%zid%);
 
+    is-abstract(%zid%);
     root-of(zsi:construct-type,%zid%);
 .
 
@@ -298,6 +299,7 @@ zsi:association %zid%; isa zsi:association-type;
 
     name("Association",%zid%);
 
+    is-abstract(%zid%);
     root-of(zsi:association-type,%zid%);
 .
 
@@ -305,6 +307,7 @@ zsi:association %zid%; isa zsi:association-type;
 zsi:immutable-association %zid%; isa zsi:association-type;
     kind-of(zsi:association,%zid%);
 
+    is-abstract(%zid%);
     name("Immutable Association",%zid%);
 .
 
@@ -314,6 +317,7 @@ zsi:auto-association %zid%; isa zsi:auto-association-type;
 
     name("Auto Association",%zid%);
 
+    is-abstract(%zid%);
     root-of(zsi:auto-association-type,%zid%);
 .
 
@@ -323,6 +327,7 @@ zsi:property %zid%; isa zsi:property-type;
 
     name("Property",%zid%);
 
+    is-abstract(%zid%);
     root-of(zsi:property-type,%zid%);
 .
 
@@ -331,6 +336,8 @@ zsi:system-property %zid%; isa zsi:property-type;
     kind-of(zsi:property,%zid%);
 
     name("System Property",%zid%);
+
+    is-abstract(%zid%);
 .
 
 # HYBRID PROPERTY
@@ -338,6 +345,8 @@ zsi:hybrid-property %zid%; isa zsi:property-type;
     kind-of(zsi:property,%zid%);
 
     name("Hybrid Property",%zid%);
+
+    is-abstract(%zid%);
 .
 
 # ---------------------- Reified Construct Types ----------------------
@@ -439,7 +448,7 @@ zsi:supertype-subtype %zid%; isa zsi:reified-association-type;
     external-identifier(tmdm:supertype-subtype, %zid%);
     name("Supertype-Subtype",%zid%);
     name("Has Direct Supertype",zsi:subtype,%zid%);
-    name("Has Direct Subtypes",zsi:supertype,%zid%);
+    name("Has Direct Subtype",zsi:supertype,%zid%);
 
     has-role(zsi:supertype,1,1,%zid%);
     has-role(zsi:subtype,1,1,%zid%);
@@ -590,6 +599,7 @@ zsi:name %zid%; isa zsi:property-type;
 
     name("Name",%zid%);
 
+    is-abstract(%zid%);
     has-datatype(xsd:string,%zid%);
     has-unique-value(%zid%);
 .
@@ -866,6 +876,7 @@ zsi:field-declaration %zid%; isa zsi:reified-association-type;
     name("Field Declaration",%zid%);
     name("Declares Field",zsi:field-declarer,%zid%);
 
+    is-abstract(%zid%);
     has-role(zsi:field-declarer,1,1,%zid%fd1%);
     has-property(zsi:card-min,1,1,%zid%);
     has-property(zsi:card-max,1,1,%zid%);

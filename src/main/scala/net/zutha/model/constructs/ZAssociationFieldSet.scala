@@ -11,6 +11,7 @@ trait ZAssociationFieldSet {
   def otherRoles: Set[ZRole] = associationFieldType.otherRoles
   def associationType: ZAssociationType
   def associationFields: Set[ZAssociationField]
+  def isEmpty: Boolean
   def cardMin: ZNonNegativeInteger
   def cardMax: ZUnboundedNNI
 }

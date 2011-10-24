@@ -8,6 +8,7 @@ case class TMAssociationFieldSet(parentItem: ZItem, associationFieldType: ZAssoc
   def role: ZRole = associationFieldType.role
   def associationType: ZAssociationType = associationFieldType.associationType
   def associationFields = parentItem.getAssociationFields(associationFieldType)
+  def isEmpty = associationFields.isEmpty
 
   def cardMin = associationFieldType.cardMin
   def cardMax = associationFieldType.cardMax
