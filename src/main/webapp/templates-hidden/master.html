@@ -8,13 +8,21 @@
         <link rel="stylesheet" type="text/css" href="/css/common.css" />
     </head>
     <body>
+        <div id="loginCurtain" style="display:none"></div>
+        <div id="loginLayer" style="display:none">
+            <div class="lift:embed?what=_login"></div>
+        </div>
+
         <lift:embed what="_headerBar" />
 
         <lift:bind name="head" />
 
         <lift:bind name="toolbar" />
 
-        <lift:bind name="content" />
+        <div id="outer_container">
+            <lift:bind name="content" />
+        </div>
+
 
         <lift:embed what="_footer" />
     </body>

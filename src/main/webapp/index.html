@@ -1,5 +1,22 @@
-<lift:surround with="master" at="content">
+<html>
+<body class="lift:content_id=details">
+<div class="lift:surround?with=master" id="details">
 
-    <span>the home page</span>
+	<!-- Head Merge -->
+    <div class="lift:bind-at?name=head">
+        <head>
+            <title>Zutha Homepage</title>
+            <link rel="stylesheet" type="text/css" href="/css/index.css" />
+        </head>
+    </div>
 
-</lift:surround>
+    <div class="lift:bind-at?name=content" >
+        <h1>Welcome to Zutha</h1>
+    </div>
+
+
+</div>
+</body>
+</html>
+
+

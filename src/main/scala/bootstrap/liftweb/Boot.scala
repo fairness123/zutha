@@ -5,6 +5,7 @@ import common._
 import http._
 import sitemap.{Menu, SiteMap}
 import net.zutha.lib.uri.{RoleLoc, AssocLoc, ItemLoc, UriRedirector}
+import net.zutha.model.user.ZuthaOpenIdVendor
 
 /**
   * A class that's instantiated early and run.  It allows the application
@@ -24,10 +25,14 @@ class Boot {
     //make SiteMap
     LiftRules.setSiteMap(SiteMap(
       Menu("Home") / "index",
+      Menu("Login") / "login",
       Menu(ItemLoc),
       Menu(AssocLoc),
       Menu(RoleLoc)
     ))
+
+    //process OpenID
+    LiftRules.dispatch.append(ZuthaOpenIdVendor.dispatchPF)
     
     // Use jQuery 1.4
     LiftRules.jsArtifacts = net.liftweb.http.js.jquery.JQuery14Artifacts

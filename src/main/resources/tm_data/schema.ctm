@@ -715,7 +715,7 @@ zsi:supertype-subtype zid:06M; isa zsi:reified-association-type;
     external-identifier(tmdm:supertype-subtype, zid:06P);
     name("Supertype-Subtype",zid:06Q);
     name("Has Direct Supertype",zsi:subtype,zid:06R);
-    name("Has Direct Subtypes",zsi:supertype,zid:06T);
+    name("Has Direct Subtype",zsi:supertype,zid:06T);
 
     has-role(zsi:supertype,1,1,zid:06U);
     has-role(zsi:subtype,1,1,zid:06V);
