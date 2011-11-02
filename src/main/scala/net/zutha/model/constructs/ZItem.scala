@@ -72,6 +72,7 @@ trait ZItem {
   def getAssociationFieldSets: Set[ZAssociationFieldSet]
   def getAssociationFieldSetsGrouped: Map[ZType,Set[ZAssociationFieldSet]]
   def getNonEmptyAssociationFieldSetsGrouped: Map[ZType,Set[ZAssociationFieldSet]]
+  def getAssociationFieldSet(role: ZRole, assocType: ZAssociationType): Option[ZAssociationFieldSet]
   def getAssociationFields(assocFieldType: ZAssociationFieldType): Set[ZAssociationField]
   def getAssociationFields(role: ZRole, assocType: ZAssociationType): Set[ZAssociationField]
 }

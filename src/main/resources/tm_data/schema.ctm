@@ -180,21 +180,21 @@ def role-combination($assocType,$role1,$itemType1,$role2,$itemType2,$comboItem,$
     $reifier0 isa zsi:association-has-role-combination-constraint.
     $reifier1 isa zsi:role-combination-constraint.
     $reifier2 isa zsi:role-combination-constraint.
-
+    
     zsi:association-has-role-combination-constraint(
         zsi:role-combination: $comboItem,
         zsi:association-type: $assocType
-    ) ~ reifier0
+    ) ~ $reifier0
     zsi:role-combination-constraint(
         zsi:role-combination: $comboItem,
         zsi:role: $role1,
-        zsi:item-type: $itemType1
-    ) ~ reifier1
+        zsi:type: $itemType1
+    ) ~ $reifier1
     zsi:role-combination-constraint(
         zsi:role-combination: $comboItem,
         zsi:role: $role2,
-        zsi:item-type: $itemType2
-    ) ~ reifier2
+        zsi:type: $itemType2
+    ) ~ $reifier2
 end
 
 # FIELD HAS SCOPE ITEM CONSTRAINT
@@ -422,7 +422,6 @@ zsi:zutha-object zid:027; isa zsi:entity-type;
     is-abstract(zid:02A);
 .
 
-
 # DATA TYPE
 zsi:datatype zid:02B; isa zsi:entity-type;
     kind-of(zsi:entity,zid:02C);
@@ -434,6 +433,8 @@ zsi:datatype zid:02B; isa zsi:entity-type;
     plays-role(zsi:datatype,
         zsi:property-datatype-constraint,0,*,zid:02G);
 .
+
+
 
 # ---------------------- kinds of Construct Type ----------------------
 
@@ -1104,12 +1105,12 @@ zsi:overrides-declaration zid:0C4; isa zsi:reified-association-type;
 
     has-role(zsi:overriding-declaration,1,1,zid:0C9);
     has-role(zsi:overridden-declaration,1,1,zid:0CA);
-    role-combination(zsi:overriding-declaration,zsi:property-declaration,
-        zsi:overridden-declaration,zsi:property-declaration,zid:0CB,zid:0CC,zid:0CD,zid:0CE);
-    role-combination(zsi:overriding-declaration,zsi:association-field-declaration,
-        zsi:overridden-declaration,zsi:association-field-declaration,zid:0CF,zid:0CG,zid:0CH,zid:0CJ);
     role-combination(zsi:overriding-declaration,zsi:association-role-constraint,
-        zsi:overridden-declaration,zsi:association-role-constraint,zid:0CK,zid:0CL,zid:0CM,zid:0CN);
+        zsi:overridden-declaration,zsi:association-role-constraint,zid:0CB,zid:0CC,zid:0CD,zid:0CE);
+    role-combination(zsi:overriding-declaration,zsi:property-declaration,
+        zsi:overridden-declaration,zsi:property-declaration,zid:0CF,zid:0CG,zid:0CH,zid:0CJ);
+    role-combination(zsi:overriding-declaration,zsi:association-field-declaration,
+        zsi:overridden-declaration,zsi:association-field-declaration,zid:0CK,zid:0CL,zid:0CM,zid:0CN);
 .
 
 # ITEM TYPE HAS ROOT ITEM CONSTRAINT
@@ -1567,6 +1568,13 @@ ztm:anonymous-topic.
 # ROLE: REIFIED ZDM ASSOCIATION
 ztm:reified-zdm-association.
 
+
+# ==================== Core Items ====================
+
+# USER
+
+# IDENTITY
+#---A specific means of authentication such as an OpenID or public key
 
 
 

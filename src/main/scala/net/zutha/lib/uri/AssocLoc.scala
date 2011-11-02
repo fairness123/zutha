@@ -54,7 +54,10 @@ object AssocLoc extends Loc[AssocInfo] {
       if(!itemFixed && itemName==UriName(item.name) && !roleFixed && roleName==UriName(role.name) &&
         !assocFixed && assocName==UriName(assoc.nameF(role)) &&
         !endSlash && absolute && suffix=="")
-    => (RewriteResponse("assoc-views"::DEFAULT_ASSOC_VIEW::Nil), AssocInfo(item,role,assoc))
+    => item.getAssociationFieldSet(role,assoc) match { //TODO return AssociationFieldSet in AssocInfo
+      case Some(afs) => (RewriteResponse("assoc-views"::DEFAULT_ASSOC_VIEW::Nil), AssocInfo(item,role,assoc))
+      case None => throw new Exception("Requested Association Field Set does not exist.")
+    }
     // item/<itemZID>/<itemName>/<roleZID>/<roleName>/<assocZID>/<assocName>/<view>.html
     case RewriteRequest(ParsePath(
       List("item",ZIDLookup(itemFixed,item),itemName,ZIDLookup(roleFixed,ZRole(role)),roleName,

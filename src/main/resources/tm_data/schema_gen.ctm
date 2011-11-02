@@ -155,7 +155,6 @@ zsi:zutha-object %zid%; isa zsi:entity-type;
     is-abstract(%zid%);
 .
 
-
 # DATA TYPE
 zsi:datatype %zid%; isa zsi:entity-type;
     kind-of(zsi:entity,%zid%);
@@ -167,6 +166,8 @@ zsi:datatype %zid%; isa zsi:entity-type;
     plays-role(zsi:datatype,
         zsi:property-datatype-constraint,0,*,%zid%);
 .
+
+
 
 # ---------------------- kinds of Construct Type ----------------------
 
@@ -837,12 +838,12 @@ zsi:overrides-declaration %zid%; isa zsi:reified-association-type;
 
     has-role(zsi:overriding-declaration,1,1,%zid%);
     has-role(zsi:overridden-declaration,1,1,%zid%);
+    role-combination(zsi:overriding-declaration,zsi:association-role-constraint,
+        zsi:overridden-declaration,zsi:association-role-constraint,%zid%,%zid%,%zid%,%zid%);
     role-combination(zsi:overriding-declaration,zsi:property-declaration,
         zsi:overridden-declaration,zsi:property-declaration,%zid%,%zid%,%zid%,%zid%);
     role-combination(zsi:overriding-declaration,zsi:association-field-declaration,
         zsi:overridden-declaration,zsi:association-field-declaration,%zid%,%zid%,%zid%,%zid%);
-    role-combination(zsi:overriding-declaration,zsi:association-role-constraint,
-        zsi:overridden-declaration,zsi:association-role-constraint,%zid%,%zid%,%zid%,%zid%);
 .
 
 # ITEM TYPE HAS ROOT ITEM CONSTRAINT
@@ -1300,6 +1301,13 @@ ztm:anonymous-topic.
 # ROLE: REIFIED ZDM ASSOCIATION
 ztm:reified-zdm-association.
 
+
+# ==================== Core Items ====================
+
+# USER
+
+# IDENTITY
+#---A specific means of authentication such as an OpenID or public key
 
 
 

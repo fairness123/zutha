@@ -32,9 +32,6 @@ class RolePage(roleInfo: RoleInfo) {
     ".other_role [href]" #> ItemLoc.makeUri(otherRole)
   }
 
-
-
-
   private def getRolePlayers: Seq[ZItem] = {
     val players = item.getAssociationFields(role,assocType).flatMap{_.getPlayers(otherRole)}
       .toSeq.sortBy(_.name) //TODO sort by worth

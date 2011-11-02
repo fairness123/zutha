@@ -24,6 +24,7 @@ class Boot {
 
     //make SiteMap
     LiftRules.setSiteMap(SiteMap(
+      Menu("Zutha Console") / "zutha_console",
       Menu("Home") / "index",
       Menu("Login") / "login",
       Menu(ItemLoc),

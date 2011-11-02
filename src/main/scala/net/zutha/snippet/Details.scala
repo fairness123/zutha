@@ -5,7 +5,9 @@ import scala.xml.{NodeSeq,Text}
 import net.liftweb.util.Helpers._
 import net.liftweb.http.{SHtml}
 import model.constructs._
-import lib.uri.{AssocLoc, RoleLoc, ItemInfo}
+import lib.uri.{ItemLoc, AssocLoc, RoleLoc, ItemInfo}
+import net.liftweb.common.Empty
+import model.datatypes.Finite
 
 class Details(itemInfo: ItemInfo) {
 
@@ -15,61 +17,64 @@ class Details(itemInfo: ItemInfo) {
   private val fieldDefiningTypes = propSets.keySet union assocFieldSets.keySet
   
   def render: NodeSeq => NodeSeq = {
-    ".field_group *" #> fieldDefiningTypes.toSeq.sortBy(_.zid).map(makeFieldGroup(_))
+    ".field-group *" #> fieldDefiningTypes.toSeq.sortBy(_.zid).map(makeFieldGroup(_))
   }
 
   /** Render the set of fields that were defined by definingType */
   private def makeFieldGroup(definingType: ZType): NodeSeq => NodeSeq = {
     val definedAssocFields: Seq[ZAssociationFieldSet] = assocFieldSets.getOrElse(definingType,Set.empty)
       .toSeq.sortBy(_.associationType.zid)
+    val simpleAssocFields = definedAssocFields.filter(af => af.otherRoles.size == 1 && af.propertyTypes.size == 0)
+    val complexAssocFields = definedAssocFields.filter(af => af.otherRoles.size > 1 || af.propertyTypes.size > 0)
     val definedProps: Seq[ZPropertySet] = propSets.getOrElse(definingType,Set.empty)
       .toSeq.sortBy(_.propertyType.zid)
 
-    ".field_group_name *" #> ("Fields from " + definingType.name) &
-    ".auto_property_set *" #> List.empty &
-    ".property_set *" #> definedProps.map(makePropertySet(_)) &
-    ".single_property *" #> List.empty &
-    ".association_set_table *" #> definedAssocFields.map(makeAssocSetTable(_))
+    ".field-group-name *" #> (definingType.name) &
+    ".simple-field" #> {definedProps.map(makePropertySet(_)) ++ simpleAssocFields.map(makePlayerList(_))} &
+    ".association-set" #> complexAssocFields.map(makeAssocSetTable(_))
   }
 
   /** Render all properties in a Property Set*/
   def makePropertySet(propSet: ZPropertySet) = {
     def makeProperty(prop: ZProperty) = {
-      ".property_value *" #> prop.valueString
+      ".value *" #> prop.valueString
     }
-    ".property_name *" #> propSet.propertyType.name &
-    ".property *" #> propSet.properties.map(makeProperty(_))
+    ".field-type *" #> propSet.propertyType.name &
+    ".field-list *" #> propSet.properties.map(makeProperty(_)) &
+    ".more-link" #> List()
+  }
+
+  /** Render a list of the other players in a binary association field */
+  def makePlayerList(assocFieldSet: ZAssociationFieldSet) = {
+    val role = assocFieldSet.role
+    val assocType = assocFieldSet.associationType
+    val otherRole = assocFieldSet.otherRoles.head
+    val otherPlayers = assocFieldSet.associationFields.flatMap(_.getPlayers(otherRole))
+
+    def renderRolePlayer(player: ZItem) = {
+      "a *" #> player.name &
+      "a [href]" #> ItemLoc.makeUri(player)
+    }
+    
+    ".field-type *" #> assocFieldSet.associationType.nameF(assocFieldSet.role) &
+    ".field-list" #> {
+      ".value" #> otherPlayers.map(renderRolePlayer(_))} &
+    ".more-link" #> {otherPlayers.size match{
+      case 1 => "*" #> List()
+      case _ => ".more-link [href]" #> RoleLoc.makeUri(item,role,assocType,otherRole) &
+        ".other-role-plural" #> otherRole.nameF(role) //TODO get name with plural scope
+    }}
+
   }
 
   /** Render a table to display all association Fields in assocFieldSet*/
   def makeAssocSetTable(assocFieldSet: ZAssociationFieldSet) = {
     val role = assocFieldSet.role
     val assocType = assocFieldSet.associationType
-    val otherRoles = assocFieldSet.otherRoles.toSeq.sortBy(_.name)
-    val propTypes = assocFieldSet.associationType.getDefinedPropertyTypes.toSeq.sortBy(_.name)
 
-    def makeRow(assocField: ZAssociationField) = {
-      ".roleplayers *" #> otherRoles.map{role =>
-          val rolePlayers = assocField.companionAssociationFields.filter(_.role == role)
-            .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
-          SnippetUtils.makeItemLinkList(rolePlayers)
-      } &
-      ".prop_values *" #> propTypes.map{propType =>
-          val propVals: Seq[NodeSeq] = assocField.association.getProperties(propType).toSeq.map(pv => Text(pv.valueString))
-          SnippetUtils.makeElemList(propVals)
-      }
-    }
-
-    ".association_set_name" #> {
-      "a *" #> assocFieldSet.associationType.nameF(assocFieldSet.role) &
-      "a [href]" #> AssocLoc.makeUri(item,role,assocType)
-    } &
-    ".role *" #> otherRoles.map{r =>
-        "a *" #> r.name &
-        "a [href]" #> RoleLoc.makeUri(item,role,assocType,r)
-      } &
-    ".prop_type *" #> propTypes.map{p => Text(p.nameF(role)):NodeSeq} &
-    ".association_row *" #> assocFieldSet.associationFields.toSeq.map(makeRow(_))
+    ".field-type *" #> assocFieldSet.associationType.nameF(assocFieldSet.role) &
+    ".association-table" #> SnippetUtils.makeAssocSetTable(item, assocFieldSet) &
+    ".more-link [href]" #> AssocLoc.makeUri(item,role,assocType)
   }
 
 } //end of class

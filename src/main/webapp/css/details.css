@@ -5,56 +5,66 @@
     padding-left:0;
     margin:0.5em 0;
 }
-.field_group h2 {
-    font-size:24px;
-    font-family:Georgia,Serif;
-    font-variant: small-caps;
-    color: darkred;
-    text-align:center;
-
-    border-top: solid darkred medium;
-    border-bottom: dotted darkred thin;
-}
-.field_group > ul{
-    padding-left:1.5em;
-}
-.field_block{
-    margin: 4px 0;
-    list-style-type: none;
-}
-
-/* Property Set (dotpoint list) */
-.dotpoint_property_set {
-    margin-bottom: 12px;
-}
-
-/* Association Bubbles */
-.association_set {
-    border: 2px solid purple;
-    padding: 4px 10px;
-    margin: 15px 0;
-}
-/* compact association set */
-.compact_association_set > ul{
-    padding-left:1.5em;
-}
-.compact_association_set .role{
-    list-style-type: none;
-}
-
-/* association table */
-.association_set_table table{
-    margin:0px 15px;
+.field-group {
+    margin: 50px 25px;
+    border: 1.5px solid #C3DAFF;
     background: white;
-    border-collapse: collapse;
-    text-align: left;
+    padding: 2px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
 }
-.association_set_table th{
-    border-bottom: 2px solid lightblue;
-    padding: 4px 24px;
+.field-group-heading {
+    text-align: center;
+    position: relative;
+    top: -20px;
+    font-family: "Baskerville", Times, "Times New Roman", serif;
+    color: #666;
+    margin-bottom: -15px;
+    font-size:20px;
+    font-weight:normal;
+
 }
-.association_set_table td{
-    border-bottom: 1px solid lightblue;
-    padding: 4px 24px;
+.field-group-name {
+    color: #666;
+    text-align:center;
+    background: white;
+    padding: 0.35em 1.5em;
+}
+.field-group > ul{
+    padding-left:1.5em;
+}
+.field-group ul li:last-child{
+    border-bottom: 0;
+}
+.field {
+    list-style-type: none;
+    margin: 0 1em 0.5em 1em;
+    padding: 0.5em 1em;
+    border-bottom: 1px solid #DEE3E4;
+    overflow: hidden;
+}
+.field-type {
+    float: left;
+    display: inline;
+    width: 25%;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0;
 }
 
+.more-link {
+    display: block;
+    text-align: right;
+    font-size: 0.85em;
+    margin-top: 1em;
+    font-weight: bold;
+}
+
+/* Simple Fields */
+ul.field-list{
+    margin-left: 25%;
+    padding-left:0;
+}
+li.value {
+    list-style-type: none;
+}

@@ -26,9 +26,9 @@ class ZuthaOpenIdConsumer[UserType] extends OpenIDConsumer[UserType]{
 
     beforeAuth foreach {f => f(discovered, authReq)}
 
-      // Option 1: GET HTTP-redirect to the OpenID Provider endpoint
-      // The only method supported in OpenID 1.x
-      // redirect-URL usually limited ~2048 bytes
-      RedirectResponse(authReq.getDestinationUrl(true))
+    // GET HTTP-redirect to the OpenID Provider endpoint
+    // The only method supported in OpenID 1.x
+    // redirect-URL usually limited ~2048 bytes
+    RedirectResponse(authReq.getDestinationUrl(true))
   }
 }

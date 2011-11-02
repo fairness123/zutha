@@ -12,11 +12,7 @@
 
 	<!-- Toolbar Binding-->
 	<div class="lift:bind-at?name=toolbar" id="toolbar">
-		<div id="edit">
-            <form action="" method="post">
-                <input type="submit" value="Edit" />
-            </form>
-		</div>
+		<div class="create-item-link"><a href="#">Create Item</a></div>
 	</div>
 
     <!-- Content Binding -->
@@ -24,7 +20,7 @@
         <div class="item rounded">
             <!-- Item Summary bubble -->
             <div class="lift:rolePage.summary?eager_eval=true">
-                <div class="lift:embed?what=_itemSummary"></div>
+                <div class="lift:embed?what=_item-summary"></div>
             </div>
         </div>
 
@@ -39,7 +35,7 @@
 
         <div class="role_players lift:rolePage.rolePlayers?eager_eval=true">
             <div class="role_player item rounded">
-                <div class="lift:embed?what=_itemSummary"></div>
+                <div class="lift:embed?what=_item-summary"></div>
                 
             </div>
         </div>

@@ -170,21 +170,21 @@ def role-combination($assocType,$role1,$itemType1,$role2,$itemType2,$comboItem,$
     $reifier0 isa zsi:association-has-role-combination-constraint.
     $reifier1 isa zsi:role-combination-constraint.
     $reifier2 isa zsi:role-combination-constraint.
-
+    
     zsi:association-has-role-combination-constraint(
         zsi:role-combination: $comboItem,
         zsi:association-type: $assocType
-    ) ~ reifier0
+    ) ~ $reifier0
     zsi:role-combination-constraint(
         zsi:role-combination: $comboItem,
         zsi:role: $role1,
-        zsi:item-type: $itemType1
-    ) ~ reifier1
+        zsi:type: $itemType1
+    ) ~ $reifier1
     zsi:role-combination-constraint(
         zsi:role-combination: $comboItem,
         zsi:role: $role2,
-        zsi:item-type: $itemType2
-    ) ~ reifier2
+        zsi:type: $itemType2
+    ) ~ $reifier2
 end
 
 # FIELD HAS SCOPE ITEM CONSTRAINT

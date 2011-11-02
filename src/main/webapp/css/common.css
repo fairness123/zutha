@@ -1,3 +1,11 @@
+a:link, a:visited {
+    text-decoration: none;
+    color: #1170A3;
+}
+a:hover {
+    text-decoration: underline;
+}
+
 /* Currency Icons */
 span.currency_icon{
     float:left;
@@ -37,9 +45,15 @@ ul.linear{
     display:inline;
     padding-left:0;
     margin:0 0;
+    line-height: 1.4;
+    font-size: 1em;
 }
 ul.linear li{
     display:inline-block;
+}
+.linear .value {
+    list-style: none;
+    color: #333;
 }
 
 /* Inline headings */

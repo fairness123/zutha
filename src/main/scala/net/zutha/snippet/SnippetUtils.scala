@@ -1,10 +1,9 @@
 package net.zutha.snippet
 
 import net.liftweb.util.Helpers._
-import xml.NodeSeq
-import net.zutha.model.constructs.ZItem
-import net.zutha.lib.uri.ItemLoc
-
+import net.zutha.model.constructs.{ZAssociationField, ZAssociationFieldSet, ZItem}
+import net.zutha.lib.uri.{RoleLoc, AssocLoc, ItemLoc}
+import xml.{Text, NodeSeq}
 
 object SnippetUtils {
   private[snippet] def makeElemList(elems: Seq[NodeSeq]): NodeSeq => NodeSeq = {
@@ -35,4 +34,30 @@ object SnippetUtils {
     ".traits" #> makeItemLinkList(Seq(item.getType)) //TODO: get Item Traits
   }
 
+  /** Render a table to display all association Fields in assocFieldSet*/
+  def makeAssocSetTable(item: ZItem, assocFieldSet: ZAssociationFieldSet) = {
+    val role = assocFieldSet.role
+    val assocType = assocFieldSet.associationType
+    val otherRoles = assocFieldSet.otherRoles.toSeq.sortBy(_.name)
+    val propTypes = assocFieldSet.propertyTypes.toSeq.sortBy(_.name)
+
+    def makeRow(assocField: ZAssociationField) = {
+      ".role-players *" #> otherRoles.map{role =>
+          val rolePlayers = assocField.companionAssociationFields.filter(_.role == role)
+            .map(_.parent).toSeq.sortBy(_.zid) //TODO sort by worth
+          SnippetUtils.makeItemLinkList(rolePlayers)
+      } &
+      ".prop-values *" #> propTypes.map{propType =>
+          val propVals: Seq[NodeSeq] = assocField.association.getProperties(propType).toSeq.map(pv => Text(pv.valueString))
+          SnippetUtils.makeElemList(propVals)
+      }
+    }
+
+    ".role *" #> otherRoles.map{r =>
+        "a *" #> r.name &
+        "a [href]" #> RoleLoc.makeUri(item,role,assocType,r)
+      } &
+    ".prop-type *" #> propTypes.map{p => Text(p.nameF(role)):NodeSeq} &
+    ".association-row *" #> assocFieldSet.associationFields.toSeq.map(makeRow(_)) //TODO sort by name of first member
+  }
 }

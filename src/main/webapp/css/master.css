@@ -1,5 +1,11 @@
 body {
-    font-size: 95%;
+    font-size: 80%;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+    background: #F1F2F3;
+    color: #666;
+    margin: 0;
 }
 
 /**************** Toolbar *********************/
@@ -40,13 +46,12 @@ body {
 #outer_container {
     font-family:arial;
     margin:1px auto 5px;
-    max-width:1080px;
+    max-width:980px;
     min-width:100px;
 
 }
 
 #container {
-    width:1080px;
     padding: 10px 10px 40px;
     background-color: #DDF;
     border-color: #CCF;

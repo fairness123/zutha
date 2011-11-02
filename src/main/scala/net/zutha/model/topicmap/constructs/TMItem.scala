@@ -149,7 +149,7 @@ class TMItem protected (topic: Topic) extends ZItem{
     getPropertyValues(propType).headOption
 
 
-  def getAssociationFieldSetsGrouped = {
+  lazy val getAssociationFieldSetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZAssociationFieldSet])] = getFieldDefiningTypes.map{definingType =>
       val assocFieldSets: Set[ZAssociationFieldSet] = definingType.getDefinedAssociationFieldTypes.map{TMAssociationFieldSet(this,_)}
       (definingType,assocFieldSets)
@@ -164,7 +164,11 @@ class TMItem protected (topic: Topic) extends ZItem{
     }
   }
 
-  def getAssociationFieldSets = getAssociationFieldSetsGrouped.flatMap(_._2).toSet
+  lazy val getAssociationFieldSets = getAssociationFieldSetsGrouped.flatMap(_._2).toSet
+
+  def getAssociationFieldSet(role: ZRole, assocType: ZAssociationType) = {
+      getAssociationFieldSets.filter(fieldSet => fieldSet.role == role && fieldSet.associationType == assocType).headOption
+  }
 
   def getAssociationFields(assocFieldType: ZAssociationFieldType) = {
     getAssociationFields(assocFieldType.role, assocFieldType.associationType)
