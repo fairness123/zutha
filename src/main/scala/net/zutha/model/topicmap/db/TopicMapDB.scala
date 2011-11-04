@@ -54,7 +54,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     case None => throw new SchemaItemMissingException
   }
 
-  def getItem(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
+  def getItemByZid(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
 
   def createItem(item: ProposedItem) {
     //start transaction
@@ -99,44 +99,40 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
   }
 
   def generateSchema(){
-    //open current schema.ctm file
-    val schema_file = File(TM_DATA_PATH + "schema.ctm")
+    val tmFile = File(TM_DATA_PATH + "tm.ctm")
 
-    //open ctm data files: schema_gen.ctm, schema_templates.ctm
-    val schema_gen_file = File(TM_DATA_PATH + "schema_gen.ctm")
-    val ctm_templates_file = File(TM_DATA_PATH + "schema_templates.ctm")
+    //regenerate tm.ctm if needed
+    val inputFileNames = List("schema_templates", "schema", "core","basic-entities")
+    val inputFiles = inputFileNames.map{fn => File(TM_DATA_PATH + fn + ".ctm")}
 
-    //if schema_gen.ctm or schema_templates.ctm are newer than schema.ctm,
-    //then regenerate schema.ctm
-    val schemaMod = schema_file.lastModified
-    if (schemaMod < schema_gen_file.lastModified ||
-        schemaMod < ctm_templates_file.lastModified){
-
-      //read schema_gen.ctm, schema_templates.ctm to string
-      val schema_gen = schema_gen_file.slurp()
-      val ctm_templates = ctm_templates_file.slurp()
-
-      //insert ctm_templates
-      val schema_with_templates = schema_gen.replace("%include schema_templates.ctm",ctm_templates)
+    val changesMade = inputFiles.exists{f => f.lastModified > tmFile.lastModified}
+    if(changesMade) {
+      val inputSources = inputFiles.map(_.chars.getLines)
+      val lines = inputSources.reduceLeft(_ ++ _)
+      val namedZidPlaceholderMap = Map[String,String]()
+      val matcher = """(%zid%)([\w]+%)?""".r
+      val writer = tmFile.bufferedWriter()
 
       //Replace %zid% markers with unique ZIDs
       //For markers of the form %zid%<tag>%,
       // replace all markers with the same tag with an identical ZID
-      var namedZidPlaceholderMap = Map[String,String]()
-      val schema = """(%zid%)([\w]+%)?""".r.replaceAllIn(schema_with_templates,{m =>
-        def newZID = "zid:"+getNextZID.toString
-        m.group(2) match {
-          case tag:String => namedZidPlaceholderMap.getOrElseUpdate(tag,newZID)
-          case _ => newZID //this is an anonymous ZID placeholder
-        }
-      })
-
-      //save transformed schema_gen as schema.ctm
-      schema_file.writeAll(schema)
+      lines.foreach{line =>
+        val newLine = matcher.replaceAllIn(line,{m =>
+          def newZID = "zid:"+getNextZID.toString
+          m.group(2) match {
+            case tag:String => namedZidPlaceholderMap.getOrElseUpdate(tag,newZID)
+            case _ => newZID //this is an anonymous ZID placeholder
+          }
+        })
+        newLine foreach (writer write _)
+        writer.newLine()
+      }
+      writer.flush()
+      writer.close
     }
 
     //make a topic map from the ctm schema
-    val source: java.io.File = schema_file.jfile
+    val source: java.io.File = tmFile.jfile
     val reader: CTMTopicMapReader = new CTMTopicMapReader(tmm, source,ZUTHA_TOPIC_MAP_URI)
     reader.read()
 

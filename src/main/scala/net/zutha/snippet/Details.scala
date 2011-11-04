@@ -1,13 +1,10 @@
 package net.zutha
 package snippet
 
-import scala.xml.{NodeSeq,Text}
+import scala.xml.{NodeSeq}
 import net.liftweb.util.Helpers._
-import net.liftweb.http.{SHtml}
 import model.constructs._
 import lib.uri.{ItemLoc, AssocLoc, RoleLoc, ItemInfo}
-import net.liftweb.common.Empty
-import model.datatypes.Finite
 
 class Details(itemInfo: ItemInfo) {
 

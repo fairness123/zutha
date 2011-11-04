@@ -7,7 +7,7 @@ import net.zutha.model.topicmap.db.TopicMapDB
 trait DB extends SchemaItems{
   def getNextZID: Zid;
 
-  def getItem(zid: Zid): Option[ZItem];
+  def getItemByZid(zid: Zid): Option[ZItem];
 
   def createItem(item: ProposedItem);
 

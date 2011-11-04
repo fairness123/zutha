@@ -5,7 +5,7 @@ import common._
 import http._
 import sitemap.{Menu, SiteMap}
 import net.zutha.lib.uri.{RoleLoc, AssocLoc, ItemLoc, UriRedirector}
-import net.zutha.model.user.ZuthaOpenIdVendor
+import net.zutha.model.auth.ZuthaOpenIdVendor
 
 /**
   * A class that's instantiated early and run.  It allows the application

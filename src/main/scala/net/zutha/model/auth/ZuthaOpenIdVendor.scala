@@ -1,27 +1,23 @@
-package net.zutha.model.user
+package net.zutha.model.auth
 
 import org.openid4java.discovery.Identifier
-import net.liftweb.openid.{OpenIDUser, OpenIDConsumer, OpenIDVendor}
-import net.liftweb.http.S
+import net.liftweb.openid.{OpenIDVendor}
 import org.openid4java.consumer.VerificationResult
-import net.liftweb.common.{Full, Box}
-import xml.Text._
 import xml.{Text, NodeSeq}
+import net.liftweb.http.{SessionVar, S}
+import net.liftweb.common.{Empty, Full, Box}
+import net.zutha.model.item.ZuthaIdentity
 
 
 object ZuthaOpenIdVendor extends ZuthaOpenIdVendor
 
+object CurrentUserVar extends SessionVar[Box[ZuthaIdentity]](Empty)
+
 trait ZuthaOpenIdVendor extends OpenIDVendor {
-  type UserType = Identifier
-  type ConsumerType = OpenIDConsumer[UserType]
+  type UserType = ZuthaIdentity
+  type ConsumerType = ZuthaOpenIdConsumer[UserType]
 
-  def currentUser = OpenIDUser.is
-
-  /**
-   * Generate a welcome message for the OpenID identifier
-   */
-  protected def generateWelcomeMessage(id: Identifier): String =
-    (S ? "Welcome")+ ": "+ id
+  def currentUser = CurrentUserVar.is
 
   /**
    * If verification failed, generate a polite message to that
@@ -32,18 +28,23 @@ trait ZuthaOpenIdVendor extends OpenIDVendor {
 
   def postLogin(id: Box[Identifier],res: VerificationResult): Unit = {
     id match {
-      case Full(id) => S.notice(generateWelcomeMessage(id))
+      case Full(id) => {
+        val zuthaIdentityItem = Users(id.getIdentifier)
+        CurrentUserVar(Full(zuthaIdentityItem))
+      }
 
-      case _ => S.error(generateAuthenticationFailure(res))
+      case _ => {
+        CurrentUserVar(Empty)
+        S.error(generateAuthenticationFailure(res))
+      }
     }
 
-    OpenIDUser(id)
   }
 
   def logoutUrl = "/"+PathRoot+"/"+LogOutPath
   
   def logUserOut() {
-    OpenIDUser.remove
+    CurrentUserVar.remove
   }
 
   /**

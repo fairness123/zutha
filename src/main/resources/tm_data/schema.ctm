@@ -8,430 +8,161 @@
 %prefix xsd http://www.w3.org/2001/XMLSchema#
 %prefix iso http://psi.topicmaps.org/iso13250/
 
-%prefix zsi http://psi.zutha.net/
-%prefix ztm http://psi.zutha.net/topicmap/
-%prefix tmdm http://psi.topicmaps.org/iso13250/model/
-
-# ==================== General Purpose Templates ====================
-
-# A KIND OF
-def kind-of($subtype, $supertype, $reifier)
-    $reifier isa zsi:supertype-subtype
-    .
-    tmdm:supertype-subtype(
-        tmdm:subtype: $subtype,
-        tmdm:supertype: $supertype
-    ) ~ $reifier
-end
-
-# ITEM HAS TRAIT
-def has-trait($item, $trait, $reifier)
-    $reifier isa zsi:item-has-trait
-    .
-    zsi:item-has-trait(
-        zsi:item: $item,
-        zsi:trait: $trait
-    ) ~ $reifier
-    #topic map implementation
-    ?anon isa ztm:anonymous-topic;
-        ako $trait.
-    $item isa ?anon.
-    ztm:anonymous-topic-link(
-        ztm:reified-zdm-association: $reifier,
-        ztm:anonymous-topic: ?anon
-    )
-end
-
-# PROPERTY
-def property($item, $propType, $value, $reifier)
-    $reifier isa $propType
-    .
-    $item
-    $propType: $value ~ $reifier.
-end
-
-# NAME
-def name($item, $value, $reifier)
-    $reifier isa zsi:modifiable-name
-    .
-    $item
-        - zsi:modifiable-name: $value ~ $reifier.
-end
-def name($item, $value, $scope, $reifier)
-    $reifier isa zsi:modifiable-name
-    .
-    $item
-        - zsi:modifiable-name: $value @$scope ~$reifier.
-end
-
-# IDENTIFIER
-def identifier($item, $uri, $reifier)
-    $item $uri.
-    property($item, zsi:identifier, $uri, $reifier)
-end
-
-# EXTERNAL IDENTIFIER
-def external-identifier($item, $uri, $reifier)
-    $item $uri.
-    property($item, zsi:external-identifier, $uri, $reifier)
-end
-
-# ==================== Schema Templates ====================
-
-# ABSTRACT CONSTRAINT
-def is-abstract($type, $reifier)
-    $reifier isa zsi:abstract-constraint;
-    .
-    zsi:abstract-constraint(
-        zsi:type: $type
-    ) ~ $reifier
-end
-
-# ITEM TYPE HAS ROOT ITEM CONSTRAINT
-def root-of($rootItem, $type, $reifier)
-    $reifier isa zsi:item-type-has-root-item-constraint;
-    .
-    zsi:item-type-has-root-item-constraint(
-        zsi:root-item: $rootItem,
-        zsi:type: $type
-    ) ~ $reifier
-end
-def has-root($type, $rootItem, $reifier)
-    root-of($rootItem, $type)
-end
-
-# ITEM TYPE TRAIT DECLARATION
-def may-have-trait($itemType, $trait, $reifier)
-    $reifier isa zsi:item-type-trait-declaration;
-    .
-    zsi:item-type-role-declaration(
-        zsi:item-type: $itemType,
-        zsi:trait: $role
-    ) ~ $reifier
-end
-
-# PROPERTY DECLARATION
-def has-property($declarer, $propType, $min, $max, $reifier)
-    $reifier isa zsi:property-declaration;
-        zsi:property-card-min: $min;
-        zsi:property-card-max: $max;
-    .
-    zsi:property-declaration(
-        zsi:property-declarer: $declarer,
-        zsi:property-type: $propType
-    ) ~ $reifier
-end
-def has-property($declarer, $propType, $min, $max, $reifier, $overrides, $overideReifier)
-    has-property($declarer, $propType, $min, $max, $reifier)
-    $overideReifier isa zsi:overrides-declaration
-    .
-    zsi:overrides-declaration(
-        zsi:overriding-declaration: $reifier,
-        zsi:overridden-declaration: $overrides
-    ) ~ $overideReifier
-end
-
-# ASSOCIATION FIELD DECLARATION
-def plays-role($declarer, $role, $assocType, $min, $max, $reifier)
-    $reifier isa zsi:association-field-declaration;
-        zsi:association-card-min: $min;
-        zsi:association-card-max: $max;
-    .
-    zsi:association-field-declaration(
-        zsi:association-field-declarer: $declarer,
-        zsi:role: $role,
-        zsi:association-type: $assocType
-    ) ~ $reifier
-end
-def plays-role($declarer, $role, $assocType, $min, $max, $reifier, $overrides, $overideReifier)
-    plays-role($declarer, $role, $assocType, $min, $max, $reifier)
-    $overideReifier isa zsi:overrides-declaration
-    .
-    zsi:overrides-declaration(
-        zsi:overriding-declaration: $reifier,
-        zsi:overridden-declaration: $overrides
-    ) ~ $overideReifier
-end
-
-# ASSOCIATION ROLE CONSTRAINT
-def has-role($assocType, $role, $min, $max, $reifier)
-    $reifier isa zsi:association-role-constraint;
-        zsi:role-card-min: $min;
-        zsi:role-card-max: $max;
-    .
-    zsi:association-role-constraint(
-        zsi:association-type: $assocType,
-        zsi:role: $role
-    ) ~ $reifier
-end
-def has-role($assocType, $role, $min, $max, $reifier, $overrides, $overideReifier)
-    has-role($assocType, $role, $min, $max, $reifier)
-    $overideReifier isa zsi:overrides-declaration
-    .
-    zsi:overrides-declaration(
-        zsi:overriding-declaration: $reifier,
-        zsi:overridden-declaration: $overrides
-    ) ~ $overideReifier
-end
-
-# ROLE COMBINATION CONSTRAINT
-def role-combination($assocType,$role1,$itemType1,$role2,$itemType2,$comboItem,$reifier0,$reifier1,$reifier2)
-    $comboItem isa zsi:role-combination.
-    $reifier0 isa zsi:association-has-role-combination-constraint.
-    $reifier1 isa zsi:role-combination-constraint.
-    $reifier2 isa zsi:role-combination-constraint.
-    
-    zsi:association-has-role-combination-constraint(
-        zsi:role-combination: $comboItem,
-        zsi:association-type: $assocType
-    ) ~ $reifier0
-    zsi:role-combination-constraint(
-        zsi:role-combination: $comboItem,
-        zsi:role: $role1,
-        zsi:type: $itemType1
-    ) ~ $reifier1
-    zsi:role-combination-constraint(
-        zsi:role-combination: $comboItem,
-        zsi:role: $role2,
-        zsi:type: $itemType2
-    ) ~ $reifier2
-end
-
-# FIELD HAS SCOPE ITEM CONSTRAINT
-def has-scope-item($fieldType, $scopeItem, $min, $max, $reifier)
-    $reifier isa zsi:field-has-scope-item-constraint;
-        zsi:scope-item-card-min: $min;
-        zsi:scope-item-card-max: $max;
-    .
-    zsi:field-has-scope-item-constraint(
-        zsi:field-type: $fieldType,
-        zsi:scope-item: $scopeItem
-    ) ~ $reifier
-end
-
-# FIELD HAS SCOPE ITEM TYPE CONSTRAINT
-def has-scope-item-type($fieldType, $scopeItemType, $min, $max, $reifier)
-    $reifier isa zsi:field-has-scope-item-type-constraint;
-        zsi:scope-item-type-card-min: $min;
-        zsi:scope-item-type-card-max: $max;
-    .
-    zsi:field-has-scope-item-type-constraint(
-        zsi:field-type: $fieldType,
-        zsi:scope-item-type: $scopeItemType
-    ) ~ $reifier
-end
-
-# FIELD WITH SCOPE ITEM DECLARATION
-def has-scope-item($declarer, $fieldType, $scopeItem, $min, $max, $reifier)
-    $reifier isa zsi:field-with-scope-item-declaration;
-        zsi:field-card-min: $min;
-        zsi:field-card-max: $max;
-    .
-    zsi:field-with-scope-item-declaration(
-        zsi:field-declarer: $declarer,
-        zsi:field-type: $fieldType,
-        zsi:scope-item: $scopeItem
-    ) ~ $reifier
-end
-
-# FIELD WITH SCOPE ITEM TYPE DECLARATION
-def has-scope-item-type($declarer, $fieldType, $scopeItemType, $min, $max, $reifier)
-    $reifier isa zsi:field-with-scope-item-type-declaration;
-        zsi:field-card-min: $min;
-        zsi:field-card-max: $max;
-    .
-    zsi:field-with-scope-item-type-declaration(
-        zsi:field-declarer: $declarer,
-        zsi:field-type: $fieldType,
-        zsi:scope-item-type: $scopeItemType
-    ) ~ $reifier
-end
-
-# UNIQUE VALUE CONSTRAINT
-def has-unique-value($propType, $reifier)
-    $reifier isa zsi:unique-value-constraint;
-    .
-    zsi:unique-value-constraint(
-        zsi:property-type: $propType
-    ) ~ $reifier
-end
-
-# PROPERTY DATA TYPE CONSTRAINT
-def has-datatype($propType, $dataType, $reifier)
-    $reifier isa zsi:property-datatype-constraint;
-    .
-    zsi:property-datatype-constraint(
-        zsi:property-type: $propType,
-        zsi:datatype: $dataType
-    ) ~ $reifier
-end
-
-# REGULAR EXPRESSION CONSTRAINT
-def matches-regexp($propType, $regexp, $reifier)
-    $reifier isa zsi:regular-expression-constraint;
-        zsi:regexp: $regexp;
-    .
-    zsi:regular-expression-constraint(
-        zsi:property-type: $propType
-    ) ~ $reifier
-end
-
-
 
 # ==================== Item Types ====================
 
 # ITEM
-zsi:item zid:01; isa zsi:item-type;
-    has-trait(zsi:role,zid:02);
-    kind-of(zsi:item,zid:03);
+zsi:item %zid%; isa zsi:item-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:item,%zid%);
 
-    external-identifier(tmdm:subject, zid:04);
-    name("Item",zid:05);
+    external-identifier(tmdm:subject, %zid%);
+    name("Item",%zid%);
 
-    is-abstract(zid:06);
-    root-of(zsi:item-type,zid:07);
-    has-property(zsi:zid,1,*,zid:08);
-    has-property(zsi:name,1,*,zid:09);
-    has-property(zsi:modifiable-name,0,*,zid:0A);
-    has-property(zsi:description,0,1,zid:0B);
+    is-abstract(%zid%);
+    root-of(zsi:item-type,%zid%);
+    has-property(zsi:zid,1,*,%zid%);
+    has-property(zsi:name,1,*,%zid%);
+    has-property(zsi:modifiable-name,0,*,%zid%);
+    has-property(zsi:description,0,1,%zid%);
     plays-role(zsi:instance,
-        zsi:type-instance,1,1,zid:0C);
+        zsi:type-instance,1,1,%zid%);
     plays-role(zsi:item,
-        zsi:item-has-trait,0,*,zid:0D);
+        zsi:item-has-trait,0,*,%zid%);
     plays-role(zsi:scope-item,
-        zsi:field-with-scope-item-declaration,0,*,zid:0E);
+        zsi:field-with-scope-item-declaration,0,*,%zid%);
     plays-role(zsi:item,
-        zsi:field-set-permission-level,0,*,zid:0F);
+        zsi:field-set-permission-level,0,*,%zid%);
 .
 
 # TYPE
-zsi:type zid:0G; isa zsi:item-type;
-    has-trait(zsi:role,zid:0H);
-    kind-of(zsi:item,zid:0J);
+zsi:type %zid%; isa zsi:item-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:item,%zid%);
 
-    external-identifier(tmdm:type, zid:0K);
-    name("Type",zid:0L);
+    external-identifier(tmdm:type, %zid%);
+    name("Type",%zid%);
 
     plays-role(zsi:type,
-        zsi:abstract-constraint,0,1,zid:0M);
+        zsi:abstract-constraint,0,1,%zid%);
     plays-role(zsi:supertype,
-        zsi:supertype-subtype,0,*,zid:0N);
+        zsi:supertype-subtype,0,*,%zid%);
     plays-role(zsi:subtype,
-        zsi:supertype-subtype,0,*,zid:0P);
+        zsi:supertype-subtype,0,*,%zid%);
     plays-role(zsi:type,
-        zsi:role-combination-constraint,0,*,zid:0Q);
+        zsi:role-combination-constraint,0,*,%zid%);
     plays-role(zsi:root-item,
-        zsi:item-type-has-root-item-constraint,0,1,zid:0R);
+        zsi:item-type-has-root-item-constraint,0,1,%zid%);
     plays-role(zsi:scope-item-type,
-        zsi:construct-scope-constraint,0,*,zid:0T);
+        zsi:construct-scope-constraint,0,*,%zid%);
     plays-role(zsi:scope-item-type,
-        zsi:field-with-scope-item-type-declaration,0,*,zid:0U);
+        zsi:field-with-scope-item-type-declaration,0,*,%zid%);
 .
 
 # ITEM TYPE
-zsi:item-type zid:0V; isa zsi:item-type;
-    has-trait(zsi:role,zid:0W);
-    kind-of(zsi:type,zid:0X);
-    kind-of(zsi:property-declarer,zid:0Y);
-    kind-of(zsi:association-field-declarer,zid:010);
+zsi:item-type %zid%; isa zsi:item-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:type,%zid%);
+    kind-of(zsi:property-declarer,%zid%);
+    kind-of(zsi:association-field-declarer,%zid%);
 
-    external-identifier(tmcl:topic-type, zid:011);
-    name("Item Type",zid:012);
+    external-identifier(tmcl:topic-type, %zid%);
+    name("Item Type",%zid%);
 
     plays-role(zsi:type,
-        zsi:type-instance,0,*,zid:013);
+        zsi:type-instance,0,*,%zid%);
     plays-role(zsi:item-type,
-        zsi:item-type-trait-declaration,0,*,zid:014);
+        zsi:item-type-trait-declaration,0,*,%zid%);
     plays-role(zsi:item-type,
-        zsi:item-type-has-root-item-constraint,0,*,zid:015);
+        zsi:item-type-has-root-item-constraint,0,*,%zid%);
 .
 
 # ENTITY TYPE
-zsi:entity-type zid:016; isa zsi:item-type;
-    kind-of(zsi:item-type,zid:017);
+zsi:entity-type %zid%; isa zsi:item-type;
+    kind-of(zsi:item-type,%zid%);
 
-    name("Entity Type",zid:018);
+    name("Entity Type",%zid%);
  .
 
 # TRAIT
-zsi:trait zid:019; isa zsi:item-type;
-    has-trait(zsi:trait,zid:01A);
-    has-trait(zsi:role,zid:01B);
-    kind-of(zsi:type,zid:01C);
-    kind-of(zsi:property-declarer,zid:01D);
-    kind-of(zsi:association-field-declarer,zid:01E);
+zsi:trait %zid%; isa zsi:item-type;
+    has-trait(zsi:trait,%zid%);
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:type,%zid%);
+    kind-of(zsi:property-declarer,%zid%);
+    kind-of(zsi:association-field-declarer,%zid%);
 
-    name("Trait",zid:01F);
+    name("Trait",%zid%);
 
     plays-role(zsi:trait,
-        zsi:item-has-trait,0,*,zid:01G);
+        zsi:item-has-trait,0,*,%zid%);
     plays-role(zsi:trait,
-        zsi:item-type-trait-declaration,0,*,zid:01H);
+        zsi:item-type-trait-declaration,0,*,%zid%);
 .
 
 # ROLE
-zsi:role zid:01J; isa zsi:item-type;
-    kind-of(zsi:type,zid:01K);
-    has-trait(zsi:trait,zid:01L);
-    has-trait(zsi:role,zid:01M);
+zsi:role %zid%; isa zsi:item-type;
+    kind-of(zsi:type,%zid%);
+    has-trait(zsi:trait,%zid%);
+    has-trait(zsi:role,%zid%);
 
-    external-identifier(tmcl:role-type, zid:01N);
-    name("Role",zid:01P);
+    external-identifier(tmcl:role-type, %zid%);
+    name("Role",%zid%);
 
     plays-role(zsi:role,
-        zsi:association-role-constraint,0,*,zid:01Q);
+        zsi:association-role-constraint,0,*,%zid%);
     plays-role(zsi:role,
-        zsi:association-field-declaration,0,*,zid:01R);
+        zsi:association-field-declaration,0,*,%zid%);
     plays-role(zsi:role,
-        zsi:role-combination-constraint,0,*,zid:01T);
+        zsi:role-combination-constraint,0,*,%zid%);
 .
 
 # SCHEMA ITEM
-zsi:schema-item zid:01U; isa zsi:item-type;
-    kind-of(zsi:item,zid:01V);
+zsi:schema-item %zid%; isa zsi:item-type;
+    kind-of(zsi:item,%zid%);
 
-    name("Schema Item",zid:01W);
+    name("Schema Item",%zid%);
 
-    is-abstract(zid:01X);
+    is-abstract(%zid%);
 .
 
 # ENTITY
-zsi:entity zid:01Y; isa zsi:entity-type;
-    kind-of(zsi:item,zid:020);
+zsi:entity %zid%; isa zsi:entity-type;
+    kind-of(zsi:item,%zid%);
 
-    name("Real Entity",zid:021);
+    name("Entity",%zid%);
 
-    is-abstract(zid:022);
+    is-abstract(%zid%);
 .
 
 # REAL ENTITY
-zsi:real-entity zid:023; isa zsi:entity-type;
-    kind-of(zsi:entity,zid:024);
+zsi:real-entity %zid%; isa zsi:entity-type;
+    kind-of(zsi:entity,%zid%);
 
-    name("Real Entity",zid:025);
+    name("Real Entity",%zid%);
 
-    is-abstract(zid:026);
+    is-abstract(%zid%);
 .
 
 # ZUTHA OBJECT
-zsi:zutha-object zid:027; isa zsi:entity-type;
-    kind-of(zsi:entity,zid:028);
+zsi:zutha-object %zid%; isa zsi:entity-type;
+    kind-of(zsi:entity,%zid%);
 
-    name("Zutha Object",zid:029);
+    name("Zutha Object",%zid%);
 
-    is-abstract(zid:02A);
+    is-abstract(%zid%);
 .
 
 # DATA TYPE
-zsi:datatype zid:02B; isa zsi:entity-type;
-    kind-of(zsi:entity,zid:02C);
-    has-trait(zsi:role,zid:02D);
+zsi:datatype %zid%; isa zsi:entity-type;
+    kind-of(zsi:entity,%zid%);
+    has-trait(zsi:role,%zid%);
     
-    name("Data Type",zid:02E);
+    name("Data Type",%zid%);
 
-    is-abstract(zid:02F);
+    is-abstract(%zid%);
     plays-role(zsi:datatype,
-        zsi:property-datatype-constraint,0,*,zid:02G);
+        zsi:property-datatype-constraint,0,*,%zid%);
 .
 
 
@@ -439,219 +170,219 @@ zsi:datatype zid:02B; isa zsi:entity-type;
 # ---------------------- kinds of Construct Type ----------------------
 
 # CONSTRUCT TYPE
-zsi:construct-type zid:02H; isa zsi:item-type;
-    has-trait(zsi:role,zid:02J);
-    kind-of(zsi:type,zid:02K);
+zsi:construct-type %zid%; isa zsi:item-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:type,%zid%);
 
-    name("Construct Type",zid:02L);
+    name("Construct Type",%zid%);
 
     plays-role(zsi:construct-type,
-        zsi:construct-scope-constraint,0,*,zid:02M);
+        zsi:construct-scope-constraint,0,*,%zid%);
 .
 
 # ASSOCIATION TYPE
-zsi:association-type zid:02N; isa zsi:item-type;
-    has-trait(zsi:role,zid:02P);
-    kind-of(zsi:construct-type,zid:02Q);
+zsi:association-type %zid%; isa zsi:item-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:construct-type,%zid%);
 
-    external-identifier(tmcl:association-type, zid:02R);
-    name("Association Type",zid:02T);
+    external-identifier(tmcl:association-type, %zid%);
+    name("Association Type",%zid%);
 
     plays-role(zsi:association-type,
-        zsi:association-role-constraint,1,*,zid:02U);
+        zsi:association-role-constraint,1,*,%zid%);
     plays-role(zsi:association-type,
-        zsi:association-field-declaration,0,*,zid:02V);
+        zsi:association-field-declaration,0,*,%zid%);
     plays-role(zsi:association-type,
-        zsi:association-has-role-combination-constraint,0,*,zid:02W);
+        zsi:association-has-role-combination-constraint,0,*,%zid%);
     plays-role(zsi:association-type,
-        zsi:association-field-with-scope-item-declaration,0,*,zid:02X);
+        zsi:association-field-with-scope-item-declaration,0,*,%zid%);
     plays-role(zsi:association-type,
-        zsi:association-field-with-scope-item-type-declaration,0,*,zid:02Y);
+        zsi:association-field-with-scope-item-type-declaration,0,*,%zid%);
     plays-role(zsi:association-type,
-        zsi:association-field-set-permission-level,0,*,zid:030);
+        zsi:association-field-set-permission-level,0,*,%zid%);
 .
 
 # AUTO ASSOCIATION TYPE
-zsi:auto-association-type zid:031; isa zsi:item-type;
-    kind-of(zsi:association-type,zid:032);
+zsi:auto-association-type %zid%; isa zsi:item-type;
+    kind-of(zsi:association-type,%zid%);
 
-    name("Auto Association Type",zid:033);
+    name("Auto Association Type",%zid%);
 
-    has-property(zsi:auto-association-rule,1,1,zid:034);
-    has-property(zsi:auto-association-rule-description,0,1,zid:035);
+    has-property(zsi:auto-association-rule,1,1,%zid%);
+    has-property(zsi:auto-association-rule-description,0,1,%zid%);
 .
 
 # PROPERTY TYPE
-zsi:property-type zid:036; isa zsi:item-type;
-    has-trait(zsi:role,zid:037);
-    kind-of(zsi:construct-type,zid:038);
+zsi:property-type %zid%; isa zsi:item-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:construct-type,%zid%);
 
-    external-identifier(tmcl:occurrence-type, zid:039);
-    name("Property Type",zid:03A);
+    external-identifier(tmcl:occurrence-type, %zid%);
+    name("Property Type",%zid%);
 
     plays-role(zsi:property-type,
-        zsi:property-declaration,0,*,zid:03B);
+        zsi:property-declaration,0,*,%zid%);
     plays-role(zsi:property-type,
-        zsi:property-datatype-constraint,1,1,zid:03C);
+        zsi:property-datatype-constraint,1,1,%zid%);
     plays-role(zsi:property-type,
-        zsi:unique-value-constraint,0,1,zid:03D);
+        zsi:unique-value-constraint,0,1,%zid%);
     plays-role(zsi:property-type,
-        zsi:regular-expression-constraint,0,*,zid:03E);
+        zsi:regular-expression-constraint,0,*,%zid%);
     plays-role(zsi:property-type,
-        zsi:property-with-scope-item-declaration,0,*,zid:03F);
+        zsi:property-with-scope-item-declaration,0,*,%zid%);
     plays-role(zsi:property-type,
-        zsi:property-with-scope-item-type-declaration,0,*,zid:03G);
+        zsi:property-with-scope-item-type-declaration,0,*,%zid%);
     plays-role(zsi:property-type,
-        zsi:property-set-permission-level,0,*,zid:03H);
+        zsi:property-set-permission-level,0,*,%zid%);
 .
 
 # AUTO PROPERTY TYPE
-zsi:auto-property-type zid:03J; isa zsi:item-type;
-    kind-of(zsi:property-type,zid:03K);
+zsi:auto-property-type %zid%; isa zsi:item-type;
+    kind-of(zsi:property-type,%zid%);
 
-    name("Auto Property Type",zid:03L);
+    name("Auto Property Type",%zid%);
 
-    has-property(zsi:auto-property-generation-rule,1,1,zid:03M);
-    has-property(zsi:auto-property-generation-rule-description,0,1,zid:03N);
+    has-property(zsi:auto-property-generation-rule,1,1,%zid%);
+    has-property(zsi:auto-property-generation-rule-description,0,1,%zid%);
 .
 
 # ---------------------- kinds of Reified Construct Type ----------------------
 
 # REIFIED CONSTRUCT TYPE
-zsi:reified-construct-type zid:03P; isa zsi:item-type;
-    kind-of(zsi:item-type,zid:03Q);
-    kind-of(zsi:construct-type,zid:03R);
+zsi:reified-construct-type %zid%; isa zsi:item-type;
+    kind-of(zsi:item-type,%zid%);
+    kind-of(zsi:construct-type,%zid%);
 
-    name("Reified Construct Type",zid:03T);
+    name("Reified Construct Type",%zid%);
     
-    has-property(zsi:default-permission-level,0,1,zid:03U);
+    has-property(zsi:default-permission-level,0,1,%zid%);
 .
 
 # REIFIED ASSOCIATION TYPE
-zsi:reified-association-type zid:03V; isa zsi:item-type;
-    kind-of(zsi:reified-construct-type,zid:03W);
-    kind-of(zsi:association-type,zid:03X);
+zsi:reified-association-type %zid%; isa zsi:item-type;
+    kind-of(zsi:reified-construct-type,%zid%);
+    kind-of(zsi:association-type,%zid%);
 
-    name("Reified Association Type",zid:03Y);
+    name("Reified Association Type",%zid%);
 .
 
 # REIFIED PROPERTY TYPE
-zsi:reified-property-type zid:040; isa zsi:item-type;
-    kind-of(zsi:reified-construct-type,zid:041);
-    kind-of(zsi:property-type,zid:042);
+zsi:reified-property-type %zid%; isa zsi:item-type;
+    kind-of(zsi:reified-construct-type,%zid%);
+    kind-of(zsi:property-type,%zid%);
 
-    name("Reified Property Type",zid:043);
+    name("Reified Property Type",%zid%);
 .
 
 # REIFIED AUTO PROPERTY TYPE
-zsi:reified-auto-property-type zid:044; isa zsi:item-type;
-    kind-of(zsi:reified-property-type,zid:045);
-    kind-of(zsi:auto-property-type,zid:046);
+zsi:reified-auto-property-type %zid%; isa zsi:item-type;
+    kind-of(zsi:reified-property-type,%zid%);
+    kind-of(zsi:auto-property-type,%zid%);
 
-    name("Reified Auto Property Type",zid:047);
+    name("Reified Auto Property Type",%zid%);
 .
 
 # ---------------------- Construct Types ----------------------
 
 # CONSTRUCT
-zsi:construct zid:048; isa zsi:construct-type;
-    name("Construct",zid:049);
+zsi:construct %zid%; isa zsi:construct-type;
+    name("Construct",%zid%);
 
-    is-abstract(zid:04A);
-    root-of(zsi:construct-type,zid:04B);
+    is-abstract(%zid%);
+    root-of(zsi:construct-type,%zid%);
 .
 
 # ASSOCIATION
-zsi:association zid:04C; isa zsi:association-type;
-    kind-of(zsi:construct,zid:04D);
+zsi:association %zid%; isa zsi:association-type;
+    kind-of(zsi:construct,%zid%);
 
-    name("Association",zid:04E);
+    name("Association",%zid%);
 
-    is-abstract(zid:04F);
-    root-of(zsi:association-type,zid:04G);
+    is-abstract(%zid%);
+    root-of(zsi:association-type,%zid%);
 .
 
 # IMMUTABLE ASSOCIATION
-zsi:immutable-association zid:04H; isa zsi:association-type;
-    kind-of(zsi:association,zid:04J);
+zsi:immutable-association %zid%; isa zsi:association-type;
+    kind-of(zsi:association,%zid%);
 
-    is-abstract(zid:04K);
-    name("Immutable Association",zid:04L);
+    is-abstract(%zid%);
+    name("Immutable Association",%zid%);
 .
 
 # AUTO ASSOCIATION
-zsi:auto-association zid:04M; isa zsi:auto-association-type;
-    kind-of(zsi:association,zid:04N);
+zsi:auto-association %zid%; isa zsi:auto-association-type;
+    kind-of(zsi:association,%zid%);
 
-    name("Auto Association",zid:04P);
+    name("Auto Association",%zid%);
 
-    is-abstract(zid:04Q);
-    root-of(zsi:auto-association-type,zid:04R);
+    is-abstract(%zid%);
+    root-of(zsi:auto-association-type,%zid%);
 .
 
 # PROPERTY
-zsi:property zid:04T; isa zsi:property-type;
-    kind-of(zsi:construct,zid:04U);
+zsi:property %zid%; isa zsi:property-type;
+    kind-of(zsi:construct,%zid%);
 
-    name("Property",zid:04V);
+    name("Property",%zid%);
 
-    is-abstract(zid:04W);
-    root-of(zsi:property-type,zid:04X);
+    is-abstract(%zid%);
+    root-of(zsi:property-type,%zid%);
 .
 
 # SYSTEM PROPERTY
-zsi:system-property zid:04Y; isa zsi:property-type;
-    kind-of(zsi:property,zid:050);
+zsi:system-property %zid%; isa zsi:property-type;
+    kind-of(zsi:property,%zid%);
 
-    name("System Property",zid:051);
+    name("System Property",%zid%);
 
-    is-abstract(zid:052);
+    is-abstract(%zid%);
 .
 
 # HYBRID PROPERTY
-zsi:hybrid-property zid:053; isa zsi:property-type;
-    kind-of(zsi:property,zid:054);
+zsi:hybrid-property %zid%; isa zsi:property-type;
+    kind-of(zsi:property,%zid%);
 
-    name("Hybrid Property",zid:055);
+    name("Hybrid Property",%zid%);
 
-    is-abstract(zid:056);
+    is-abstract(%zid%);
 .
 
 # ---------------------- Reified Construct Types ----------------------
 
 # REIFIED CONSTRUCT
-zsi:reified-construct zid:057; isa zsi:reified-construct-type;
-    kind-of(zsi:item,zid:058);
-    kind-of(zsi:permission-controller,zid:059);
+zsi:reified-construct %zid%; isa zsi:reified-construct-type;
+    kind-of(zsi:item,%zid%);
+    kind-of(zsi:permission-controller,%zid%);
 
-    name("Reified Construct",zid:05A);
+    name("Reified Construct",%zid%);
 
-    is-abstract(zid:05B);
-    root-of(zsi:reified-construct-type,zid:05C);
+    is-abstract(%zid%);
+    root-of(zsi:reified-construct-type,%zid%);
 .
 
 # REIFIED ASSOCIATION
-zsi:reified-association zid:05D; isa zsi:reified-association-type;
-    kind-of(zsi:reified-construct,zid:05E);
+zsi:reified-association %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:reified-construct,%zid%);
 
-    name("Reified Association",zid:05F);
+    name("Reified Association",%zid%);
 
-    is-abstract(zid:05G);
-    root-of(zsi:reified-association-type,zid:05H);
-    has-property(zsi:auto-association-name,1,1,zid:05J);
-    has-property(zsi:auto-association-description,1,1,zid:05K);
+    is-abstract(%zid%);
+    root-of(zsi:reified-association-type,%zid%);
+    has-property(zsi:auto-association-name,1,1,%zid%);
+    has-property(zsi:auto-association-description,1,1,%zid%);
 .
 
 # REIFIED PROPERTY
-zsi:reified-property zid:05L; isa zsi:reified-property-type;
-    kind-of(zsi:reified-construct,zid:05M);
+zsi:reified-property %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-construct,%zid%);
 
-    name("Reified Property",zid:05N);
+    name("Reified Property",%zid%);
 
-    is-abstract(zid:05P);
-    root-of(zsi:reified-property-type,zid:05Q);
-    has-property(zsi:auto-property-name,1,1,zid:05R);
-    has-property(zsi:auto-property-description,1,1,zid:05T);
+    is-abstract(%zid%);
+    root-of(zsi:reified-property-type,%zid%);
+    has-property(zsi:auto-property-name,1,1,%zid%);
+    has-property(zsi:auto-property-description,1,1,%zid%);
 .
 
 # ==================== Association Types ====================
@@ -659,137 +390,137 @@ zsi:reified-property zid:05L; isa zsi:reified-property-type;
 # -------------- Immutable Associations --------------
 
 # TYPE-INSTANCE
-zsi:type-instance zid:05U; isa zsi:association-type;
-    kind-of(zsi:immutable-association,zid:05V);
+zsi:type-instance %zid%; isa zsi:association-type;
+    kind-of(zsi:immutable-association,%zid%);
 
-    external-identifier(tmdm:type-instance, zid:05W);
-    name("Type-Instance",zid:05X);
-    name("Has Direct Type",zsi:instance,zid:05Y);
-    name("Has Direct Instances",zsi:type,zid:060);
+    external-identifier(tmdm:type-instance, %zid%);
+    name("Type-Instance",%zid%);
+    name("Has Direct Type",zsi:instance,%zid%);
+    name("Has Direct Instances",zsi:type,%zid%);
 
-    has-role(zsi:type,1,1,zid:061);
-    has-role(zsi:instance,1,1,zid:062);
+    has-role(zsi:type,1,1,%zid%);
+    has-role(zsi:instance,1,1,%zid%);
 .
 
 # -------------- Auto Associations --------------
 
 # ITEM HAS TYPE
-zsi:item-has-type zid:063; isa zsi:auto-association-type;
-    kind-of(zsi:auto-association,zid:064);
+zsi:item-has-type %zid%; isa zsi:auto-association-type;
+    kind-of(zsi:auto-association,%zid%);
 
-    name("Item Has Type",zid:065);
-    name("Has Type",zsi:instance,zid:066);
-    name("Has Instance",zsi:type,zid:067);
+    name("Item Has Type",%zid%);
+    name("Has Type",zsi:instance,%zid%);
+    name("Has Instance",zsi:type,%zid%);
 
-    has-role(zsi:item,1,1,zid:068);
-    has-role(zsi:type,1,1,zid:069);
+    has-role(zsi:item,1,1,%zid%);
+    has-role(zsi:type,1,1,%zid%);
 
     property(zsi:auto-association-rule,
-        "",zid:06A);
+        "",%zid%);
     property(zsi:auto-association-rule-description,
-        "Y is one of X's types if it is an ancestor of X's direct type or one of X's traits.",zid:06B);
+        "Y is one of X's types if it is an ancestor of X's direct type or one of X's traits.",%zid%);
 .
 
 # TYPE HAS SUPERTYPE
-zsi:Type-has-supertype zid:06C; isa zsi:auto-association-type;
-    kind-of(zsi:auto-association,zid:06D);
+zsi:Type-has-supertype %zid%; isa zsi:auto-association-type;
+    kind-of(zsi:auto-association,%zid%);
 
-    name("Type Has Supertype",zid:06E);
-    name("Has Supertype",zsi:subtype,zid:06F);
-    name("Has Subtype",zsi:supertype,zid:06G);
+    name("Type Has Supertype",%zid%);
+    name("Has Supertype",zsi:subtype,%zid%);
+    name("Has Subtype",zsi:supertype,%zid%);
 
-    has-role(zsi:subtype,1,1,zid:06H);
-    has-role(zsi:supertype,1,1,zid:06J);
+    has-role(zsi:subtype,1,1,%zid%);
+    has-role(zsi:supertype,1,1,%zid%);
 
     property(zsi:auto-association-rule,
-        "",zid:06K);
+        "",%zid%);
     property(zsi:auto-association-rule-description,
-        "The transitive version of supertype-subtype.",zid:06L);
+        "The transitive version of supertype-subtype.",%zid%);
 .
 
 # -------------- Reified Associations --------------
 
 # SUPERTYPE-SUBTYPE
-zsi:supertype-subtype zid:06M; isa zsi:reified-association-type;
-    kind-of(zsi:association,zid:06N);
+zsi:supertype-subtype %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:association,%zid%);
 
-    external-identifier(tmdm:supertype-subtype, zid:06P);
-    name("Supertype-Subtype",zid:06Q);
-    name("Has Direct Supertype",zsi:subtype,zid:06R);
-    name("Has Direct Subtype",zsi:supertype,zid:06T);
+    external-identifier(tmdm:supertype-subtype, %zid%);
+    name("Supertype-Subtype",%zid%);
+    name("Has Direct Supertype",zsi:subtype,%zid%);
+    name("Has Direct Subtype",zsi:supertype,%zid%);
 
-    has-role(zsi:supertype,1,1,zid:06U);
-    has-role(zsi:subtype,1,1,zid:06V);
+    has-role(zsi:supertype,1,1,%zid%);
+    has-role(zsi:subtype,1,1,%zid%);
 .
 
 # ITEM HAS TRAIT
-zsi:item-has-trait zid:06W; isa zsi:reified-association-type;
-    kind-of(zsi:association,zid:06X);
+zsi:item-has-trait %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:association,%zid%);
 
-    name("Item Has Trait",zid:06Y);
-    name("Has Trait",zsi:item,zid:070);
-    name("Is Trait of",zsi:trait,zid:071);
+    name("Item Has Trait",%zid%);
+    name("Has Trait",zsi:item,%zid%);
+    name("Is Trait of",zsi:trait,%zid%);
 
-    has-role(zsi:item,1,1,zid:072);
-    has-role(zsi:trait,1,1,zid:073);
+    has-role(zsi:item,1,1,%zid%);
+    has-role(zsi:trait,1,1,%zid%);
 .
 
 # FIELD SET PERMISSION LEVEL
-zsi:field-set-permission-level zid:074; isa zsi:reified-association-type;
-    kind-of(zsi:association,zid:075);
-    kind-of(zsi:permission-controller,zid:076);
+zsi:field-set-permission-level %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:association,%zid%);
+    kind-of(zsi:permission-controller,%zid%);
 
-    name("Field Set Permission Level",zid:077);
-    name("Field Set has Permission Level",zsi:item,zid:078);
+    name("Field Set Permission Level",%zid%);
+    name("Field Set has Permission Level",zsi:item,%zid%);
 
-    is-abstract(zid:079);
-    has-role(zsi:item,1,1,zid:07A);
+    is-abstract(%zid%);
+    has-role(zsi:item,1,1,%zid%);
 .
 
 # PROPERTY SET PERMISSION LEVEL
-zsi:property-set-permission-level zid:07B; isa zsi:reified-association-type;
-    kind-of(zsi:association,zid:07C);
-    kind-of(zsi:field-set-permission-level,zid:07D);
+zsi:property-set-permission-level %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:association,%zid%);
+    kind-of(zsi:field-set-permission-level,%zid%);
 
-    name("Property Set Permission Level",zid:07E);
-    name("Property Set has Permission Level",zsi:item,zid:07F);
-    name("Item restricts Property Sets of this type",zsi:property-type,zid:07G);
+    name("Property Set Permission Level",%zid%);
+    name("Property Set has Permission Level",zsi:item,%zid%);
+    name("Item restricts Property Sets of this type",zsi:property-type,%zid%);
 
-    has-role(zsi:property-type,1,1,zid:07H);
+    has-role(zsi:property-type,1,1,%zid%);
 .
 
 # ASSOCIATION FIELD SET PERMISSION LEVEL
-zsi:association-field-set-permission-level zid:07J; isa zsi:reified-association-type;
-    kind-of(zsi:association,zid:07K);
-    kind-of(zsi:field-set-permission-level,zid:07L);
+zsi:association-field-set-permission-level %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:association,%zid%);
+    kind-of(zsi:field-set-permission-level,%zid%);
 
-    name("Association Field Set Permission Level",zid:07M);
-    name("Association Field Set has Permission Level",zsi:item,zid:07N);
-    name("Item restricts Association Field sets of this Association Type",zsi:association-type,zid:07P);
-    name("Item restricts Association Field sets of this Role and Association Type",zsi:role,zid:07Q);
+    name("Association Field Set Permission Level",%zid%);
+    name("Association Field Set has Permission Level",zsi:item,%zid%);
+    name("Item restricts Association Field sets of this Association Type",zsi:association-type,%zid%);
+    name("Item restricts Association Field sets of this Role and Association Type",zsi:role,%zid%);
 
-    has-role(zsi:association-type,1,1,zid:07R);
-    has-role(zsi:role,1,1,zid:07T);
+    has-role(zsi:association-type,1,1,%zid%);
+    has-role(zsi:role,1,1,%zid%);
 .
 
 # ==================== Roles ====================
 
 # SUPERTYPE
-zsi:supertype zid:07U; isa zsi:role;
-    external-identifier(tmdm:supertype, zid:07V);
-    name("Supertype",zid:07W);
+zsi:supertype %zid%; isa zsi:role;
+    external-identifier(tmdm:supertype, %zid%);
+    name("Supertype",%zid%);
 .
 
 # SUBTYPE
-zsi:subtype zid:07X; isa zsi:role;
-    external-identifier(tmdm:subtype, zid:07Y);
-    name("Subtype",zid:080);
+zsi:subtype %zid%; isa zsi:role;
+    external-identifier(tmdm:subtype, %zid%);
+    name("Subtype",%zid%);
 .
 
 # INSTANCE
-zsi:instance zid:081; isa zsi:role;
-    external-identifier(tmdm:instance, zid:082);
-    name("Instance",zid:083);
+zsi:instance %zid%; isa zsi:role;
+    external-identifier(tmdm:instance, %zid%);
+    name("Instance",%zid%);
 .
 
 # ==================== Property Types ====================
@@ -799,210 +530,210 @@ zsi:instance zid:081; isa zsi:role;
 # ZID
 #--- implemented with subject-identifier with prefix:
 #--- http://zutha.net/item/
-zsi:zid zid:084; isa zsi:auto-property-type;
-    kind-of(zsi:system-property,zid:085);
+zsi:zid %zid%; isa zsi:auto-property-type;
+    kind-of(zsi:system-property,%zid%);
 
-    name("ZID",zid:086);
+    name("ZID",%zid%);
 
-    property(zsi:auto-property-generation-rule, "newZID()", zid:087);
+    property(zsi:auto-property-generation-rule, "newZID()", %zid%);
 
-    has-datatype(xsd:string,zid:088);
-    has-unique-value(zid:089);
+    has-datatype(xsd:string,%zid%);
+    has-unique-value(%zid%);
 .
 
 # PERMISSION LEVEL
-zsi:permission-level zid:08A; isa zsi:property-type;
-    kind-of(zsi:system-property,zid:08B);
+zsi:permission-level %zid%; isa zsi:property-type;
+    kind-of(zsi:system-property,%zid%);
 
-    name("Permission Level",zid:08C);
+    name("Permission Level",%zid%);
 
-    has-datatype(xsd:nonNegativeInteger,zid:08D);
+    has-datatype(xsd:nonNegativeInteger,%zid%);
 .
 
 # PERMISSION LOCK LEVEL
-zsi:permission-lock-level zid:08E; isa zsi:property-type;
-    kind-of(zsi:system-property,zid:08F);
+zsi:permission-lock-level %zid%; isa zsi:property-type;
+    kind-of(zsi:system-property,%zid%);
 
-    name("Permission Lock Level",zid:08G);
+    name("Permission Lock Level",%zid%);
 
-    has-datatype(xsd:nonNegativeInteger,zid:08H);
+    has-datatype(xsd:nonNegativeInteger,%zid%);
 .
 
 # AUTO NAME
 #--- implemented with Name of type zsi:auto-name
-zsi:auto-name zid:08J; isa zsi:auto-property-type;
-    kind-of(zsi:name,zid:08K);
-    kind-of(zsi:system-property,zid:08L);
+zsi:auto-name %zid%; isa zsi:auto-property-type;
+    kind-of(zsi:name,%zid%);
+    kind-of(zsi:system-property,%zid%);
 
-    name("Auto Name",zid:08M);
+    name("Auto Name",%zid%);
 
-    property(zsi:auto-property-generation-rule, "\"item-\" + this.zid", zid:08N);
+    property(zsi:auto-property-generation-rule, "\"item-\" + this.zid", %zid%);
 .
 
 # AUTO PROPERTY NAME
-zsi:auto-property-name zid:08P; isa zsi:auto-property-type;
-    kind-of(zsi:auto-name,zid:08Q);
+zsi:auto-property-name %zid%; isa zsi:auto-property-type;
+    kind-of(zsi:auto-name,%zid%);
     
 
-    name("Auto Property Name",zid:08R);
+    name("Auto Property Name",%zid%);
 
-    property(zsi:auto-property-generation-rule, "\"property-\" + this.zid", zid:08T);
+    property(zsi:auto-property-generation-rule, "\"property-\" + this.zid", %zid%);
 .
 
 # AUTO ASSOCIATION NAME
 zsi:auto-association-name
-    kind-of(zsi:auto-name,zid:08U);
-    zid:08V; isa zsi:auto-property-type;
+    kind-of(zsi:auto-name,%zid%);
+    %zid%; isa zsi:auto-property-type;
 
-    name("Auto Association Name",zid:08W);
+    name("Auto Association Name",%zid%);
 
-    property(zsi:auto-property-generation-rule, "\"association-\" + this.zid", zid:08X);
+    property(zsi:auto-property-generation-rule, "\"association-\" + this.zid", %zid%);
 .
 
 # -------------- Hybrid Properties --------------
 
 # NAME
-zsi:name zid:08Y; isa zsi:property-type;
-    kind-of(zsi:hybrid-property,zid:090);
+zsi:name %zid%; isa zsi:property-type;
+    kind-of(zsi:hybrid-property,%zid%);
 
-    name("Name",zid:091);
+    name("Name",%zid%);
 
-    is-abstract(zid:092);
-    has-datatype(xsd:string,zid:093);
-    has-unique-value(zid:094);
+    is-abstract(%zid%);
+    has-datatype(xsd:string,%zid%);
+    has-unique-value(%zid%);
 .
 
 # -------------- Reified Properties --------------
 
 # MODIFIABLE NAME
-zsi:modifiable-name zid:095; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:096);
-    kind-of(zsi:name,zid:097);
+zsi:modifiable-name %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
+    kind-of(zsi:name,%zid%);
 
-    name("Modifiable Name",zid:098);
+    name("Modifiable Name",%zid%);
 .
 
 # DESCRIPTION
-zsi:description zid:099; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:09A);
+zsi:description %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    name("Description",zid:09B);
+    name("Description",%zid%);
 
-    has-datatype(xsd:string,zid:09C);
+    has-datatype(xsd:string,%zid%);
 .
 
 # AUTO DESCRIPTION
-zsi:auto-description zid:09D; isa zsi:reified-auto-property-type;
-    kind-of(zsi:description,zid:09E);
+zsi:auto-description %zid%; isa zsi:reified-auto-property-type;
+    kind-of(zsi:description,%zid%);
 
-    name("Auto Description",zid:09F);
+    name("Auto Description",%zid%);
 
-    is-abstract(zid:09G);
+    is-abstract(%zid%);
 .
 
 # AUTO PROPERTY DESCRIPTION
-zsi:auto-property-description zid:09H; isa zsi:reified-auto-property-type;
-    kind-of(zsi:auto-description,zid:09J);
+zsi:auto-property-description %zid%; isa zsi:reified-auto-property-type;
+    kind-of(zsi:auto-description,%zid%);
 
-    name("Auto Property Description",zid:09K);
+    name("Auto Property Description",%zid%);
 
-    property(zsi:auto-property-generation-rule, "", zid:09L);
+    property(zsi:auto-property-generation-rule, "", %zid%);
 .
 
 # AUTO ASSOCIATION DESCRIPTION
-zsi:auto-association-description zid:09M; isa zsi:reified-auto-property-type;
-    kind-of(zsi:auto-description,zid:09N);
+zsi:auto-association-description %zid%; isa zsi:reified-auto-property-type;
+    kind-of(zsi:auto-description,%zid%);
 
-    name("Auto Association Description",zid:09P);
+    name("Auto Association Description",%zid%);
 
-    property(zsi:auto-property-generation-rule, "", zid:09Q);
+    property(zsi:auto-property-generation-rule, "", %zid%);
 .
 
 # AUTO PROPERTY GENERATION RULE
-zsi:auto-property-generation-rule zid:09R; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:09T);
+zsi:auto-property-generation-rule %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    name("Auto Property Generation Rule",zid:09U);
-    name("Rule",zsi:auto-property-type,zid:09V);
+    name("Auto Property Generation Rule",%zid%);
+    name("Rule",zsi:auto-property-type,%zid%);
 
-    has-datatype(xsd:string,zid:09W);
+    has-datatype(xsd:string,%zid%);
 .
 
 # AUTO PROPERTY GENERATION RULE DESCRIPTION
-zsi:auto-property-generation-rule-description zid:09X; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:09Y);
+zsi:auto-property-generation-rule-description %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
     
 
-    name("Auto Property Generation Rule Description",zid:0A0);
-    name("Rule Description",zsi:auto-property-type,zid:0A1);
+    name("Auto Property Generation Rule Description",%zid%);
+    name("Rule Description",zsi:auto-property-type,%zid%);
 
-    has-datatype(xsd:string,zid:0A2);
+    has-datatype(xsd:string,%zid%);
 .
 
 # AUTO ASSOCIATION RULE
-zsi:auto-association-rule zid:0A3; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0A4);
+zsi:auto-association-rule %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    name("Auto Association Rule",zid:0A5);
-    name("Rule",zsi:auto-association-type,zid:0A6);
+    name("Auto Association Rule",%zid%);
+    name("Rule",zsi:auto-association-type,%zid%);
 
-    has-datatype(xsd:string,zid:0A7);
+    has-datatype(xsd:string,%zid%);
 .
 
 # AUTO ASSOCIATION RULE DESCRIPTION
-zsi:auto-association-rule-description zid:0A8; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0A9);
+zsi:auto-association-rule-description %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    name("Auto Association Rule Description",zid:0AA);
-    name("Rule Description",zsi:auto-association-type,zid:0AB);
+    name("Auto Association Rule Description",%zid%);
+    name("Rule Description",zsi:auto-association-type,%zid%);
 
-    has-datatype(xsd:string,zid:0AC);
+    has-datatype(xsd:string,%zid%);
 .
 
 # DEFAULT PERMISSION LEVEL
-zsi:default-permission-level zid:0AD; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0AE);
+zsi:default-permission-level %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
 
-    name("Default Permission Level",zid:0AF);
+    name("Default Permission Level",%zid%);
 
-    has-datatype(xsd:nonNegativeInteger,zid:0AG);
+    has-datatype(xsd:nonNegativeInteger,%zid%);
 .
 
 # IDENTIFIER
 #--- implemented with subject-identifier with prefix:
 #--- http://psi.zutha.net/
 #--- also implemented as occurrence so that it can be reified
-zsi:identifier zid:0AH; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0AJ);
+zsi:identifier %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
 
-    name("Identifier",zid:0AK);
+    name("Identifier",%zid%);
 
-    has-datatype(xsd:string,zid:0AL);
-    has-unique-value(zid:0AM);
+    has-datatype(xsd:string,%zid%);
+    has-unique-value(%zid%);
 .
 
 # EXTERNAL IDENTIFIER
 #--- implemented with subject-identifier
-zsi:external-identifier zid:0AN; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0AP);
+zsi:external-identifier %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    name("External Identifier",zid:0AQ);
+    name("External Identifier",%zid%);
 
-    has-datatype(xsd:anyURI,zid:0AR);
-    has-unique-value(zid:0AT);
+    has-datatype(xsd:anyURI,%zid%);
+    has-unique-value(%zid%);
 .
 
 # URI
 #--- implemented with subject-locator
-zsi:uri zid:0AU; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0AV);
+zsi:uri %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    name("URI",zid:0AW);
+    name("URI",%zid%);
 
-    has-datatype(xsd:anyURI,zid:0AX);
-    has-unique-value(zid:0AY);
+    has-datatype(xsd:anyURI,%zid%);
+    has-unique-value(%zid%);
 .
 
 # ***********************************************************
@@ -1015,540 +746,540 @@ zsi:uri zid:0AU; isa zsi:reified-property-type;
 # ==================== Schema Item Types ====================
 
 # ROLE COMBINATION
-zsi:role-combination zid:0B0; isa zsi:item-type;
-    kind-of(zsi:schema-item,zid:0B1);
-    has-trait(zsi:role,zid:0B2);
+zsi:role-combination %zid%; isa zsi:item-type;
+    kind-of(zsi:schema-item,%zid%);
+    has-trait(zsi:role,%zid%);
 
-    name("Role Combination",zid:0B3);
+    name("Role Combination",%zid%);
 
     plays-role(zsi:role-combination,
-        zsi:role-combination-constraint,2,*,zid:0B4);
+        zsi:role-combination-constraint,2,*,%zid%);
     plays-role(zsi:role-combination,
-        zsi:association-has-role-combination-constraint,1,1,zid:0B5);
+        zsi:association-has-role-combination-constraint,1,1,%zid%);
 .
 
 # ==================== Schema Traits ====================
 
 # PERMISSION CONTROLLER
-zsi:permission-controller zid:0B6; isa zsi:trait;
-    name("Permission Controller",zid:0B7);
+zsi:permission-controller %zid%; isa zsi:trait;
+    name("Permission Controller",%zid%);
 
-    has-property(zsi:permission-level,0,1,zid:0B8);
-    has-property(zsi:permission-lock-level,0,1,zid:0B9);
+    has-property(zsi:permission-level,0,1,%zid%);
+    has-property(zsi:permission-lock-level,0,1,%zid%);
 .
 
 # FIELD DECLARER
-zsi:field-declarer zid:0BA; isa zsi:trait;
-    has-trait(zsi:role,zid:0BB);
+zsi:field-declarer %zid%; isa zsi:trait;
+    has-trait(zsi:role,%zid%);
 
-    name("Field Declarer",zid:0BC);
+    name("Field Declarer",%zid%);
 
-    is-abstract(zid:0BD);
+    is-abstract(%zid%);
     plays-role(zsi:field-declarer,
-        zsi:field-with-scope-item-declaration,0,*,zid:0BE);
+        zsi:field-with-scope-item-declaration,0,*,%zid%);
     plays-role(zsi:field-declarer,
-        zsi:field-with-scope-item-type-declaration,0,*,zid:0BF);
+        zsi:field-with-scope-item-type-declaration,0,*,%zid%);
     plays-role(zsi:field-declarer,
-        zsi:field-declaration,0,*,zid:0BG);
+        zsi:field-declaration,0,*,%zid%);
 .
 
 # ASSOCIATION FIELD DECLARER
-zsi:association-field-declarer zid:0BH; isa zsi:trait;
-    has-trait(zsi:role,zid:0BJ);
-    kind-of(zsi:field-declarer,zid:0BK);
+zsi:association-field-declarer %zid%; isa zsi:trait;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:field-declarer,%zid%);
 
-    name("Association Field Declarer",zid:0BL);
+    name("Association Field Declarer",%zid%);
 
     plays-role(zsi:association-field-declarer,
-        zsi:association-field-declaration,0,*,zid:0BM);
+        zsi:association-field-declaration,0,*,%zid%);
 .
 
 # PROPERTY DECLARER
-zsi:property-declarer zid:0BN; isa zsi:trait;
-    has-trait(zsi:role,zid:0BP);
-    kind-of(zsi:field-declarer,zid:0BQ);
+zsi:property-declarer %zid%; isa zsi:trait;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:field-declarer,%zid%);
 
-    name("Property Declarer",zid:0BR);
+    name("Property Declarer",%zid%);
 
     plays-role(zsi:property-declarer,
-        zsi:property-declaration,0,*,zid:0BT);
+        zsi:property-declaration,0,*,%zid%);
 .
 
 # ==================== Schema Association Types ====================
 
 # SCHEMA DECLARATION
-zsi:schema-declaration zid:0BU; isa zsi:reified-association-type;
-    kind-of(zsi:reified-association,zid:0BV);
+zsi:schema-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:reified-association,%zid%);
 
-    name("Schema Declaration",zid:0BW);
+    name("Schema Declaration",%zid%);
 
-    is-abstract(zid:0BX);
+    is-abstract(%zid%);
 .
 
 # ABSTRACT CONSTRAINT
-zsi:abstract-constraint zid:0BY; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0C0);
+zsi:abstract-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Abstract Constraint",zid:0C1);
-    name("Is Abstract",zsi:type,zid:0C2);
+    name("Abstract Constraint",%zid%);
+    name("Is Abstract",zsi:type,%zid%);
 
-    has-role(zsi:type,1,1,zid:0C3);
+    has-role(zsi:type,1,1,%zid%);
 .
 
 # OVERRIDES DECLARATION
-zsi:overrides-declaration zid:0C4; isa zsi:reified-association-type;
-     kind-of(zsi:schema-declaration,zid:0C5);
+zsi:overrides-declaration %zid%; isa zsi:reified-association-type;
+     kind-of(zsi:schema-declaration,%zid%);
 
-    name("Overrides Declaration",zid:0C6);
-    name("Overrides",zsi:overriding-declaration,zid:0C7);
-    name("Overridden By",zsi:overridden-declaration,zid:0C8);
+    name("Overrides Declaration",%zid%);
+    name("Overrides",zsi:overriding-declaration,%zid%);
+    name("Overridden By",zsi:overridden-declaration,%zid%);
 
-    has-role(zsi:overriding-declaration,1,1,zid:0C9);
-    has-role(zsi:overridden-declaration,1,1,zid:0CA);
+    has-role(zsi:overriding-declaration,1,1,%zid%);
+    has-role(zsi:overridden-declaration,1,1,%zid%);
     role-combination(zsi:overriding-declaration,zsi:association-role-constraint,
-        zsi:overridden-declaration,zsi:association-role-constraint,zid:0CB,zid:0CC,zid:0CD,zid:0CE);
+        zsi:overridden-declaration,zsi:association-role-constraint,%zid%,%zid%,%zid%,%zid%);
     role-combination(zsi:overriding-declaration,zsi:property-declaration,
-        zsi:overridden-declaration,zsi:property-declaration,zid:0CF,zid:0CG,zid:0CH,zid:0CJ);
+        zsi:overridden-declaration,zsi:property-declaration,%zid%,%zid%,%zid%,%zid%);
     role-combination(zsi:overriding-declaration,zsi:association-field-declaration,
-        zsi:overridden-declaration,zsi:association-field-declaration,zid:0CK,zid:0CL,zid:0CM,zid:0CN);
+        zsi:overridden-declaration,zsi:association-field-declaration,%zid%,%zid%,%zid%,%zid%);
 .
 
 # ITEM TYPE HAS ROOT ITEM CONSTRAINT
-zsi:item-type-has-root-item-constraint zid:0CP; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0CQ);
+zsi:item-type-has-root-item-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Descendants have Type Declaration",zid:0CR);
-    name("Descendants have Type",zsi:root-item,zid:0CT);
-    name("Has Root Item",zsi:type,zid:0CU);
+    name("Descendants have Type Declaration",%zid%);
+    name("Descendants have Type",zsi:root-item,%zid%);
+    name("Has Root Item",zsi:type,%zid%);
 
-    has-role(zsi:item-type,1,1,zid:0CV);
-    has-role(zsi:root-item,1,1,zid:0CW);
+    has-role(zsi:item-type,1,1,%zid%);
+    has-role(zsi:root-item,1,1,%zid%);
 .
 
 # ITEM TYPE TRAIT DECLARATION
-zsi:item-type-trait-declaration zid:0CX; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0CY);
+zsi:item-type-trait-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Item Type Trait Declaration",zid:0D0);
-    name("May have Trait",zsi:item-type,zid:0D1);
-    name("Allowed Trait of",zsi:trait,zid:0D2);
+    name("Item Type Trait Declaration",%zid%);
+    name("May have Trait",zsi:item-type,%zid%);
+    name("Allowed Trait of",zsi:trait,%zid%);
 
-    has-role(zsi:item-type,1,1,zid:0D3);
-    has-role(zsi:trait,1,1,zid:0D4);
+    has-role(zsi:item-type,1,1,%zid%);
+    has-role(zsi:trait,1,1,%zid%);
 .
 
 # FIELD DECLARATION
-zsi:field-declaration zid:0D5; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0D6);
+zsi:field-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Field Declaration",zid:0D7);
-    name("Declares Field",zsi:field-declarer,zid:0D8);
+    name("Field Declaration",%zid%);
+    name("Declares Field",zsi:field-declarer,%zid%);
 
-    is-abstract(zid:0D9);
-    has-role(zsi:field-declarer,1,1,zid:0DA);
-    has-property(zsi:card-min,1,1,zid:0DB);
-    has-property(zsi:card-max,1,1,zid:0DC);
-    plays-role(zsi:overriding-declaration, zsi:overrides-declaration,0,1,zid:0DD);
-    plays-role(zsi:overridden-declaration, zsi:overrides-declaration,0,*,zid:0DE);
+    is-abstract(%zid%);
+    has-role(zsi:field-declarer,1,1,%zid%fd1%);
+    has-property(zsi:card-min,1,1,%zid%);
+    has-property(zsi:card-max,1,1,%zid%);
+    plays-role(zsi:overriding-declaration, zsi:overrides-declaration,0,1,%zid%);
+    plays-role(zsi:overridden-declaration, zsi:overrides-declaration,0,*,%zid%);
 .
 
 # PROPERTY DECLARATION
-zsi:property-declaration zid:0DF; isa zsi:reified-association-type;
-    kind-of(zsi:field-declaration,zid:0DG);
+zsi:property-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-declaration,%zid%);
 
-    name("Property Declaration",zid:0DH);
-    name("Declares Property",zsi:property-declarer,zid:0DJ);
-    name("Declared Property of",zsi:property-type,zid:0DK);
+    name("Property Declaration",%zid%);
+    name("Declares Property",zsi:property-declarer,%zid%);
+    name("Declared Property of",zsi:property-type,%zid%);
 
-    has-role(zsi:property-declarer,1,1,zid:0DL,zid:0DA,zid:0DM);
-    has-role(zsi:property-type,1,1,zid:0DN);
-    has-property(zsi:property-card-min,1,1,zid:0DP);
-    has-property(zsi:property-card-max,1,1,zid:0DQ);
+    has-role(zsi:property-declarer,1,1,%zid%,%zid%fd1%,%zid%);
+    has-role(zsi:property-type,1,1,%zid%);
+    has-property(zsi:property-card-min,1,1,%zid%);
+    has-property(zsi:property-card-max,1,1,%zid%);
 .
 
 # ASSOCIATION FIELD DECLARATION
-zsi:association-field-declaration zid:0DR; isa zsi:reified-association-type;
-    kind-of(zsi:field-declaration,zid:0DT);
+zsi:association-field-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-declaration,%zid%);
 
-    name("Association Field Declaration",zid:0DU);
-    name("Plays Role in Association",zsi:association-field-declarer,zid:0DV);
-    name("Association Field Declarer Plays Role",zsi:association-type,zid:0DW);
-    name("Played By Association Field Declarer in Association",zsi:role,zid:0DX);
+    name("Association Field Declaration",%zid%);
+    name("Plays Role in Association",zsi:association-field-declarer,%zid%);
+    name("Association Field Declarer Plays Role",zsi:association-type,%zid%);
+    name("Played By Association Field Declarer in Association",zsi:role,%zid%);
 
     #--- Constraint must be satisfied, for every instance of this item type
     #--- by the instance itself or one of the instance's supertypes
-    has-role(zsi:association-field-declarer,1,1,zid:0DY,zid:0DA,zid:0E0);
-    has-role(zsi:role,1,1,zid:0E1);
-    has-role(zsi:association-type,1,1,zid:0E2);
-    has-property(zsi:association-card-min,1,1,zid:0E3);
-    has-property(zsi:association-card-max,1,1,zid:0E4);
+    has-role(zsi:association-field-declarer,1,1,%zid%,%zid%fd1%,%zid%);
+    has-role(zsi:role,1,1,%zid%);
+    has-role(zsi:association-type,1,1,%zid%);
+    has-property(zsi:association-card-min,1,1,%zid%);
+    has-property(zsi:association-card-max,1,1,%zid%);
 .
 
 # ASSOCIATION ROLE CONSTRAINT
-zsi:association-role-constraint zid:0E5; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0E6);
+zsi:association-role-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Association Role Constraint",zid:0E7);
-    name("Has Role",zsi:association-type,zid:0E8);
-    name("Takes Part in Association",zsi:role,zid:0E9);
+    name("Association Role Constraint",%zid%);
+    name("Has Role",zsi:association-type,%zid%);
+    name("Takes Part in Association",zsi:role,%zid%);
 
-    has-role(zsi:role,1,1,zid:0EA);
-    has-role(zsi:association-type,1,1,zid:0EB);
-    has-property(zsi:role-card-min,1,1,zid:0EC);
-    has-property(zsi:role-card-max,1,1,zid:0ED);
-    plays-role(zsi:overriding-declaration, zsi:overrides-declaration,0,1,zid:0EE);
-    plays-role(zsi:overridden-declaration, zsi:overrides-declaration,0,*,zid:0EF);
+    has-role(zsi:role,1,1,%zid%);
+    has-role(zsi:association-type,1,1,%zid%);
+    has-property(zsi:role-card-min,1,1,%zid%);
+    has-property(zsi:role-card-max,1,1,%zid%);
+    plays-role(zsi:overriding-declaration, zsi:overrides-declaration,0,1,%zid%);
+    plays-role(zsi:overridden-declaration, zsi:overrides-declaration,0,*,%zid%);
 .
 
 # ROLE COMBINATION CONSTRAINT
-zsi:role-combination-constraint zid:0EG; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0EH);
+zsi:role-combination-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Role Combination Constraint",zid:0EJ);
-    name("Plays Role in combination with",zsi:type,zid:0EK);
-    name("Played by Type in combination with",zsi:role,zid:0EL);
-    name("Allows Role combination",zsi:role-combination,zid:0EM);
+    name("Role Combination Constraint",%zid%);
+    name("Plays Role in combination with",zsi:type,%zid%);
+    name("Played by Type in combination with",zsi:role,%zid%);
+    name("Allows Role combination",zsi:role-combination,%zid%);
 
-    has-role(zsi:type,1,1,zid:0EN);
-    has-role(zsi:role,1,1,zid:0EP);
-    has-role(zsi:role-combination,1,1,zid:0EQ);
+    has-role(zsi:type,1,1,%zid%);
+    has-role(zsi:role,1,1,%zid%);
+    has-role(zsi:role-combination,1,1,%zid%);
 .
 
 # ASSOCIATION HAS ROLE COMBINATION CONSTRAINT
-zsi:association-has-role-combination-constraint zid:0ER; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0ET);
+zsi:association-has-role-combination-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Association Has Role Combination Constraint",zid:0EU);
-    name("Constrains Associations of Type",zsi:role-combination,zid:0EV);
-    name("May Have Role Combination",zsi:association-type,zid:0EW);
+    name("Association Has Role Combination Constraint",%zid%);
+    name("Constrains Associations of Type",zsi:role-combination,%zid%);
+    name("May Have Role Combination",zsi:association-type,%zid%);
 
-    has-role(zsi:association-type,1,1,zid:0EX);
-    has-role(zsi:role-combination,1,1,zid:0EY);
+    has-role(zsi:association-type,1,1,%zid%);
+    has-role(zsi:role-combination,1,1,%zid%);
 .
 
 # CONSTRUCT SCOPE CONSTRAINT
-zsi:construct-scope-constraint zid:0F0; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0F1);
+zsi:construct-scope-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Construct Scope Constraint",zid:0F2);
-    name("Scope Contains Item(s) of Type",zsi:construct-type,zid:0F3);
-    name("Construct Has Scope Containing Item(s) of this Type",zsi:scope-item-type,zid:0F4);
+    name("Construct Scope Constraint",%zid%);
+    name("Scope Contains Item(s) of Type",zsi:construct-type,%zid%);
+    name("Construct Has Scope Containing Item(s) of this Type",zsi:scope-item-type,%zid%);
 
-    has-role(zsi:construct-type,1,1,zid:0F5);
-    has-role(zsi:scope-item-type,1,1,zid:0F6);
-    has-property(zsi:scope-item-type-card-min,1,1,zid:0F7);
-    has-property(zsi:scope-item-type-card-max,1,1,zid:0F8);
+    has-role(zsi:construct-type,1,1,%zid%);
+    has-role(zsi:scope-item-type,1,1,%zid%);
+    has-property(zsi:scope-item-type-card-min,1,1,%zid%);
+    has-property(zsi:scope-item-type-card-max,1,1,%zid%);
 .
 
 # FIELD WITH SCOPE ITEM DECLARATION
-zsi:field-with-scope-item-declaration zid:0F9; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0FA);
+zsi:field-with-scope-item-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Field with Scope Item Declaration",zid:0FB);
-    name("Has Field(s) scoped by Item",zsi:field-declarer,zid:0FC);
-    name("Item has Field(s) scoped by Item",zsi:scope-item,zid:0FD);
+    name("Field with Scope Item Declaration",%zid%);
+    name("Has Field(s) scoped by Item",zsi:field-declarer,%zid%);
+    name("Item has Field(s) scoped by Item",zsi:scope-item,%zid%);
 
-    is-abstract(zid:0FE);
-    has-role(zsi:field-declarer,1,1,zid:0FF);
-    has-role(zsi:scope-item,1,1,zid:0FG);
-    has-property(zsi:field-card-min,1,1,zid:0FH);
-    has-property(zsi:field-card-max,1,1,zid:0FJ);
+    is-abstract(%zid%);
+    has-role(zsi:field-declarer,1,1,%zid%fwsid1%);
+    has-role(zsi:scope-item,1,1,%zid%);
+    has-property(zsi:field-card-min,1,1,%zid%fwsid2%);
+    has-property(zsi:field-card-max,1,1,%zid%fwsid3%);
 .
 
 # FIELD WITH SCOPE ITEM TYPE DECLARATION
-zsi:field-with-scope-item-type-declaration zid:0FK; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0FL);
+zsi:field-with-scope-item-type-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Field with Scope Item Type Declaration",zid:0FM);
-    name("Has Field(s) scoped by Item of Type",zsi:field-declarer,zid:0FN);
-    name("Item has Field(s) scoped by Item of this Type",zsi:scope-item-type,zid:0FP);
+    name("Field with Scope Item Type Declaration",%zid%);
+    name("Has Field(s) scoped by Item of Type",zsi:field-declarer,%zid%);
+    name("Item has Field(s) scoped by Item of this Type",zsi:scope-item-type,%zid%);
 
-    is-abstract(zid:0FQ);
-    has-role(zsi:field-declarer,1,1,zid:0FR);
-    has-role(zsi:scope-item-type,1,1,zid:0FT);
-    has-property(zsi:field-card-min,1,1,zid:0FU);
-    has-property(zsi:field-card-max,1,1,zid:0FV);
+    is-abstract(%zid%);
+    has-role(zsi:field-declarer,1,1,%zid%fwsitd1%);
+    has-role(zsi:scope-item-type,1,1,%zid%);
+    has-property(zsi:field-card-min,1,1,%zid%fwsitd2%);
+    has-property(zsi:field-card-max,1,1,%zid%fwsitd3%);
 .
 
 # PROPERTY WITH SCOPE ITEM DECLARATION
-zsi:property-with-scope-item-declaration zid:0FW; isa zsi:reified-association-type;
-    kind-of(zsi:field-with-scope-item-declaration,zid:0FX);
+zsi:property-with-scope-item-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-with-scope-item-declaration,%zid%);
 
-    name("Property with Scope Item Declaration",zid:0FY);
-    name("Has Property(s) scoped by Item",zsi:property-declarer,zid:0G0);
-    name("Used by Property Declarer, scoped by Item",zsi:property-type,zid:0G1);
-    name("Scopes Properties of Property Declarer",zsi:scope-item,zid:0G2);
+    name("Property with Scope Item Declaration",%zid%);
+    name("Has Property(s) scoped by Item",zsi:property-declarer,%zid%);
+    name("Used by Property Declarer, scoped by Item",zsi:property-type,%zid%);
+    name("Scopes Properties of Property Declarer",zsi:scope-item,%zid%);
 
-    has-role(zsi:property-declarer,1,1,zid:0G3,zid:0FF,zid:0G4);
-    has-role(zsi:property-type,1,1,zid:0G5);
-    has-property(zsi:property-card-min,1,1,zid:0G6,zid:0FH,zid:0G7);
-    has-property(zsi:property-card-max,1,1,zid:0G8,zid:0FJ,zid:0G9);
+    has-role(zsi:property-declarer,1,1,%zid%,%zid%fwsid1%,%zid%);
+    has-role(zsi:property-type,1,1,%zid%);
+    has-property(zsi:property-card-min,1,1,%zid%,%zid%fwsid2%,%zid%);
+    has-property(zsi:property-card-max,1,1,%zid%,%zid%fwsid3%,%zid%);
 .
 
 # PROPERTY WITH SCOPE ITEM TYPE DECLARATION
-zsi:property-with-scope-item-type-declaration zid:0GA; isa zsi:reified-association-type;
-    kind-of(zsi:field-with-scope-item-type-declaration,zid:0GB);
+zsi:property-with-scope-item-type-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-with-scope-item-type-declaration,%zid%);
 
-    name("Property with Scope Item Type Declaration",zid:0GC);
-    name("Has Property(s) scoped by Item of Type",zsi:property-declarer,zid:0GD);
-    name("Used by Property Declarer, scoped by Item Type",zsi:property-type,zid:0GE);
-    name("Property Declarer has Property(s) scoped by Item of this Type",zsi:scope-item-type,zid:0GF);
+    name("Property with Scope Item Type Declaration",%zid%);
+    name("Has Property(s) scoped by Item of Type",zsi:property-declarer,%zid%);
+    name("Used by Property Declarer, scoped by Item Type",zsi:property-type,%zid%);
+    name("Property Declarer has Property(s) scoped by Item of this Type",zsi:scope-item-type,%zid%);
 
-    has-role(zsi:property-declarer,1,1,zid:0GG,zid:0FR,zid:0GH);
-    has-role(zsi:property-type,1,1,zid:0GJ);
-    has-property(zsi:property-card-min,1,1,zid:0GK,zid:0FU,zid:0GL);
-    has-property(zsi:property-card-max,1,1,zid:0GM,zid:0FV,zid:0GN);
+    has-role(zsi:property-declarer,1,1,%zid%,%zid%fwsitd1%,%zid%);
+    has-role(zsi:property-type,1,1,%zid%);
+    has-property(zsi:property-card-min,1,1,%zid%,%zid%fwsitd2%,%zid%);
+    has-property(zsi:property-card-max,1,1,%zid%,%zid%fwsitd3%,%zid%);
 .
 
 # ASSOCIATION FIELD WITH SCOPE ITEM DECLARATION
-zsi:association-field-with-scope-item-declaration zid:0GP; isa zsi:reified-association-type;
-    kind-of(zsi:field-with-scope-item-declaration,zid:0GQ);
+zsi:association-field-with-scope-item-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-with-scope-item-declaration,%zid%);
 
-    name("Association Field with Scope Item Declaration",zid:0GR);
-    name("Has Field(s) scoped by Item",zsi:association-field-declarer,zid:0GT);
-    name("Used by Association Field Declarer, scoped by Item",zsi:association-type,zid:0GU);
-    name("Used by Association Field Declarer with Association Type, scoped by Item",zsi:role,zid:0GV);
-    name("Item has Field(s) scoped by Item",zsi:scope-item,zid:0GW);
+    name("Association Field with Scope Item Declaration",%zid%);
+    name("Has Field(s) scoped by Item",zsi:association-field-declarer,%zid%);
+    name("Used by Association Field Declarer, scoped by Item",zsi:association-type,%zid%);
+    name("Used by Association Field Declarer with Association Type, scoped by Item",zsi:role,%zid%);
+    name("Item has Field(s) scoped by Item",zsi:scope-item,%zid%);
 
-    has-role(zsi:association-field-declarer,1,1,zid:0GX,zid:0FF,zid:0GY);
-    has-role(zsi:association-type,1,1,zid:0H0);
-    has-role(zsi:role,1,1,zid:0H1);
+    has-role(zsi:association-field-declarer,1,1,%zid%,%zid%fwsid1%,%zid%);
+    has-role(zsi:association-type,1,1,%zid%);
+    has-role(zsi:role,1,1,%zid%);
 .
 
 # ASSOCIATION FIELD WITH SCOPE ITEM TYPE DECLARATION
-zsi:association-field-with-scope-item-type-declaration zid:0H2; isa zsi:reified-association-type;
-    kind-of(zsi:field-with-scope-item-type-declaration,zid:0H3);
+zsi:association-field-with-scope-item-type-declaration %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-with-scope-item-type-declaration,%zid%);
 
-    name("Association Field with Scope Item Type Declaration",zid:0H4);
-    name("Has Field(s) scoped by Item of Type",zsi:association-field-declarer,zid:0H5);
-    name("Used by Association Field Declarer, scoped by Item of Type",zsi:association-type,zid:0H6);
-    name("Used by Association Field Declarer with Association Type, scoped by Item of Type",zsi:role,zid:0H7);
-    name("Item has Association Field(s) scoped by Item of this Type",zsi:scope-item-type,zid:0H8);
+    name("Association Field with Scope Item Type Declaration",%zid%);
+    name("Has Field(s) scoped by Item of Type",zsi:association-field-declarer,%zid%);
+    name("Used by Association Field Declarer, scoped by Item of Type",zsi:association-type,%zid%);
+    name("Used by Association Field Declarer with Association Type, scoped by Item of Type",zsi:role,%zid%);
+    name("Item has Association Field(s) scoped by Item of this Type",zsi:scope-item-type,%zid%);
 
-    has-role(zsi:association-field-declarer,1,1,zid:0H9,zid:0FR,zid:0HA);
-    has-role(zsi:association-type,1,1,zid:0HB);
-    has-role(zsi:role,1,1,zid:0HC);
+    has-role(zsi:association-field-declarer,1,1,%zid%,%zid%fwsitd1%,%zid%);
+    has-role(zsi:association-type,1,1,%zid%);
+    has-role(zsi:role,1,1,%zid%);
 .
 
 # UNIQUE VALUE CONSTRAINT
-zsi:unique-value-constraint zid:0HD; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0HE);
+zsi:unique-value-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Unique Value Constraint",zid:0HF);
-    name("Has Unique Value",zsi:property-type,zid:0HG);
+    name("Unique Value Constraint",%zid%);
+    name("Has Unique Value",zsi:property-type,%zid%);
 
-    has-role(zsi:property-type,1,1,zid:0HH);
+    has-role(zsi:property-type,1,1,%zid%);
 .
 
 # PROPERTY DATA TYPE CONSTRAINT
-zsi:property-datatype-constraint zid:0HJ; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0HK);
+zsi:property-datatype-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Property Data Type Constraint",zid:0HL);
-    name("Has Datatype",zsi:property-type,zid:0HM);
+    name("Property Data Type Constraint",%zid%);
+    name("Has Datatype",zsi:property-type,%zid%);
 
-    has-role(zsi:property-type,1,1,zid:0HN);
-    has-role(zsi:datatype,1,1,zid:0HP);
+    has-role(zsi:property-type,1,1,%zid%);
+    has-role(zsi:datatype,1,1,%zid%);
 .
 
 # REGULAR EXPRESSION CONSTRAINT
-zsi:regular-expression-constraint zid:0HQ; isa zsi:reified-association-type;
-    kind-of(zsi:schema-declaration,zid:0HR);
+zsi:regular-expression-constraint %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:schema-declaration,%zid%);
 
-    name("Regular Expression Constraint",zid:0HT);
-    name("Matches Regexp",zsi:property-type,zid:0HU);
+    name("Regular Expression Constraint",%zid%);
+    name("Matches Regexp",zsi:property-type,%zid%);
 
-    has-role(zsi:property-type,1,1,zid:0HV);
-    has-property(zsi:regexp,1,1,zid:0HW);
+    has-role(zsi:property-type,1,1,%zid%);
+    has-property(zsi:regexp,1,1,%zid%);
 .
 
 # ==================== Schema Roles ====================
 
 # ROOT ITEM
-zsi:root-item zid:0HX; isa zsi:role;
-    name("Root Item",zid:0HY);
+zsi:root-item %zid%; isa zsi:role;
+    name("Root Item",%zid%);
 .
 
 # SCOPE ITEM
-zsi:scope-item zid:0J0; isa zsi:role;
-    name("Scope Item",zid:0J1);
+zsi:scope-item %zid%; isa zsi:role;
+    name("Scope Item",%zid%);
 .
 
 # SCOPE ITEM TYPE
-zsi:scope-item-type zid:0J2; isa zsi:role;
-    name("Scope Item Type",zid:0J3);
+zsi:scope-item-type %zid%; isa zsi:role;
+    name("Scope Item Type",%zid%);
 .
 
 # OVERRIDING DECLARATION
-zsi:overriding-declaration zid:0J4; isa zsi:role;
-    name("Overriding Declaration",zid:0J5);
+zsi:overriding-declaration %zid%; isa zsi:role;
+    name("Overriding Declaration",%zid%);
 .
 
 # OVERRIDDEN DECLARATION
-zsi:overridden-declaration zid:0J6; isa zsi:role;
-    name("Overridden Declaration",zid:0J7);
+zsi:overridden-declaration %zid%; isa zsi:role;
+    name("Overridden Declaration",%zid%);
 .
 
 # ==================== Schema Property Types ====================
 
 # REGEXP
-zsi:regexp zid:0J8; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0J9);
+zsi:regexp %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    external-identifier(tmcl:regexp, zid:0JA);
-    name("Regular Expression",zid:0JB);
-    name("Regexp",zsi:property-type,zid:0JC);
+    external-identifier(tmcl:regexp, %zid%);
+    name("Regular Expression",%zid%);
+    name("Regexp",zsi:property-type,%zid%);
 
-    has-datatype(xsd:string,zid:0JD);
+    has-datatype(xsd:string,%zid%);
 .
 
 # MIN CARDINALITY
-zsi:card-min zid:0JE; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0JF);
+zsi:card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    external-identifier(tmcl:card-min, zid:0JG);
-    name("Min Cardinality",zid:0JH);
+    external-identifier(tmcl:card-min, %zid%);
+    name("Min Cardinality",%zid%);
 
-    has-datatype(xsd:nonNegativeInteger,zid:0JJ);
+    has-datatype(xsd:nonNegativeInteger,%zid%);
 .
 
 # MAX CARDINALITY
-zsi:card-max zid:0JK; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,zid:0JL);
+zsi:card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:reified-property,%zid%);
 
-    external-identifier(tmcl:card-max, zid:0JM);
-    name("Max Cardinality",zid:0JN);
+    external-identifier(tmcl:card-max, %zid%);
+    name("Max Cardinality",%zid%);
 
-    has-datatype(iso:ctm-integer,zid:0JP);
+    has-datatype(iso:ctm-integer,%zid%);
 .
 
 # ROLE MIN CARDINALITY
 zsi:role-card-min
-    kind-of(zsi:card-min,zid:0JQ);
-    zid:0JR; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,%zid%);
+    %zid%; isa zsi:reified-property-type;
 
-    name("Role Min Cardinality",zid:0JT);
+    name("Role Min Cardinality",%zid%);
 .
 
 # ROLE MAX CARDINALITY
-zsi:role-card-max zid:0JU; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0JV);
+zsi:role-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,%zid%);
 
-    name("Role Max Cardinality",zid:0JW);
+    name("Role Max Cardinality",%zid%);
 .
 
 # FIELD MIN CARDINALITY
-zsi:field-card-min zid:0JX; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0JY);
+zsi:field-card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,%zid%);
 
-    name("Field Min Cardinality",zid:0K0);
+    name("Field Min Cardinality",%zid%);
 .
 
 # FIELD MAX CARDINALITY
-zsi:field-card-max zid:0K1; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0K2);
+zsi:field-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,%zid%);
 
-    name("Field Max Cardinality",zid:0K3);
+    name("Field Max Cardinality",%zid%);
 .
 
 # ASSOCIATION MIN CARDINALITY
-zsi:association-card-min zid:0K4; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-min,zid:0K5);
+zsi:association-card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-min,%zid%);
 
-    name("Association Min Cardinality",zid:0K6);
+    name("Association Min Cardinality",%zid%);
 .
 
 # ASSOCIATION MAX CARDINALITY
-zsi:association-card-max zid:0K7; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-max,zid:0K8);
+zsi:association-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-max,%zid%);
 
-    name("Association Max Cardinality",zid:0K9);
+    name("Association Max Cardinality",%zid%);
 .
 
 # PROPERTY MIN CARDINALITY
-zsi:property-card-min zid:0KA; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-min,zid:0KB);
+zsi:property-card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-min,%zid%);
 
-    name("Property Min Cardinality",zid:0KC);
+    name("Property Min Cardinality",%zid%);
 .
 
 # PROPERTY MAX CARDINALITY
-zsi:property-card-max zid:0KD; isa zsi:reified-property-type;
-    kind-of(zsi:field-card-max,zid:0KE);
+zsi:property-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:field-card-max,%zid%);
 
-    name("Property Max Cardinality",zid:0KF);
+    name("Property Max Cardinality",%zid%);
 .
 
 # REIFIER MIN CARDINALITY
-zsi:reifier-card-min zid:0KG; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0KH);
+zsi:reifier-card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,%zid%);
 
-    name("Reifier Min Cardinality",zid:0KJ);
+    name("Reifier Min Cardinality",%zid%);
 .
 
 # REIFIER MAX CARDINALITY
-zsi:reifier-card-max zid:0KK; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0KL);
+zsi:reifier-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,%zid%);
 
-    name("Reifier Max Cardinality",zid:0KM);
+    name("Reifier Max Cardinality",%zid%);
 .
 
 # SCOPE ITEM MIN CARDINALITY
-zsi:scope-item-card-min zid:0KN; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0KP);
+zsi:scope-item-card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,%zid%);
 
-    name("Scope Item Min Cardinality",zid:0KQ);
+    name("Scope Item Min Cardinality",%zid%);
 .
 
 # SCOPE ITEM MAX CARDINALITY
-zsi:scope-item-card-max zid:0KR; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0KT);
+zsi:scope-item-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,%zid%);
 
-    name("Scope Item Max Cardinality",zid:0KU);
+    name("Scope Item Max Cardinality",%zid%);
 .
 
 # SCOPE ITEM TYPE MIN CARDINALITY
-zsi:scope-item-type-card-min zid:0KV; isa zsi:reified-property-type;
-    kind-of(zsi:card-min,zid:0KW);
+zsi:scope-item-type-card-min %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-min,%zid%);
 
-    name("Scope Item Type Min Cardinality",zid:0KX);
+    name("Scope Item Type Min Cardinality",%zid%);
 .
 
 # SCOPE ITEM TYPE MAX CARDINALITY
-zsi:scope-item-type-card-max zid:0KY; isa zsi:reified-property-type;
-    kind-of(zsi:card-max,zid:0L0);
+zsi:scope-item-type-card-max %zid%; isa zsi:reified-property-type;
+    kind-of(zsi:card-max,%zid%);
 
-    name("Scope Item Type Max Cardinality",zid:0L1);
+    name("Scope Item Type Max Cardinality",%zid%);
 .
 
 # ==================== Data Types ====================
 
 # STRING
-zsi:string zid:0L2; isa zsi:datatype;
+zsi:string %zid%; isa zsi:datatype;
 
-    external-identifier(xsd:string, zid:0L3);
-    name("String",zid:0L4);
+    external-identifier(xsd:string, %zid%);
+    name("String",%zid%);
 .
 
 # ANY URI
-zsi:any-uri zid:0L5; isa zsi:datatype;
+zsi:any-uri %zid%; isa zsi:datatype;
 
-    external-identifier(xsd:anyURI, zid:0L6);
-    name("String",zid:0L7);
+    external-identifier(xsd:anyURI, %zid%);
+    name("String",%zid%);
 .
 
 # NON-NEGATIVE INTEGER
-zsi:non-negative-integer zid:0L8; isa zsi:datatype;
+zsi:non-negative-integer %zid%; isa zsi:datatype;
 
-    external-identifier(xsd:nonNegativeInteger, zid:0L9);
-    name("Non-Negative Integer",zid:0LA);
+    external-identifier(xsd:nonNegativeInteger, %zid%);
+    name("Non-Negative Integer",%zid%);
 .
 
 # UNBOUNDED NON-NEGATIVE INTEGER
-zsi:unbounded-non-negative-integer zid:0LB; isa zsi:datatype;
+zsi:unbounded-non-negative-integer %zid%; isa zsi:datatype;
 
-    external-identifier(iso:ctm-integer, zid:0LC);
-    name("Unbounded Non-Negative Integer",zid:0LD);
+    external-identifier(iso:ctm-integer, %zid%);
+    name("Unbounded Non-Negative Integer",%zid%);
 .
 
 # ==================== Topic Map Implementation Constructs ====================
@@ -1567,14 +1298,4 @@ ztm:anonymous-topic.
 
 # ROLE: REIFIED ZDM ASSOCIATION
 ztm:reified-zdm-association.
-
-
-# ==================== Core Items ====================
-
-# USER
-
-# IDENTITY
-#---A specific means of authentication such as an OpenID or public key
-
-
 

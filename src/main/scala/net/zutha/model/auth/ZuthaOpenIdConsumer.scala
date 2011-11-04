@@ -1,4 +1,4 @@
-package net.zutha.model.user
+package net.zutha.model.auth
 
 import net.liftweb.openid.OpenIDConsumer
 import net.liftweb.http.{RedirectResponse, S, LiftResponse}
@@ -29,6 +29,7 @@ class ZuthaOpenIdConsumer[UserType] extends OpenIDConsumer[UserType]{
     // GET HTTP-redirect to the OpenID Provider endpoint
     // The only method supported in OpenID 1.x
     // redirect-URL usually limited ~2048 bytes
-    RedirectResponse(authReq.getDestinationUrl(true))
+    val destURL = authReq.getDestinationUrl(true)
+    RedirectResponse(destURL)
   }
 }
