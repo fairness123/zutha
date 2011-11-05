@@ -1,7 +1,8 @@
 package net.zutha.model.constructs
 
 import net.zutha.model.exceptions.SchemaViolationException
-import net.zutha.model.datatypes.{ZNonNegativeInteger, Infinity, Finite, ZUnboundedNNI}
+import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
+import ZUnboundedNNI.{Finite,Infinity}
 
 trait ZAssociationFieldType{
   def definingType: ZType

@@ -7,7 +7,7 @@ object ZAssociationType{
   def unapply(item: ZItem): Option[ZAssociationType] =
     if(item.isAssociationType) Some(item.toAssociationType) else None
 }
-trait ZAssociationType extends ZInterface{
+trait ZAssociationType extends ZTrait{
   def getAllSuperAssociationTypes: Set[ZAssociationType]
   def getDirectAssocRoleConstraints: Set[ZAssociation]
   def getAssocRoleConstraints: Set[ZAssociation]

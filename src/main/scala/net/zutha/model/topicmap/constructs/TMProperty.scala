@@ -10,8 +10,11 @@ abstract class TMProperty extends ZProperty {
 
   def toProperty: ZProperty = this
   def dataTypeItem = propertyType.dataTypeItem
-  def dataType = propertyType.dataType
-  def value = dataType(valueString).getOrElse(throw new SchemaViolationException("property: "+this+" has illegal value: "+valueString))
+  val dataType = propertyType.dataType
+  def value = valueString match {
+    case dataType(propValue) => propValue
+    case _ => throw new SchemaViolationException("property: "+this+" has illegal value: "+valueString)
+  }
 }
 
 object TMOccurrenceProperty{
@@ -37,3 +40,4 @@ class TMNameProperty protected (name: Name) extends TMProperty {
 
   def valueString = name.getValue
 }
+

@@ -15,8 +15,8 @@ trait ZItem {
   def isItemType: Boolean
   def toItemType: ZItemType
 
-  def isInterface: Boolean
-  def toInterface: ZInterface
+  def isTrait: Boolean
+  def toTrait: ZTrait
 
   def isAssociationType: Boolean
   def toAssociationType: ZAssociationType

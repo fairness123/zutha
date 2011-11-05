@@ -1,14 +1,32 @@
 package net.zutha.model.datatypes
 
 import javax.naming.directory.SchemaViolationException
+import net.zutha.model.datatypes.ZPermissionLevel.Specified
 
 object ZNonNegativeInteger extends DataType{
-  def apply(value: String): Option[ZNonNegativeInteger] = try {
+  def apply(value: String): ZNonNegativeInteger = try {
       val intVal = value.toInt
-      if (intVal < 0) throw new SchemaViolationException("ZNonNegativeInteger properties cannot be negative.")
-      Some(ZNonNegativeInteger(intVal))
+      apply(intVal)
     } catch {
       case _ => throw new SchemaViolationException("Invalid value: "+value+" for ZNonNegativeInteger property.")
     }
+  def apply(value: Int): ZNonNegativeInteger = {
+      if (value < 0) throw new SchemaViolationException("ZNonNegativeInteger properties cannot be negative.")
+      else ZNonNegativeInteger(value)
+  }
+  def unapply(value: String): Option[ZNonNegativeInteger] = try {
+      Some(apply(value))
+    } catch {
+      case _ => None
+    }
+  def unapply(propValue: PropertyValue): Option[ZNonNegativeInteger] = propValue match {
+    case v:ZNonNegativeInteger => Some(v)
+    case _ => None
+  }
+
+  def default = ZNonNegativeInteger("0")
+
 }
-case class ZNonNegativeInteger(value: Int) extends PropertyValue
+class ZNonNegativeInteger private (value: Int) extends PropertyValue {
+  def asString = value.toString
+}

@@ -6,7 +6,7 @@ object SchemaIdentifier extends Enumeration {
   //types of item types
   val TYPE = Value("type")
   val ITEM_TYPE = Value("item-type")
-  val INTERFACE = Value("interface")
+  val TRAIT = Value("trait")
   val FIELD_TYPE = Value("field-type")
   val PROPERTY_TYPE = Value("property-type")
   val ASSOCIATION_TYPE = Value("association-type")
@@ -45,5 +45,5 @@ object SchemaIdentifier extends Enumeration {
   //datatypes
   val NON_NEGATIVE_INTEGER = Value("non-negative-integer")
   val UNBOUNDED_NON_NEGATIVE_INTEGER = Value("unbounded-non-negative-integer")
-
+  val PERMISSION_LEVEL = Value("permission-level")
 }

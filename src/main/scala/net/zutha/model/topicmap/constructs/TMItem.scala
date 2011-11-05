@@ -39,8 +39,8 @@ class TMItem protected (topic: Topic) extends ZItem{
   lazy val isItemType = TopicMapDB.itemIsA(this,db.siITEM_TYPE)
   def toItemType: ZItemType = TMItemType(topic)
 
-  lazy val isInterface = TopicMapDB.itemIsA(this,db.siINTERFACE)
-  def toInterface: ZInterface = TMInterface(topic)
+  lazy val isTrait = TopicMapDB.itemIsA(this,db.siTRAIT)
+  def toTrait: ZTrait = TMTrait(topic)
 
   lazy val isRole = TopicMapDB.itemIsA(this,db.siROLE)
   def toRole: ZRole = TMRole(topic)
@@ -77,12 +77,12 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   // -------------- names --------------
   def names(scope: ZScope):Set[String] = topic.getNames(scope:IScope).toSet.map((_:Name).getValue)
-  def names(scopeItems: ZItem*):Set[String] = names(TMScope(scopeItems.toSet))
+  def names(scopeItems: ZItem*):Set[String] = names(ZScope(scopeItems.toSet))
   def allNames:Set[String] = topic.getNames.toSet.map((_:Name).getValue)
-  def unconstrainedNames:Set[String] = names(TMScope())
+  def unconstrainedNames:Set[String] = names(ZScope())
 
   def name(scope: ZScope) = names(scope).headOption
-  def name(scopeItems: ZItem*) = names(TMScope(scopeItems.toSet)).headOption
+  def name(scopeItems: ZItem*) = names(ZScope(scopeItems.toSet)).headOption
   def name = unconstrainedNames.headOption match {
     case Some(str) => str
     case None => { //TODO implement autoNames

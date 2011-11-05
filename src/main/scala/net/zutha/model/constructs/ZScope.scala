@@ -1,6 +1,8 @@
 package net.zutha.model.constructs
 
-
-trait ZScope {
-  def scopeItems: Set[ZItem]
+object ZScope{
+  def apply(scopeItems:ZItem*) = {
+    new ZScope(scopeItems.toSet)
+  }
 }
+case class ZScope(val scopeItems: Set[ZItem])

@@ -14,7 +14,7 @@ object TMPropertyType{
   val getItem = makeCache[Topic,String,TMPropertyType](_.getId, topic => new TMPropertyType(topic))
   def apply(topic: Topic):TMPropertyType = getItem(topic)
 }
-class TMPropertyType protected (topic: Topic) extends TMInterface(topic) with ZPropertyType{
+class TMPropertyType protected (topic: Topic) extends TMTrait(topic) with ZPropertyType{
 
   def dataTypeItem: ZItem = {
     //TODO resolve override rules

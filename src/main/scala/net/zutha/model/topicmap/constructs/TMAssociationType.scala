@@ -14,7 +14,7 @@ object TMAssociationType{
   val getItem = makeCache[Topic,String,TMAssociationType](_.getId, topic => new TMAssociationType(topic))
   def apply(topic: Topic):TMAssociationType = getItem(topic)
 }
-class TMAssociationType protected (topic: Topic) extends TMInterface(topic) with ZAssociationType{
+class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAssociationType{
   def getAllSuperAssociationTypes: Set[ZAssociationType] = getAllSuperTypes.map{_.toAssociationType}
 
   def getDirectAssocRoleConstraints = {

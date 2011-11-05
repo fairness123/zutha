@@ -12,12 +12,12 @@ trait SchemaItems {
   //kinds of item type
   lazy val siTYPE: ZItemType = getSchemaItem(TYPE).toItemType
   lazy val siITEM_TYPE: ZItemType = getSchemaItem(ITEM_TYPE).toItemType
-  lazy val siINTERFACE: ZItemType = getSchemaItem(INTERFACE).toItemType
+  lazy val siTRAIT: ZItemType = getSchemaItem(TRAIT).toItemType
 
   //kinds of interface
-  lazy val siFIELD_TYPE: ZInterface = getSchemaItem(FIELD_TYPE).toInterface
-  lazy val siPROPERTY_TYPE: ZInterface = getSchemaItem(PROPERTY_TYPE).toInterface
-  lazy val siASSOCIATION_TYPE: ZInterface = getSchemaItem(ASSOCIATION_TYPE).toInterface
+  lazy val siFIELD_TYPE: ZTrait = getSchemaItem(FIELD_TYPE).toTrait
+  lazy val siPROPERTY_TYPE: ZTrait = getSchemaItem(PROPERTY_TYPE).toTrait
+  lazy val siASSOCIATION_TYPE: ZTrait = getSchemaItem(ASSOCIATION_TYPE).toTrait
 
   //item types
   lazy val siITEM: ZItemType = getSchemaItem(ITEM).toItemType
@@ -53,4 +53,5 @@ trait SchemaItems {
   //datatypes
   lazy val siNonNegativeInteger: ZItem = getSchemaItem(NON_NEGATIVE_INTEGER)
   lazy val siUnboundedNonNegativeInteger: ZItem = getSchemaItem(UNBOUNDED_NON_NEGATIVE_INTEGER)
+  lazy val siPermissionLevel: ZItem = getSchemaItem(PERMISSION_LEVEL)
 }
