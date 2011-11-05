@@ -149,7 +149,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     val requiredRolePlayers = rolePlayers.toSet
     val allAssoc = tmm.getAssociations[Association](assocType:Topic).toSet.map((a:Association) => a.toZAssociation)
     val results = allAssoc.filter{assoc =>
-      val assocRolePlayers = assoc.getRolePlayers
+      val assocRolePlayers = assoc.rolePlayers
       if(strict) assocRolePlayers == requiredRolePlayers
       else requiredRolePlayers.forall(assocRolePlayers contains)
     }

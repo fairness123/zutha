@@ -4,14 +4,12 @@ import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.util.Helpers._
 import net.zutha.model.constants.ZuthaConstants
-import net.zutha.model.topicmap.db.TopicMapDB
 import ZuthaConstants._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB.db
 import de.topicmapslab.majortom.model.core.IScope
-import net.zutha.model.exceptions.SchemaViolationException
 import org.tmapi.core.{Name, Topic}
-import net.zutha.model.datatypes.{PropertyValue, DataType}
+import net.zutha.model.datatypes.{PropertyValue}
 
 object TMItem{
   val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
@@ -33,22 +31,22 @@ class TMItem protected (topic: Topic) extends ZItem{
   def toTopic = topic
   def toItem: ZItem = this
 
-  lazy val isZType = TopicMapDB.itemIsA(this,db.siTYPE)
+  lazy val isZType = db.itemIsA(this,db.siTYPE)
   def toZType: ZType = TMType(topic)
 
-  lazy val isItemType = TopicMapDB.itemIsA(this,db.siITEM_TYPE)
+  lazy val isItemType = db.itemIsA(this,db.siITEM_TYPE)
   def toItemType: ZItemType = TMItemType(topic)
 
-  lazy val isTrait = TopicMapDB.itemIsA(this,db.siTRAIT)
+  lazy val isTrait = db.itemIsA(this,db.siTRAIT)
   def toTrait: ZTrait = TMTrait(topic)
 
-  lazy val isRole = TopicMapDB.itemIsA(this,db.siROLE)
+  lazy val isRole = db.itemIsA(this,db.siROLE)
   def toRole: ZRole = TMRole(topic)
 
-  lazy val isAssociationType = TopicMapDB.itemIsA(this,db.siASSOCIATION_TYPE)
+  lazy val isAssociationType = db.itemIsA(this,db.siASSOCIATION_TYPE)
   def toAssociationType: ZAssociationType = TMAssociationType(topic)
 
-  lazy val isPropertyType = TopicMapDB.itemIsA(this,db.siPROPERTY_TYPE)
+  lazy val isPropertyType = db.itemIsA(this,db.siPROPERTY_TYPE)
   def toPropertyType: ZPropertyType = TMPropertyType(topic)
 
   // -------------- ZIDs --------------
@@ -94,9 +92,9 @@ class TMItem protected (topic: Topic) extends ZItem{
   // -------------- types --------------
   def hasType(zType: ZType): Boolean = getAllTypes.contains(zType)
 
-  def getType = TopicMapDB.directTypesOfItem(this).toSet.head
+  def getType = db.directTypesOfItem(this).toSet.head
 
-  def getAllTypes = TopicMapDB.allTypesOfItem(this).toSet
+  def getAllTypes = db.allTypesOfItem(this).toSet
 
   def getFieldDefiningTypes = {
     val fieldDefiningTypes = getAllTypes.filter(_.definesFields)
@@ -151,7 +149,8 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   lazy val getAssociationFieldSetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZAssociationFieldSet])] = getFieldDefiningTypes.map{definingType =>
-      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.getDefinedAssociationFieldTypes.map{TMAssociationFieldSet(this,_)}
+      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.getDefinedAssociationFieldTypes
+        .map{TMAssociationFieldSet(this,definingType,_)}
       (definingType,assocFieldSets)
     }
     kvPairs.toMap

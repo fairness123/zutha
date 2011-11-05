@@ -1,13 +1,12 @@
 package net.zutha.model.constructs
 
 import net.zutha.model.exceptions.SchemaViolationException
-import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
+import net.zutha.model.datatypes.{ZUnboundedNNI}
 import ZUnboundedNNI.{Finite,Infinity}
 
-trait ZAssociationFieldType{
-  def definingType: ZType
-  def role: ZRole
-  def associationType: ZAssociationType
+case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
+
+  def companionAssociationFieldTypes = otherRoles.map(r => ZAssociationFieldType(r,associationType))
 
   /**
    * @return a Set containing the other Roles that can be played in this field's Association.
@@ -23,9 +22,4 @@ trait ZAssociationFieldType{
     }
   }
 
-  def companionAssociationFieldTypes: Set[ZAssociationFieldType]
-
-  def declarationAssociation: ZAssociation
-  def cardMin: ZNonNegativeInteger
-  def cardMax: ZUnboundedNNI
 }

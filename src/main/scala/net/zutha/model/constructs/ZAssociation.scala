@@ -3,11 +3,12 @@ package net.zutha.model.constructs
 import net.zutha.model.datatypes.{PropertyValue}
 
 trait ZAssociation {
-  def getAssociationType: ZAssociationType
-  def getAssociationFields: Set[ZAssociationField]
-  def getPlayedRoles: Set[ZRole]
-  def getAllPlayers: Set[ZItem]
-  def getRolePlayers: Set[(ZRole,ZItem)]
+  def associationType: ZAssociationType
+  def associationFields: Set[ZAssociationField]
+  def playedRoles: Set[ZRole]
+  def players: Set[ZItem]
+  def rolePlayers: Set[(ZRole,ZItem)]
+  def associationProperties: Set[(ZPropertyType,PropertyValue)]
   def getPlayers(role: ZRole): Set[ZItem]
   def getProperties(propType: ZPropertyType): Set[ZProperty]
   def getPropertyValues(propType: ZPropertyType): Set[PropertyValue]

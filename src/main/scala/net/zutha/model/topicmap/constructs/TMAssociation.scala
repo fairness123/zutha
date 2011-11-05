@@ -5,8 +5,8 @@ import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.constructs._
 import org.tmapi.core.{Topic, Association, Role}
 import net.zutha.util.Helpers._
-import net.zutha.model.db.DB._
-import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.db.DB.db
+import net.zutha.model.datatypes.PropertyValue
 
 object TMAssociation{
   val getItem = makeCache[Association,String,TMAssociation](_.getId, association => new TMAssociation(association))
@@ -16,12 +16,15 @@ class TMAssociation protected (association: Association) extends ZAssociation{
   def toZAssociation: ZAssociation = this
   def toAssociation = association
   lazy val reifier = association.getReifier
-  def getAssociationType = TMAssociationType(association.getType)
-  def getAssociationFields: Set[ZAssociationField] = association.getRoles.toSet.map(TMAssociationField(_:Role))
-  def getPlayedRoles = association.getRoleTypes.toSet.map(TMRole(_:Topic))
-  def getAllPlayers = association.getRoles.toSet.map((role:Role) => role.getPlayer.toItem)
+  def associationType = TMAssociationType(association.getType)
+  def associationFields: Set[ZAssociationField] = association.getRoles.toSet.map(TMAssociationField(_:Role))
+  def playedRoles = association.getRoleTypes.toSet.map(TMRole(_:Topic))
+  def players = association.getRoles.toSet.map((role:Role) => role.getPlayer.toItem)
   def getPlayers(role: ZRole): Set[ZItem] = association.getRoles(role).map(_.getPlayer.toItem).toSet
-  def getRolePlayers: Set[(ZRole,ZItem)] = getPlayedRoles.flatMap{r => getPlayers(r).map(p => (r,p))}
+  def rolePlayers: Set[(ZRole,ZItem)] = playedRoles.flatMap{r => getPlayers(r).map(p => (r,p))}
+  def associationProperties: Set[(ZPropertyType,PropertyValue)] = {
+    associationType.getAllDefinedProperties.flatMap{pt => getPropertyValues(pt).map(pv => (pt,pv))}
+  }
 
   def getProperties(propType: ZPropertyType) = reifier.getProperties(propType)
   def getPropertyValues(propType: ZPropertyType) = reifier.getPropertyValues(propType)

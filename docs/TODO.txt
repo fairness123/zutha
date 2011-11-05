@@ -1,6 +1,6 @@
 --------------------- UI ---------------------
-Hide empty field-sets
-Don't show association-field-sets for abstract association-types
+*DONE* Hide empty field-sets
+??? Don't show association-field-sets for abstract association-types
 other roles/properties in role-player-list items
 list scope items after properties
 more compact worth bars

@@ -21,6 +21,7 @@ object SchemaIdentifier extends Enumeration {
   val PROPERTY_DECLARATION = Value("property-declaration")
   val ASSOCIATION_FIELD_DECLARATION = Value("association-field-declaration")
   val ASSOCIATION_ROLE_CONSTRAINT = Value("association-role-constraint")
+  val ASSOCIATION_PROPERTY_CONSTRAINT = Value("association-property-constraint")
   val ABSTRACT_CONSTRAINT = Value("abstract-constraint")
   val PROPERTY_DATATYPE_CONSTRAINT = Value("property-datatype-constraint")
   val OVERRIDES_DECLARATION = Value("overrides-declaration")

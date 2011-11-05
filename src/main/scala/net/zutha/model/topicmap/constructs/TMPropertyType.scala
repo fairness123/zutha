@@ -7,7 +7,6 @@ import net.zutha.util.Helpers._
 import net.zutha.model.datatypes.DataType
 import net.zutha.model.constructs.{ZItem, ZPropertyType}
 import net.zutha.model.db.DB.db
-import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.exceptions.SchemaViolationException
 
 object TMPropertyType{
@@ -18,7 +17,7 @@ class TMPropertyType protected (topic: Topic) extends TMTrait(topic) with ZPrope
 
   def dataTypeItem: ZItem = {
     //TODO resolve override rules
-    getAllSuperTypes.flatMap(propType => TopicMapDB.traverseAssociation(propType,db.siPROPERTY_TYPE.toRole,
+    getAllSuperTypes.flatMap(propType => db.traverseAssociation(propType,db.siPROPERTY_TYPE.toRole,
       db.siPROPERTY_DATATYPE_CONSTRAINT,db.siDATATYPE.toRole))
       .headOption.getOrElse(throw new SchemaViolationException("propertyType: "+this.name+" is missing a datatype declaration"))
   }

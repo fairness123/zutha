@@ -5,9 +5,8 @@ import org.tmapi.core.Topic
 
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.db.DB.db
-import net.zutha.model.topicmap.db.TopicMapDB
-import net.zutha.model.constructs.{ZType}
 import net.zutha.util.Helpers._
+import net.zutha.model.constructs.{ZAssociationFieldType, ZType}
 
 object TMType{
   val getItem = makeCache[Topic,String,TMType](_.getId, topic => new TMType(topic))
@@ -22,7 +21,7 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
   def hasSuperType(superType: ZType): Boolean = getAllSuperTypes.contains(superType)
 
   lazy val getAllSuperTypes: Set[ZType] = { //TODO allow an item's supertypes to be modified
-    val supertypes = TopicMapDB.allSupertypesOfItem(this) + this
+    val supertypes = db.allSupertypesOfItem(this) + this
     supertypes
   }
 
@@ -33,8 +32,8 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
     propertyDefRoles.size > 0 || assocDefRoles.size > 0
   }
 
-  def getDefinedPropertyTypes = {
-    val definedPropTypes = TopicMapDB.traverseAssociation(topic,db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION,
+  def getDefinedPropertyTypes = { //TODO get inherited property types
+    val definedPropTypes = db.traverseAssociation(topic,db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION,
       db.siPROPERTY_TYPE.toRole).map(_.toPropertyType)
     definedPropTypes
     
@@ -46,12 +45,12 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
    *  association fields defined by this Type
    */
   def getDefinedAssociationFieldTypes = {
-    val declAssociations = TopicMapDB.findAssociations(db.siASSOCIATION_FIELD_DECLARATION,false,
+    val declAssociations = db.findAssociations(db.siASSOCIATION_FIELD_DECLARATION,false,
       db.siASSOCIATION_FIELD_DECLARER -> this)
     declAssociations.map{declAssoc =>
       val role = declAssoc.getPlayers(db.siROLE.toRole).head.toRole
       val assocType = declAssoc.getPlayers(db.siASSOCIATION_TYPE.toRole).head.toAssociationType
-      TMAssociationFieldType(this,role,assocType)
+      ZAssociationFieldType(role,assocType)
     }.toSet
   }
   

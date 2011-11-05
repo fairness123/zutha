@@ -164,6 +164,27 @@ def has-role($assocType, $role, $min, $max, $reifier, $overrides, $overideReifie
     ) ~ $overideReifier
 end
 
+# ASSOCIATION PROPERTY CONSTRAINT
+def has-assoc-prop($assocType, $propType, $min, $max, $reifier)
+    $reifier isa zsi:property-declaration;
+        zsi:property-card-min: $min;
+        zsi:property-card-max: $max;
+    .
+    zsi:property-declaration(
+        zsi:association-type: $assocType,
+        zsi:property-type: $propType
+    ) ~ $reifier
+end
+def has-assoc-prop($assocType, $propType, $min, $max, $reifier, $overrides, $overideReifier)
+    has-property($assocType, $propType, $min, $max, $reifier)
+    $overideReifier isa zsi:overrides-declaration
+    .
+    zsi:overrides-declaration(
+        zsi:overriding-declaration: $reifier,
+        zsi:overridden-declaration: $overrides
+    ) ~ $overideReifier
+end
+
 # ROLE COMBINATION CONSTRAINT
 def role-combination($assocType,$role1,$itemType1,$role2,$itemType2,$comboItem,$reifier0,$reifier1,$reifier2)
     $comboItem isa zsi:role-combination.

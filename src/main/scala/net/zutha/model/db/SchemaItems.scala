@@ -29,6 +29,7 @@ trait SchemaItems {
   lazy val siPROPERTY_DECLARATION: ZAssociationType = getSchemaItem(PROPERTY_DECLARATION).toAssociationType
   lazy val siASSOCIATION_FIELD_DECLARATION: ZAssociationType = getSchemaItem(ASSOCIATION_FIELD_DECLARATION).toAssociationType
   lazy val siASSOCIATION_ROLE_CONSTRAINT: ZAssociationType = getSchemaItem(ASSOCIATION_ROLE_CONSTRAINT).toAssociationType
+  lazy val siASSOCIATION_PROPERTY_CONSTRAINT: ZAssociationType = getSchemaItem(ASSOCIATION_PROPERTY_CONSTRAINT).toAssociationType
   lazy val siABSTRACT_CONSTRAINT: ZAssociationType = getSchemaItem(ABSTRACT_CONSTRAINT).toAssociationType
   lazy val siPROPERTY_DATATYPE_CONSTRAINT: ZAssociationType = getSchemaItem(PROPERTY_DATATYPE_CONSTRAINT).toAssociationType
   lazy val siOVERRIDES_DECLARATION: ZAssociationType = getSchemaItem(OVERRIDES_DECLARATION).toAssociationType

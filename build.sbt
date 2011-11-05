@@ -1,6 +1,6 @@
 //logLevel := Level.Debug
 
-name := "zutha"
+name := "Zutha"
 
 version := "0.0.1-SNAPSHOT"
 

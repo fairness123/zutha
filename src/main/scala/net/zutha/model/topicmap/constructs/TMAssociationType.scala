@@ -4,18 +4,17 @@ import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.db.DB.db
 import net.zutha.util.Helpers._
-import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
+import org.tmapi.core.{Role, Topic}
 import net.zutha.model.constructs.{ZAssociation, ZRole, ZAssociationType}
-import org.tmapi.core.{Role, Association, Topic}
 
 object TMAssociationType{
   val getItem = makeCache[Topic,String,TMAssociationType](_.getId, topic => new TMAssociationType(topic))
   def apply(topic: Topic):TMAssociationType = getItem(topic)
 }
 class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAssociationType{
-  def getAllSuperAssociationTypes: Set[ZAssociationType] = getAllSuperTypes.map{_.toAssociationType}
+  def getAllSuperAssociationTypes: Set[ZAssociationType] = getAllSuperTypes.filter(_.isAssociationType).map{_.toAssociationType}
 
   def getDirectAssocRoleConstraints = {
     topic.getRolesPlayed(db.siASSOCIATION_TYPE,db.siASSOCIATION_ROLE_CONSTRAINT).toSet
@@ -35,7 +34,6 @@ class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAs
       case _ => throw new SchemaViolationException("role: "+role.name+" is declared more than once without being overridden")
     }
   }
-
   def getDirectDefinedRoles = getDirectAssocRoleConstraints.map{_.getRoles(db.siROLE).head.getPlayer.toRole}.toSet
   lazy val getAllDefinedRoles = {
     val definedRoles = getAssocRoleConstraints.map(_.getRoles(db.siROLE).head.getPlayer.toRole)
@@ -58,6 +56,22 @@ class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAs
     case value: ZUnboundedNNI => value
     case _ => throw new SchemaViolationException("card-max properties must have datatype: ZUnboundedNNI")
   }
+
+  def getDirectAssocPropertyConstraints = {
+    topic.getRolesPlayed(db.siASSOCIATION_TYPE,db.siASSOCIATION_PROPERTY_CONSTRAINT).toSet
+      .map((_:Role).getParent.toZAssociation)
+  }
+  def getAssocPropertyConstraints = {
+    val allAssocPropertyConstraints = getAllSuperAssociationTypes.flatMap{_.getDirectAssocPropertyConstraints}
+    val nonOverridden = allAssocPropertyConstraints.filter(_.overriddenBy.intersect(allAssocPropertyConstraints).isEmpty)
+    nonOverridden
+  }
+  def getDirectDefinedProperties = getDirectAssocPropertyConstraints.map(_.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType)
+  lazy val getAllDefinedProperties = {
+    val definedProps = getAssocPropertyConstraints.map(_.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType)
+    definedProps
+  }
+
 }
 
 
