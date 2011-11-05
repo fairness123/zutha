@@ -1,0 +1,12 @@
+--------- Plugins -------
+keyPromoter
+Describe Key
+JRebel
+SBT
+Scala
+
+---------- SBT --------
+SBT Launch Jar:
+D:\Programs\Simple Build Tool\sbt-launcher.jar
+VM parameters:
+-Xmx512M -XX:MaxPermSize=256M -noverify -javaagent:"C:\Program Files (x86)\ZeroTurnaround\JRebel\jrebel.jar" -Drebel.lift_plugin=true -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8765 -agentpath:"C:\Program Files (x86)\YourKit Java Profiler 9.5.0\bin\win32\yjpagent.dll"

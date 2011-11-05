@@ -1,0 +1,412 @@
+body{
+    font-size:95%;
+}
+/**************** Common *********************/
+/* Currency Icon */
+span.currency_icon{
+    float:left;
+    width:12px;
+}
+.currency_icon img{
+    float:right;
+    height:1em;
+}
+/*Rounded Corners*/
+#container,.item, .association {
+    -moz-border-radius:15px;
+    -webkit-border-radius:15px;
+    -khtml-border-radius:15px;
+}
+/* Headings */
+h1{
+    margin:2px;
+    font-size:1.7em;
+}
+h2{
+    margin:0;
+    font-size:1.1em;
+    font-weight:700;
+}
+h3{
+    margin:0;
+    font-size:1em;
+    font-weight:600;
+}
+
+/**************** Control Bar *********************/
+#control_bar{
+    overflow: hidden;
+    position:relative;
+    background-color: white;
+    border-bottom: black solid medium;
+    padding:2px;
+}
+/* Zutha Logo */
+#logo{
+    float:left;
+    height:3em;
+}
+
+/* Login/Register info */
+#login {
+    float:right;
+    font-size: 75%;
+}
+/* User Money Stats */
+#user_stats{
+    display:block;
+    float:left;
+    margin-left: 10px;
+}
+#user_stats p{
+    margin:2px 1px;;
+    overflow:hidden;
+}
+#user_stats p span{
+    float:left;
+}
+#user_stats span.currency_type{
+    width:3em;
+    text-align: right;
+    font-weight: bold;
+}
+#user_stats span.zuth, #user_stats span.money{
+    min-width:6em;
+    font-weight:bold;
+}
+
+/* Search Form */
+#search_form {
+    float:right;
+    clear:right;
+    margin-top:0.8em;
+}
+
+/**************** Filters *********************/
+#filter_bar{
+    float:left;
+    width:80%;
+}
+/**************** Edit Controls *********************/
+#edit{
+    float:right;
+    width:20%;
+}
+#edit form{
+    float:right;
+    margin-right:2px;
+}
+
+/**************** Container *********************/
+#container {
+    margin:35px auto 5px;
+    padding: 10px 10px 40px;
+    max-width:1080px;
+    min-width:100px;
+    background-color:#153A8E;
+    font-family:arial;
+}
+/**************** Main Item *********************/
+#mainItem .item{
+    margin-top:0;
+}
+#mainItem .item_name{
+    font-size:26px;
+}
+/**************** Items *********************/
+.item {
+    position:relative;
+    background-color:white;
+    margin-top:20px;
+    padding:10px 10px 4px;
+}
+
+/* ----------- Item Content ----------- */
+.item_content{
+    
+}
+/* owner */
+.item_owner {
+    float:left;
+    font-size:80%;
+}
+/* Timestamp */
+.timestamp{
+    float:right;
+}
+.timestamp p{
+    margin:0;
+    font-size:70%;
+}
+
+/* Item Thumbnail */
+.thumbnail_wrapper{
+    float:left;
+    clear:left;
+    width:20%;
+    max-width:130px;
+    min-width: 100px;
+    margin-top:1em;
+    margin-bottom:4px;
+}
+.thumbnail{
+    display:block;
+    max-height:120px;
+    max-width:100px;
+    margin:0 auto;
+}
+/* Item Name */
+.item .name{
+    
+}
+.item div.heading{
+    text-align:center;
+}
+.item .name_wrapper{
+    display:inline-block;
+    width:60%;
+    max-width:40em;
+    min-width:150px;
+}
+/* Item Types list */
+.item .types {
+    font-size: 70%;
+    text-align:center;
+}
+.item .types ul{
+    list-style-type:none;
+    display:inline;
+    padding-left:0;
+    margin:0 0;
+}
+.item .types li{
+    display:inline-block;
+}
+.item .types li:after {
+    content: ", \0020"; /* put a comma between list items */
+    padding-right:2px;
+}
+.item .types li:last-child:after {
+    content: "";
+}
+
+/* ----------- Worth Bars ----------- */
+.worth_block{
+    clear:left;
+    position:relative;
+    height:18px;
+    margin:2px;
+    z-index: 1;
+}
+.worth_block .currency_icon{
+    position:absolute;
+    left:0;
+}
+.worth_block .currency_amount,.worth_bar{
+    position:absolute;
+    left:14px;
+    right:130px;
+}
+.worth_block .currency_amount{
+    display:block;
+    text-align:center;
+    z-index: 1;
+}
+.worth_bar {
+    border: #EBEBEB 1px solid;
+    padding:1px;
+    top:3px;
+    bottom:3px;
+    z-index: -1;
+}
+.worth_bar .bar{
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    margin:1px;
+}
+.worth_bar .bar.filled{
+    z-index: 1;
+}
+.worth_bar .bar.empty{
+    z-index: -1;
+    right:0;
+}
+.worth_block form{
+    position:absolute;
+    right:0px;
+    top:0;
+    bottom:0;
+}
+.worth_block .invest_input {
+    width:60px;
+}
+.positive.zuth .filled{
+    background-color:#229FFF; /* dark Blue */
+}
+.positive.zuth .empty{
+    background-color:#CDEBFF; /* light Blue */
+}
+.negative.zuth .filled{
+    background-color:#F33675; /* dark Pink */
+}
+.negative.zuth .empty{
+    background-color:#FFD2E2; /* light Pink */
+}
+.positive.money .filled{
+   background-color:#3BBA3B; /* dark Green */
+}
+.positive.money .empty{
+    background-color:#D4FFD4; /* light Green */
+}
+.negative.money .filled{
+    background-color:#FF4747; /* dark Red */
+}
+.negative.money .empty{
+    background-color:#FFDEDE; /* light Red */
+}
+/* ----------- Item Properties ----------- */
+ul.item_properties *{
+    list-style-type: none;
+}
+ul.item_properties{
+    padding-left:0;
+    margin:0.5em 0;
+}
+ul.item_properties h3{
+    margin: 0;
+}
+ul.item_properties li.property_block{
+    margin-bottom:0.5em;
+}
+ul.item_properties .property_name{
+    display:inline;
+    margin:0;
+}
+ul.item_properties .property_name:after{
+    content:": ";
+}
+/* ----------------------------- */
+/* Item ZID and related_count */
+.zid_block, .related_count{
+    font-size:70%;
+}
+.related_count p{
+    margin:0;
+}
+.zid_block{
+    float:left;
+}
+/* Related Count */
+.related_count{
+    float:right;
+}
+/* make sure item div stretches to include zid and related_count */
+.item .bottom{
+    clear:left;
+}
+/**************** Navigation Bar *********************/
+ul#navigation_bar{
+    display: block;
+    padding-left:20px;
+    margin:0;
+/*    background-color: white;*/
+    height:32px;
+}
+#navigation_bar li {
+    list-style-type:none;
+    float:left;
+    margin-right:2px;
+}
+#navigation_bar li a,#navigation_bar li a:hover{
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)), color-stop(20%, rgba(255, 255, 255, 0.4)), color-stop(30%,  rgba(255, 255, 255, 0.2)));
+    background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.4) 20%, rgba(255, 255, 255, 0.2) 30%, rgba(255, 255, 255, 0));
+
+}
+#navigation_bar li a {
+    display:block;
+    line-height: 32px;
+    padding:0 15px;
+    background-color: #D8D8D8;
+
+    color:black;
+    text-decoration:none;
+    font-family:arial, sans-serif;
+    text-transform: uppercase;
+    font-size:14px;
+    font-weight:bold;
+
+    text-shadow: -1px -1px 6px rgba(255, 255, 255, 0.6), -1px -1px 1px #fff;
+    -webkit-border-bottom-right-radius:8px;
+    -webkit-border-bottom-left-radius:8px;
+    -moz-border-radius-bottomright:8px;
+    -moz-border-radius-bottomleft:8px;
+    border-bottom-right-radius:8px;
+    border-bottom-left-radius:8px;
+
+}
+#navigation_bar li a:hover {
+    background-color: #069;
+    color:white;
+    text-shadow: -1px -1px 6px rgba(0, 0, 0, 0.6), -1px -1px 1px #000; 
+}
+/**************** Associations *********************/
+.associations{
+    padding-left: 0;
+}
+ul.associations *{
+    list-style-type: none;
+}
+.association{
+    background-color: white;
+    margin-bottom:6px;
+    padding:4px;
+}
+ul.roles{
+    padding-left:30px;
+}
+.role_type{
+    display:inline;
+}
+.role_type:after{
+    content:":";
+}
+ul.role_players{
+    margin-left:0;
+    padding-left:0;
+    display:inline-block;
+}
+li.role_player{
+    display: inline;
+}
+li.role_player:after{
+    content:", ";
+}
+li.role_player:last-child:after{
+    content:"";
+}
+
+/**************** Bottom Quick Links Bar *********************/
+ul.quick_links {
+    list-style-type:none;
+    margin-bottom:0.5em;
+    margin-top:30px;
+    padding-left:0;
+    text-align:center;
+    font-size: 80%;
+}
+ul.quick_links li{
+    display:inline;
+}
+ul.quick_links li:before {
+    content: "\0020 | \0020";
+    padding-right:2px;
+}
+.quick_links li:first-child:before {
+    content: "";
+}
+.copyright{
+    text-align:center;
+    font-size:80%;
+}
