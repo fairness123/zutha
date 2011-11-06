@@ -1,58 +1,64 @@
 package net.zutha.model.db
 
-import net.zutha.model.constants.SchemaIdentifier._
 import net.zutha.model.constructs._
-import net.zutha.model.datatypes.DataType
 
 //TODO use objects for every schema item
 
 trait SchemaItems {
-  protected def getSchemaItem(identifier: SchemaIdentifier): ZItem
+  protected def getSchemaItem(identifier: String): ZItem
   
   //kinds of item type
-  lazy val siTYPE: ZItemType = getSchemaItem(TYPE).toItemType
-  lazy val siITEM_TYPE: ZItemType = getSchemaItem(ITEM_TYPE).toItemType
-  lazy val siTRAIT: ZItemType = getSchemaItem(TRAIT).toItemType
+  lazy val TYPE: ZItemType = getSchemaItem("item").toItemType
+  lazy val ITEM_TYPE: ZItemType = getSchemaItem("item-type").toItemType
+  lazy val TRAIT: ZItemType = getSchemaItem("trait").toItemType
 
-  //kinds of interface
-  lazy val siFIELD_TYPE: ZTrait = getSchemaItem(FIELD_TYPE).toTrait
-  lazy val siPROPERTY_TYPE: ZTrait = getSchemaItem(PROPERTY_TYPE).toTrait
-  lazy val siASSOCIATION_TYPE: ZTrait = getSchemaItem(ASSOCIATION_TYPE).toTrait
+  //kinds of Trait
+  lazy val CONSTRUCT_TYPE: ZType = getSchemaItem("construct-type").toType
+  lazy val PROPERTY_TYPE: ZType = getSchemaItem("property-type").toType
+  lazy val ASSOCIATION_TYPE: ZType = getSchemaItem("association-type").toType
 
   //item types
-  lazy val siITEM: ZItemType = getSchemaItem(ITEM).toItemType
-  lazy val siROLE: ZItemType = getSchemaItem(ROLE).toItemType
-  lazy val siDATATYPE: ZItemType = getSchemaItem(DATATYPE).toItemType
+  lazy val ITEM: ZItemType = getSchemaItem("item").toItemType
+  lazy val ROLE: ZItemType = getSchemaItem("role").toItemType
+  lazy val DATATYPE: ZItemType = getSchemaItem("datatype").toItemType
 
   //association types
-  lazy val siFIELD_DECLARATION: ZAssociationType = getSchemaItem(FIELD_DECLARATION).toAssociationType
-  lazy val siPROPERTY_DECLARATION: ZAssociationType = getSchemaItem(PROPERTY_DECLARATION).toAssociationType
-  lazy val siASSOCIATION_FIELD_DECLARATION: ZAssociationType = getSchemaItem(ASSOCIATION_FIELD_DECLARATION).toAssociationType
-  lazy val siASSOCIATION_ROLE_CONSTRAINT: ZAssociationType = getSchemaItem(ASSOCIATION_ROLE_CONSTRAINT).toAssociationType
-  lazy val siASSOCIATION_PROPERTY_CONSTRAINT: ZAssociationType = getSchemaItem(ASSOCIATION_PROPERTY_CONSTRAINT).toAssociationType
-  lazy val siABSTRACT_CONSTRAINT: ZAssociationType = getSchemaItem(ABSTRACT_CONSTRAINT).toAssociationType
-  lazy val siPROPERTY_DATATYPE_CONSTRAINT: ZAssociationType = getSchemaItem(PROPERTY_DATATYPE_CONSTRAINT).toAssociationType
-  lazy val siOVERRIDES_DECLARATION: ZAssociationType = getSchemaItem(OVERRIDES_DECLARATION).toAssociationType
+  lazy val TYPE_INSTANCE: ZAssociationType = getSchemaItem("type-instance").toAssociationType
+  lazy val SUPERTYPE_SUBTYPE: ZAssociationType = getSchemaItem("supertype-subtype").toAssociationType
+  lazy val ITEM_HAS_TRAIT: ZAssociationType = getSchemaItem("item-has-trait").toAssociationType
+  lazy val ITEM_TYPE_TRAIT_DECLARATION: ZAssociationType = getSchemaItem("item-type-trait-declaration").toAssociationType
+  lazy val FIELD_DECLARATION: ZAssociationType = getSchemaItem("field-declaration").toAssociationType
+  lazy val PROPERTY_DECLARATION: ZAssociationType = getSchemaItem("property-declaration").toAssociationType
+  lazy val ASSOCIATION_FIELD_DECLARATION: ZAssociationType = getSchemaItem("association-field-declaration").toAssociationType
+  lazy val ASSOCIATION_ROLE_CONSTRAINT: ZAssociationType = getSchemaItem("association-role-constraint").toAssociationType
+  lazy val ASSOCIATION_PROPERTY_CONSTRAINT: ZAssociationType = getSchemaItem("association-property-constraint").toAssociationType
+  lazy val ABSTRACT_CONSTRAINT: ZAssociationType = getSchemaItem("abstract-constraint").toAssociationType
+  lazy val PROPERTY_DATATYPE_CONSTRAINT: ZAssociationType = getSchemaItem("property-datatype-constraint").toAssociationType
+  lazy val OVERRIDES_DECLARATION: ZAssociationType = getSchemaItem("overrides-declaration").toAssociationType
 
   //roles
-  lazy val siFIELD_DECLARER: ZRole = getSchemaItem(FIELD_DECLARER).toRole
-  lazy val siPROPERTY_DECLARER: ZRole = getSchemaItem(PROPERTY_DECLARER).toRole
-  lazy val siASSOCIATION_FIELD_DECLARER: ZRole = getSchemaItem(ASSOCIATION_FIELD_DECLARER).toRole
-  lazy val siOVERRIDING_DECLARATION: ZRole = getSchemaItem(OVERRIDING_DECLARATION).toRole
-  lazy val siOVERRIDDEN_DECLARATION: ZRole = getSchemaItem(OVERRIDDEN_DECLARATION).toRole
+  lazy val SUPERTYPE: ZRole = getSchemaItem("supertype").toRole
+  lazy val SUBTYPE: ZRole = getSchemaItem("subtype").toRole
+  lazy val INSTANCE: ZRole = getSchemaItem("instance").toRole
+  lazy val FIELD_DECLARER: ZRole = getSchemaItem("field-declarer").toRole
+  lazy val PROPERTY_DECLARER: ZRole = getSchemaItem("property-declarer").toRole
+  lazy val ASSOCIATION_FIELD_DECLARER: ZRole = getSchemaItem("association-field-declarer").toRole
+  lazy val OVERRIDING_DECLARATION: ZRole = getSchemaItem("overriding-declaration").toRole
+  lazy val OVERRIDDEN_DECLARATION: ZRole = getSchemaItem("overridden-declaration").toRole
 
   //property types
-  lazy val siROLE_CARD_MIN: ZPropertyType = getSchemaItem(ROLE_CARD_MIN).toPropertyType
-  lazy val siROLE_CARD_MAX: ZPropertyType = getSchemaItem(ROLE_CARD_MAX).toPropertyType
-  lazy val siASSOCIATION_CARD_MIN: ZPropertyType = getSchemaItem(ASSOCIATION_CARD_MIN).toPropertyType
-  lazy val siASSOCIATION_CARD_MAX: ZPropertyType = getSchemaItem(ASSOCIATION_CARD_MAX).toPropertyType
+  lazy val ROLE_CARD_MIN: ZPropertyType = getSchemaItem("role-card-min").toPropertyType
+  lazy val ROLE_CARD_MAX: ZPropertyType = getSchemaItem("role-card-max").toPropertyType
+  lazy val ASSOCIATION_CARD_MIN: ZPropertyType = getSchemaItem("association-card-min").toPropertyType
+  lazy val ASSOCIATION_CARD_MAX: ZPropertyType = getSchemaItem("association-card-max").toPropertyType
 
-  lazy val siNAME: ZPropertyType = getSchemaItem(NAME).toPropertyType
-  lazy val siMODIFIABLE_NAME: ZPropertyType = getSchemaItem(MODIFIABLE_NAME).toPropertyType
-  lazy val siZID: ZPropertyType= getSchemaItem(ZID).toPropertyType
+  lazy val NAME: ZPropertyType = getSchemaItem("name").toPropertyType
+  lazy val MODIFIABLE_NAME: ZPropertyType = getSchemaItem("modifiable-name").toPropertyType
+  lazy val ZID: ZPropertyType= getSchemaItem("zid").toPropertyType
 
   //datatypes
-  lazy val siNonNegativeInteger: ZItem = getSchemaItem(NON_NEGATIVE_INTEGER)
-  lazy val siUnboundedNonNegativeInteger: ZItem = getSchemaItem(UNBOUNDED_NON_NEGATIVE_INTEGER)
-  lazy val siPermissionLevel: ZItem = getSchemaItem(PERMISSION_LEVEL)
+  lazy val NON_NEGATIVE_INTEGER: ZItem = getSchemaItem("non-negative-integer")
+  lazy val UNBOUNDED_NON_NEGATIVE_INTEGER: ZItem = getSchemaItem("unbounded-non-negative-integer")
+  lazy val PERMISSION_LEVEL: ZItem = getSchemaItem("permission-level")
+
 }

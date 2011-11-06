@@ -11,7 +11,6 @@ import net.liftweb.common.{Loggable}
 
 import net.zutha.model.constants._
 import ZuthaConstants._
-import SchemaIdentifier.SchemaIdentifier
 import ApplicationConstants._
 import net.zutha.model.{ProposedItem}
 import net.zutha.model.topicmap.TMConversions._
@@ -45,11 +44,11 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
   def getNextZID: Zid = zidTicker.getNext
 
   /**
-   * @param identifier the SchemaIdentifier of the schema item to retrieve
+   * @param identifier the Zutha Identifier of the schema item to retrieve
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  protected def getSchemaItem(identifier: SchemaIdentifier): ZItem = tmm.lookupTopicBySI(ZSI_PREFIX + identifier.toString) match {
+  protected def getSchemaItem(identifier: String): ZItem = tmm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
     case Some(topic) => topic.toItem
     case None => throw new SchemaItemMissingException
   }

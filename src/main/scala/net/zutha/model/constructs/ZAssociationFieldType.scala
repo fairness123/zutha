@@ -3,6 +3,7 @@ package net.zutha.model.constructs
 import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZUnboundedNNI}
 import ZUnboundedNNI.{Finite,Infinity}
+import net.zutha.model.db.DB.db
 
 case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
 
@@ -22,4 +23,12 @@ case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
     }
   }
 
+  /**
+   * @return the types that declare associationFields of this type
+   */
+  def declaringTypes: Set[ZType] = {
+    val declarations = db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,true,
+      db.ROLE.toRole -> role, db.ASSOCIATION_TYPE.toRole -> associationType)
+    declarations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
+  }
 }

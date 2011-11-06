@@ -5,9 +5,9 @@ import net.zutha.model.constructs.ZItem
 
 object DataType{
   private val dataTypeMap = Map[ZItem,DataType](
-    db.siNonNegativeInteger -> ZNonNegativeInteger,
-    db.siUnboundedNonNegativeInteger -> ZUnboundedNNI,
-    db.siPermissionLevel -> ZPermissionLevel
+    db.NON_NEGATIVE_INTEGER -> ZNonNegativeInteger,
+    db.UNBOUNDED_NON_NEGATIVE_INTEGER -> ZUnboundedNNI,
+    db.PERMISSION_LEVEL -> ZPermissionLevel
   )
   
   def apply(dataTypeItem: ZItem): DataType = {

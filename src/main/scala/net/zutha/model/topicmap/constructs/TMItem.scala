@@ -31,22 +31,22 @@ class TMItem protected (topic: Topic) extends ZItem{
   def toTopic = topic
   def toItem: ZItem = this
 
-  lazy val isZType = db.itemIsA(this,db.siTYPE)
-  def toZType: ZType = TMType(topic)
+  lazy val isType = db.itemIsA(this,db.TYPE)
+  def toType: ZType = TMType(topic)
 
-  lazy val isItemType = db.itemIsA(this,db.siITEM_TYPE)
+  lazy val isItemType = db.itemIsA(this,db.ITEM_TYPE)
   def toItemType: ZItemType = TMItemType(topic)
 
-  lazy val isTrait = db.itemIsA(this,db.siTRAIT)
+  lazy val isTrait = db.itemIsA(this,db.TRAIT)
   def toTrait: ZTrait = TMTrait(topic)
 
-  lazy val isRole = db.itemIsA(this,db.siROLE)
+  lazy val isRole = db.itemIsA(this,db.ROLE)
   def toRole: ZRole = TMRole(topic)
 
-  lazy val isAssociationType = db.itemIsA(this,db.siASSOCIATION_TYPE)
+  lazy val isAssociationType = db.itemIsA(this,db.ASSOCIATION_TYPE)
   def toAssociationType: ZAssociationType = TMAssociationType(topic)
 
-  lazy val isPropertyType = db.itemIsA(this,db.siPROPERTY_TYPE)
+  lazy val isPropertyType = db.itemIsA(this,db.PROPERTY_TYPE)
   def toPropertyType: ZPropertyType = TMPropertyType(topic)
 
   // -------------- ZIDs --------------
@@ -55,8 +55,9 @@ class TMItem protected (topic: Topic) extends ZItem{
       .filter{_.startsWith(ZID_PREFIX.toString)}.map{_.replace(ZID_PREFIX.toString,"")}
       .toSet
     //every item must have at least one ZID
-    if (zids.size == 0)
+    if (zids.size == 0){
       throw new Exception("item has no ZIDs")
+    }
 
     try{
       zids.map{Zid(_).toString}
@@ -97,7 +98,7 @@ class TMItem protected (topic: Topic) extends ZItem{
   def getAllTypes = db.allTypesOfItem(this).toSet
 
   def getFieldDefiningTypes = {
-    val fieldDefiningTypes = getAllTypes.filter(_.definesFields)
+    val fieldDefiningTypes = getAllTypes.filter(_.declaresFields)
     fieldDefiningTypes
   }
 
@@ -105,7 +106,7 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   def getPropertySetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZPropertySet])] = getFieldDefiningTypes.map{definingType =>
-      val propSets: Set[ZPropertySet] = definingType.getDefinedPropertyTypes
+      val propSets: Set[ZPropertySet] = definingType.declaredPropertyTypes
         //.filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
         .map(propType => TMPropertySet(this,propType,definingType))
       (definingType,propSets)
@@ -124,7 +125,7 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   def getProperties(propType: ZPropertyType): Set[ZProperty] = {
     //check if propType is a name
-    if(propType.hasSuperType(db.siNAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
+    if(propType.hasSuperType(db.NAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
       val names = topic.getNames.map(_.toProperty).toSet
       return names
     }
@@ -149,7 +150,7 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   lazy val getAssociationFieldSetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZAssociationFieldSet])] = getFieldDefiningTypes.map{definingType =>
-      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.getDefinedAssociationFieldTypes
+      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.declaredAssociationFieldTypes
         .map{TMAssociationFieldSet(this,definingType,_)}
       (definingType,assocFieldSets)
     }

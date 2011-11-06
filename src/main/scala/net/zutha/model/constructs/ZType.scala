@@ -10,8 +10,9 @@ trait ZType extends ZItem{
   def getAllSuperTypes: Set[ZType]
 
   // field definition
-  def definesFields: Boolean;
-//  def getDefinedFields: Seq[ZItemType];
-  def getDefinedPropertyTypes: Set[ZPropertyType];
-  def getDefinedAssociationFieldTypes: Set[ZAssociationFieldType];
+  def declaresFields: Boolean;
+  def declaredPropertyTypes: Set[ZPropertyType];
+  def declaredAssociationFieldTypes: Set[ZAssociationFieldType];
+  def requiredPropertyTypes: Set[ZPropertyType];
+  def requiredAssociationFieldTypes: Set[ZAssociationFieldType];
 }

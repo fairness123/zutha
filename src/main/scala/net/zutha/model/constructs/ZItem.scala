@@ -9,8 +9,8 @@ import net.zutha.model.datatypes.{PropertyValue, DataType}
 
 trait ZItem {
   // -------------- conversion --------------
-  def isZType: Boolean
-  def toZType: ZType
+  def isType: Boolean
+  def toType: ZType
 
   def isItemType: Boolean
   def toItemType: ZItemType

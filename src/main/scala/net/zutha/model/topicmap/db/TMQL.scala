@@ -114,7 +114,7 @@ trait TMQL {
   }
 
   private def runTypeQuery(q: IQuery): Seq[ZType] = {
-    try runItemQuery(q).map(_.toZType)
+    try runItemQuery(q).map(_.toType)
     catch {
       case e: TypeConversionException =>
         throw new IllegalArgumentException("query does not return ZType results")

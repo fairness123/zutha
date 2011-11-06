@@ -33,8 +33,8 @@ class TMAssociation protected (association: Association) extends ZAssociation{
 
 
   def overriddenBy:Set[ZAssociation] = {
-    val ovDeclRoles = association.getReifier.getRolesPlayed(db.siOVERRIDDEN_DECLARATION,db.siOVERRIDES_DECLARATION).toSet
-    val overriders = ovDeclRoles.map(_.getParent.getRoles(db.siOVERRIDING_DECLARATION).head.getPlayer
+    val ovDeclRoles = association.getReifier.getRolesPlayed(db.OVERRIDDEN_DECLARATION,db.OVERRIDES_DECLARATION).toSet
+    val overriders = ovDeclRoles.map(_.getParent.getRoles(db.OVERRIDING_DECLARATION).head.getPlayer
       .getReified.asInstanceOf[Association].toZAssociation)
     overriders
   }
