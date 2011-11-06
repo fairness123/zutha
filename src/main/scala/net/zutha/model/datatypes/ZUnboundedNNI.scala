@@ -33,12 +33,24 @@ object ZUnboundedNNI extends DataType{
 
   object Infinity extends ZUnboundedNNI {
     def asString = "*"
+    def compare(other: ZUnboundedNNI) = other match {
+      case Infinity => 0
+      case Finite(otherVal) => 1
+    }
   }
   case class Finite(value: Int) extends ZUnboundedNNI {
+    0.2.compare(1)
+
     def asString = value.toString
+
+    def compare(other: ZUnboundedNNI) = other match {
+      case Infinity => -1
+      case Finite(otherVal) => (value - otherVal).signum
+    }
+
   }
 }
 
-trait ZUnboundedNNI extends PropertyValue
+trait ZUnboundedNNI extends PropertyValue with Ordered[ZUnboundedNNI]
 
 

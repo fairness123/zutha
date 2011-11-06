@@ -14,7 +14,7 @@ case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
    * If this field's Role can be played more than once, that Role will be included in the result Set
    */
   def otherRoles: Set[ZRole] = {
-    val allRoles = associationType.getAllDefinedRoles
+    val allRoles = associationType.definedRoles
     associationType.getRoleCardMax(role) match {
       case Finite(0) => throw new SchemaViolationException("Association Field uses Role that is not allowed by Association Type")
       case Finite(1) => allRoles - role

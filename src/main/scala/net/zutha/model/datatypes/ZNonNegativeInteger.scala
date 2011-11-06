@@ -27,6 +27,6 @@ object ZNonNegativeInteger extends DataType{
   def default = ZNonNegativeInteger("0")
 
 }
-class ZNonNegativeInteger private (value: Int) extends PropertyValue {
-  def asString = value.toString
+class ZNonNegativeInteger private (value: Int) extends ZUnboundedNNI.Finite(value) {
+
 }

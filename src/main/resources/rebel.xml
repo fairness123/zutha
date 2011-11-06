@@ -5,9 +5,9 @@
         xsi:schemaLocation="http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd">
 
 	<classpath>
-		<dir name="D:\Programming Workspace\zutha_sbt\target\scala-2.9.1\classes"></dir>
-        <dir name="D:\Programming Workspace\zutha_sbt\target\scala-2.9.1\test-classes"></dir>
-        <dir name="D:\Programming Workspace\zutha_sbt\src\main\resources"></dir>
+		<dir name="${myproject.root}/target/scala-2.9.1/classes"></dir>
+        <dir name="${myproject.root}/target/scala-2.9.1/test-classes"></dir>
+        <dir name="${myproject.root}/src/main/resources"></dir>
 	</classpath>
     <web>
         <link target="/">

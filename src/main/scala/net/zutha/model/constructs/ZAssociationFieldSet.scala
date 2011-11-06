@@ -1,18 +1,23 @@
 package net.zutha.model.constructs
 
-import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
+object ZAssociationFieldSet{
+  def apply(parentItem: ZItem, definingType: ZType, assocFT:ZAssociationFieldType): ZAssociationFieldSet =
+    ZAssociationFieldSet(parentItem,definingType,assocFT.role,assocFT.associationType)
+  def apply(parentItem: ZItem, assocFST:ZAssociationFieldSetType): ZAssociationFieldSet =
+    ZAssociationFieldSet(parentItem,assocFST.definingType,assocFST.role,assocFST.associationType)
+}
 
-trait ZAssociationFieldSet {
-  def parentItem: ZItem
-  def definingType: ZType
-  def associationFieldType: ZAssociationFieldType
+case class ZAssociationFieldSet(parentItem: ZItem, definingType: ZType,
+                                 role: ZRole, associationType: ZAssociationType){
+
+  def associationFieldSetType = ZAssociationFieldSetType(definingType,role,associationType)
+  def associationFieldType = ZAssociationFieldType(role,associationType)
+  def associationFields = parentItem.getAssociationFields(associationFieldType)
   def otherAssociationFieldTypes: Set[ZAssociationFieldType] = associationFieldType.companionAssociationFieldTypes
-  def role: ZRole
   def otherRoles: Set[ZRole] = associationFieldType.otherRoles
-  def propertyTypes: Set[ZPropertyType] = associationType.declaredPropertyTypes
-  def associationType: ZAssociationType
-  def associationFields: Set[ZAssociationField]
-  def isEmpty: Boolean
-  def cardMin: ZNonNegativeInteger
-  def cardMax: ZUnboundedNNI
+  def propertyTypes: Set[ZPropertyType] = associationType.definedAssocProperties
+
+  def isEmpty = associationFields.isEmpty
+  def cardMin = associationFieldSetType.cardMin
+  def cardMax = associationFieldSetType.cardMax
 }

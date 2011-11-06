@@ -166,17 +166,17 @@ end
 
 # ASSOCIATION PROPERTY CONSTRAINT
 def has-assoc-prop($assocType, $propType, $min, $max, $reifier)
-    $reifier isa zsi:property-declaration;
+    $reifier isa zsi:association-property-constraint;
         zsi:property-card-min: $min;
         zsi:property-card-max: $max;
     .
-    zsi:property-declaration(
+    zsi:association-property-constraint(
         zsi:association-type: $assocType,
         zsi:property-type: $propType
     ) ~ $reifier
 end
 def has-assoc-prop($assocType, $propType, $min, $max, $reifier, $overrides, $overideReifier)
-    has-property($assocType, $propType, $min, $max, $reifier)
+    has-assoc-prop($assocType, $propType, $min, $max, $reifier)
     $overideReifier isa zsi:overrides-declaration
     .
     zsi:overrides-declaration(

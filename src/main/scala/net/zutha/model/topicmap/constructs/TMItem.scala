@@ -106,9 +106,9 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   def getPropertySetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZPropertySet])] = getFieldDefiningTypes.map{definingType =>
-      val propSets: Set[ZPropertySet] = definingType.declaredPropertyTypes
+      val propSets: Set[ZPropertySet] = definingType.declaredPropertySets
         //.filterNot(_.isAbstract) //abstract propTypes do not have associated propSets
-        .map(propType => TMPropertySet(this,propType,definingType))
+        .map(propSetType => ZPropertySet(this,propSetType))
       (definingType,propSets)
     }
     kvPairs.toMap
@@ -150,8 +150,8 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   lazy val getAssociationFieldSetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZAssociationFieldSet])] = getFieldDefiningTypes.map{definingType =>
-      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.declaredAssociationFieldTypes
-        .map{TMAssociationFieldSet(this,definingType,_)}
+      val assocFieldSets: Set[ZAssociationFieldSet] = definingType.declaredAssociationFieldSets
+        .map{ZAssociationFieldSet(this,_)}
       (definingType,assocFieldSets)
     }
     kvPairs.toMap

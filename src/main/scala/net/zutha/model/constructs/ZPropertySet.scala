@@ -1,12 +1,15 @@
 package net.zutha.model.constructs
 
+object ZPropertySet {
+  def apply(parentItem: ZItem, propSetType:ZPropertySetType): ZPropertySet =
+    ZPropertySet(parentItem, propSetType.definingType, propSetType.propertyType)
+}
+case class ZPropertySet(parentItem: ZItem, definingType: ZType, propertyType: ZPropertyType){
+  def propertySetType = ZPropertySetType(definingType,propertyType)
+  def properties = parentItem.getProperties(propertyType)
 
-trait ZPropertySet{
-  def parentItem: ZItem
-  def definingType: ZType
-  def propertyType: ZPropertyType
-  def properties: Set[ZProperty]
-  def isEmpty: Boolean
-  def cardMin: Int
-  def cardMax: Int
+  def isEmpty = properties.isEmpty
+
+  def cardMin = propertySetType.cardMin
+  def cardMax = propertySetType.cardMax
 }

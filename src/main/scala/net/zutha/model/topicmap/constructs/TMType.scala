@@ -6,7 +6,8 @@ import org.tmapi.core.Topic
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.db.DB.db
 import net.zutha.util.Helpers._
-import net.zutha.model.constructs.{ZAssociationFieldType, ZType}
+import net.zutha.model.constructs.{ZPropertySetType, ZAssociationFieldSetType, ZType}
+import net.zutha.model.datatypes.ZUnboundedNNI.Finite
 
 object TMType{
   val getItem = makeCache[Topic,String,TMType](_.getId, topic => new TMType(topic))
@@ -32,10 +33,10 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
     propertyDefRoles.size > 0 || assocDefRoles.size > 0
   }
 
-  def declaredPropertyTypes = { //TODO get inherited property types
+  def declaredPropertySets = { //TODO get inherited property types
     val definedPropTypes = db.traverseAssociation(topic,db.PROPERTY_DECLARER,db.PROPERTY_DECLARATION,
       db.PROPERTY_TYPE.toRole).map(_.toPropertyType)
-    definedPropTypes
+    definedPropTypes.map(ZPropertySetType(this,_))
     
 //    val propDefRoles = topic.getRolesPlayed(db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION).toSet
 //    propDefRoles.map{_.getParent.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType}
@@ -44,17 +45,17 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
   /** @return a Seq[ZAssociationFieldType] representing the
    *  association fields defined by this Type
    */
-  def declaredAssociationFieldTypes = {
+  def declaredAssociationFieldSets = {
     val declAssociations = db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,false,
       db.ASSOCIATION_FIELD_DECLARER -> this)
     declAssociations.map{declAssoc =>
       val role = declAssoc.getPlayers(db.ROLE.toRole).head.toRole
       val assocType = declAssoc.getPlayers(db.ASSOCIATION_TYPE.toRole).head.toAssociationType
-      ZAssociationFieldType(role,assocType)
+      ZAssociationFieldSetType(this,role,assocType)
     }.toSet
   }
 
-  def requiredPropertyTypes = null
+  def requiredPropertySets = declaredPropertySets.filter(_.cardMin >= Finite(1))
 
-  def requiredAssociationFieldTypes = null
+  def requiredAssociationFieldSets = declaredAssociationFieldSets.filter(_.cardMin >= Finite(1))
 }

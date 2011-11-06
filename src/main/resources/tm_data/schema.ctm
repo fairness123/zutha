@@ -896,8 +896,8 @@ zsi:field-declaration %zid%; isa zsi:reified-association-type;
 
     is-abstract(%zid%);
     has-role(zsi:field-declarer,1,1,%zid%fd1%);
-    has-assoc-prop(zsi:card-min,1,1,%zid%);
-    has-assoc-prop(zsi:card-max,1,1,%zid%);
+    has-assoc-prop(zsi:card-min,1,1,%zid%fd2%);
+    has-assoc-prop(zsi:card-max,1,1,%zid%fd3%);
     plays-role(zsi:overriding-declaration, zsi:overrides-declaration,0,1,%zid%);
     plays-role(zsi:overridden-declaration, zsi:overrides-declaration,0,*,%zid%);
 .
@@ -912,8 +912,8 @@ zsi:property-declaration %zid%; isa zsi:reified-association-type;
 
     has-role(zsi:property-declarer,1,1,%zid%,%zid%fd1%,%zid%);
     has-role(zsi:property-type,1,1,%zid%);
-    has-assoc-prop(zsi:property-card-min,1,1,%zid%);
-    has-assoc-prop(zsi:property-card-max,1,1,%zid%);
+    has-assoc-prop(zsi:property-card-min,1,1,%zid%,%zid%fd2%,%zid%);
+    has-assoc-prop(zsi:property-card-max,1,1,%zid%,%zid%fd3%,%zid%);
 .
 
 # ASSOCIATION FIELD DECLARATION
@@ -930,8 +930,8 @@ zsi:association-field-declaration %zid%; isa zsi:reified-association-type;
     has-role(zsi:association-field-declarer,1,1,%zid%,%zid%fd1%,%zid%);
     has-role(zsi:role,1,1,%zid%);
     has-role(zsi:association-type,1,1,%zid%);
-    has-assoc-prop(zsi:association-card-min,1,1,%zid%);
-    has-assoc-prop(zsi:association-card-max,1,1,%zid%);
+    has-assoc-prop(zsi:association-card-min,1,1,%zid%,%zid%fd2%,%zid%);
+    has-assoc-prop(zsi:association-card-max,1,1,%zid%,%zid%fd3%,%zid%);
 .
 
 # ASSOCIATION ROLE CONSTRAINT

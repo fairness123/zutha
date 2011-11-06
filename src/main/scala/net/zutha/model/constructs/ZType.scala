@@ -11,8 +11,8 @@ trait ZType extends ZItem{
 
   // field definition
   def declaresFields: Boolean;
-  def declaredPropertyTypes: Set[ZPropertyType];
-  def declaredAssociationFieldTypes: Set[ZAssociationFieldType];
-  def requiredPropertyTypes: Set[ZPropertyType];
-  def requiredAssociationFieldTypes: Set[ZAssociationFieldType];
+  def declaredPropertySets: Set[ZPropertySetType];
+  def declaredAssociationFieldSets: Set[ZAssociationFieldSetType];
+  def requiredPropertySets: Set[ZPropertySetType];
+  def requiredAssociationFieldSets: Set[ZAssociationFieldSetType];
 }

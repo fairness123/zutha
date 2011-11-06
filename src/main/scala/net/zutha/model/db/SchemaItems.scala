@@ -51,6 +51,8 @@ trait SchemaItems {
   lazy val ROLE_CARD_MAX: ZPropertyType = getSchemaItem("role-card-max").toPropertyType
   lazy val ASSOCIATION_CARD_MIN: ZPropertyType = getSchemaItem("association-card-min").toPropertyType
   lazy val ASSOCIATION_CARD_MAX: ZPropertyType = getSchemaItem("association-card-max").toPropertyType
+  lazy val PROPERTY_CARD_MIN: ZPropertyType = getSchemaItem("property-card-min").toPropertyType
+  lazy val PROPERTY_CARD_MAX: ZPropertyType = getSchemaItem("property-card-max").toPropertyType
 
   lazy val NAME: ZPropertyType = getSchemaItem("name").toPropertyType
   lazy val MODIFIABLE_NAME: ZPropertyType = getSchemaItem("modifiable-name").toPropertyType
