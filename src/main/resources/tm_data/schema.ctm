@@ -52,7 +52,9 @@ zsi:type %zid%; isa zsi:item-type;
     plays-role(zsi:type,
         zsi:role-combination-constraint,0,*,%zid%);
     plays-role(zsi:root-item,
-        zsi:item-type-has-root-item-constraint,0,1,%zid%);
+        zsi:type-has-root-item-constraint,0,1,%zid%);
+    plays-role(zsi:type,
+        zsi:type-has-root-item-constraint,0,1,%zid%);
     plays-role(zsi:scope-item-type,
         zsi:construct-scope-constraint,0,*,%zid%);
     plays-role(zsi:scope-item-type,
@@ -73,8 +75,6 @@ zsi:item-type %zid%; isa zsi:item-type;
         zsi:type-instance,0,*,%zid%);
     plays-role(zsi:item-type,
         zsi:item-type-trait-declaration,0,*,%zid%);
-    plays-role(zsi:item-type,
-        zsi:item-type-has-root-item-constraint,0,*,%zid%);
 .
 
 # ENTITY TYPE
@@ -863,15 +863,15 @@ zsi:overrides-declaration %zid%; isa zsi:reified-association-type;
         zsi:overridden-declaration,zsi:association-field-declaration,%zid%,%zid%,%zid%,%zid%);
 .
 
-# ITEM TYPE HAS ROOT ITEM CONSTRAINT
-zsi:item-type-has-root-item-constraint %zid%; isa zsi:reified-association-type;
+# TYPE HAS ROOT ITEM CONSTRAINT
+zsi:type-has-root-item-constraint %zid%; isa zsi:reified-association-type;
     kind-of(zsi:schema-declaration,%zid%);
 
-    name("Descendants have Type Declaration",%zid%);
+    name("Type has Root Item Constraint",%zid%);
     name("Descendants have Type",zsi:root-item,%zid%);
     name("Has Root Item",zsi:type,%zid%);
 
-    has-role(zsi:item-type,1,1,%zid%);
+    has-role(zsi:type,1,1,%zid%);
     has-role(zsi:root-item,1,1,%zid%);
 .
 

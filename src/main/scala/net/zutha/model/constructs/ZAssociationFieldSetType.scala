@@ -5,15 +5,15 @@ import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZUnboundedNNI, ZNonNegativeInteger}
 
 object ZAssociationFieldSetType{
-  def apply(definingType: ZType, assocFT:ZAssociationFieldType):ZAssociationFieldSetType =
-    ZAssociationFieldSetType(definingType,assocFT.role,assocFT.associationType)
+  def apply(declaringType: ZType, assocFT:ZAssociationFieldType):ZAssociationFieldSetType =
+    ZAssociationFieldSetType(declaringType,assocFT.role,assocFT.associationType)
 }
-case class ZAssociationFieldSetType(definingType: ZType, role: ZRole, associationType: ZAssociationType){
+case class ZAssociationFieldSetType(declaringType: ZType, role: ZRole, associationType: ZAssociationType){
 
   def associationFieldType = ZAssociationFieldType(role,associationType)
 
   lazy val declarationAssociation = db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,true,
-      db.ASSOCIATION_FIELD_DECLARER -> definingType,
+      db.ASSOCIATION_FIELD_DECLARER -> declaringType,
       db.ROLE.toRole -> role,
       db.ASSOCIATION_TYPE.toRole -> associationType
     ).headOption.getOrElse(

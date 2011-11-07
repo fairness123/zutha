@@ -23,12 +23,43 @@ case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
     }
   }
 
+  def declarationAssociations: Set[ZAssociation] = {
+    db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,false,
+      db.ROLE.toRole -> role, db.ASSOCIATION_TYPE.toRole -> associationType)
+  }
+
+  //TODO make a rootDeclaringType method
+
   /**
    * @return the types that declare associationFields of this type
    */
   def declaringTypes: Set[ZType] = {
-    val declarations = db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,true,
-      db.ROLE.toRole -> role, db.ASSOCIATION_TYPE.toRole -> associationType)
-    declarations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
+    declarationAssociations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
   }
+
+  def declarersNotOverriddenBy(types: Set[ZType]):Set[ZType] = {
+    val nonOverriddenDeclarations = declarationAssociations.filter{decl =>
+      val overridingDeclarers = decl.overriddenBy.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
+      (overridingDeclarers intersect types) == 0
+    }
+    nonOverriddenDeclarations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
+  }
+
+  def declarerForType(zType: ZType): Option[ZType]={
+    val nonOverriddenDeclarers = declarersNotOverriddenBy(zType.getAllSuperTypes)
+    nonOverriddenDeclarers.size match{
+      case 0 => None
+      case 1 => Some(nonOverriddenDeclarers.head)
+      case _ => throw new SchemaViolationException(zType + " has more than one supertype with a non-overridden declaration of "+this)
+    }
+  }
+  def declarerForItem(item: ZItem): Option[ZType]={
+    val nonOverriddenDeclarers = declarersNotOverriddenBy(item.getAllTypes)
+    nonOverriddenDeclarers.size match{
+      case 0 => None
+      case 1 => Some(nonOverriddenDeclarers.head)
+      case _ => throw new SchemaViolationException(item + " has more than one type with a non-overridden declaration of "+this)
+    }
+  }
+
 }

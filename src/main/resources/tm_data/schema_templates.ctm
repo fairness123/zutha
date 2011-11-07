@@ -77,11 +77,11 @@ def is-abstract($type, $reifier)
     ) ~ $reifier
 end
 
-# ITEM TYPE HAS ROOT ITEM CONSTRAINT
+# TYPE HAS ROOT ITEM CONSTRAINT
 def root-of($rootItem, $type, $reifier)
-    $reifier isa zsi:item-type-has-root-item-constraint;
+    $reifier isa zsi:type-has-root-item-constraint;
     .
-    zsi:item-type-has-root-item-constraint(
+    zsi:type-has-root-item-constraint(
         zsi:root-item: $rootItem,
         zsi:type: $type
     ) ~ $reifier

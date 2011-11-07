@@ -77,11 +77,11 @@ def is-abstract($type, $reifier)
     ) ~ $reifier
 end
 
-# ITEM TYPE HAS ROOT ITEM CONSTRAINT
+# TYPE HAS ROOT ITEM CONSTRAINT
 def root-of($rootItem, $type, $reifier)
-    $reifier isa zsi:item-type-has-root-item-constraint;
+    $reifier isa zsi:type-has-root-item-constraint;
     .
-    zsi:item-type-has-root-item-constraint(
+    zsi:type-has-root-item-constraint(
         zsi:root-item: $rootItem,
         zsi:type: $type
     ) ~ $reifier
@@ -340,29 +340,29 @@ zsi:type zid:0G; isa zsi:item-type;
     plays-role(zsi:type,
         zsi:role-combination-constraint,0,*,zid:0Q);
     plays-role(zsi:root-item,
-        zsi:item-type-has-root-item-constraint,0,1,zid:0R);
+        zsi:type-has-root-item-constraint,0,1,zid:0R);
+    plays-role(zsi:type,
+        zsi:type-has-root-item-constraint,0,1,zid:0T);
     plays-role(zsi:scope-item-type,
-        zsi:construct-scope-constraint,0,*,zid:0T);
+        zsi:construct-scope-constraint,0,*,zid:0U);
     plays-role(zsi:scope-item-type,
-        zsi:field-with-scope-item-type-declaration,0,*,zid:0U);
+        zsi:field-with-scope-item-type-declaration,0,*,zid:0V);
 .
 
 # ITEM TYPE
-zsi:item-type zid:0V; isa zsi:item-type;
-    has-trait(zsi:role,zid:0W);
-    kind-of(zsi:type,zid:0X);
-    kind-of(zsi:property-declarer,zid:0Y);
-    kind-of(zsi:association-field-declarer,zid:010);
+zsi:item-type zid:0W; isa zsi:item-type;
+    has-trait(zsi:role,zid:0X);
+    kind-of(zsi:type,zid:0Y);
+    kind-of(zsi:property-declarer,zid:010);
+    kind-of(zsi:association-field-declarer,zid:011);
 
-    external-identifier(tmcl:topic-type, zid:011);
-    name("Item Type",zid:012);
+    external-identifier(tmcl:topic-type, zid:012);
+    name("Item Type",zid:013);
 
     plays-role(zsi:type,
-        zsi:type-instance,0,*,zid:013);
+        zsi:type-instance,0,*,zid:014);
     plays-role(zsi:item-type,
-        zsi:item-type-trait-declaration,0,*,zid:014);
-    plays-role(zsi:item-type,
-        zsi:item-type-has-root-item-constraint,0,*,zid:015);
+        zsi:item-type-trait-declaration,0,*,zid:015);
 .
 
 # ENTITY TYPE
@@ -1151,15 +1151,15 @@ zsi:overrides-declaration zid:0CD; isa zsi:reified-association-type;
         zsi:overridden-declaration,zsi:association-field-declaration,zid:0CV,zid:0CW,zid:0CX,zid:0CY);
 .
 
-# ITEM TYPE HAS ROOT ITEM CONSTRAINT
-zsi:item-type-has-root-item-constraint zid:0D0; isa zsi:reified-association-type;
+# TYPE HAS ROOT ITEM CONSTRAINT
+zsi:type-has-root-item-constraint zid:0D0; isa zsi:reified-association-type;
     kind-of(zsi:schema-declaration,zid:0D1);
 
-    name("Descendants have Type Declaration",zid:0D2);
+    name("Type has Root Item Constraint",zid:0D2);
     name("Descendants have Type",zsi:root-item,zid:0D3);
     name("Has Root Item",zsi:type,zid:0D4);
 
-    has-role(zsi:item-type,1,1,zid:0D5);
+    has-role(zsi:type,1,1,zid:0D5);
     has-role(zsi:root-item,1,1,zid:0D6);
 .
 

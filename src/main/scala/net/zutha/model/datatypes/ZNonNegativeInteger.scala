@@ -1,7 +1,6 @@
 package net.zutha.model.datatypes
 
 import javax.naming.directory.SchemaViolationException
-import net.zutha.model.datatypes.ZPermissionLevel.Specified
 
 object ZNonNegativeInteger extends DataType{
   def apply(value: String): ZNonNegativeInteger = try {

@@ -39,18 +39,17 @@ object ZUnboundedNNI extends DataType{
     }
   }
   case class Finite(value: Int) extends ZUnboundedNNI {
-    0.2.compare(1)
-
     def asString = value.toString
 
     def compare(other: ZUnboundedNNI) = other match {
       case Infinity => -1
       case Finite(otherVal) => (value - otherVal).signum
     }
-
   }
+
+  //implicit conversions
+  implicit def intToUnboundedNNI(value:Int):ZUnboundedNNI = apply(value)
 }
 
 trait ZUnboundedNNI extends PropertyValue with Ordered[ZUnboundedNNI]
-
 

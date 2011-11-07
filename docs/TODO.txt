@@ -14,10 +14,13 @@ Use a more efficient Topic Mab engine than MaJorToM
 
 
 --------------------- Schema ---------------------
+*DONE* overrides association between reified associations such as field-declaration and association-role-constraint
 default-permission-level in field-declarations (has-property, plays-role)
+A field type must have only one root declarer. Other declarers must be descendants of the root and explicitly override its field declaration (perhaps indirectly)
 is-inherited property on schema-rules
 may-be-unknown property in has-property and has-role associations
-*DONE* overrides association between reified associations such as field-declaration and association-role-constraint
+
+
 
 --------------------- Zutha Google Group posts ---------------------
 
