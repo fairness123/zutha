@@ -1,0 +1,31 @@
+# Robert Jordan
+robert-jordan %zid%; isa zsi:person;
+    has-trait(zsi:author,%zid%);
+
+    name("Robert Jordan",%zid%);
+.
+
+# Raymond E. Feist
+raymond-feist %zid%; isa zsi:person;
+    has-trait(zsi:author,%zid%);
+
+    name("Raymond E. Feist",%zid%);
+.
+
+# Janny Wurts
+janny-wurts %zid%; isa zsi:person;
+    has-trait(zsi:author,%zid%);
+
+    name("Janny Wurts",%zid%);
+.
+
+# Magician
+magician %zid%; isa zsi:book;
+
+    name("Magician",%zid%);
+.
+
+zsi:authorship(
+    zsi:author: raymond-feist,
+    zsi:written-work: magician
+) ~ %zid%

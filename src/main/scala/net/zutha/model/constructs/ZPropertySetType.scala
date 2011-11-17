@@ -5,7 +5,8 @@ import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZUnboundedNNI, ZNonNegativeInteger}
 
 
-case class ZPropertySetType(definingType: ZType, propertyType: ZPropertyType) {
+case class ZPropertySetType(definingType: ZType, propertyType: ZPropertyType)
+    extends ZFieldSetType{
 
   //TODO implement PropertySet cardMin, cardMax
   lazy val declarationAssociation = db.findAssociations(db.PROPERTY_DECLARATION,true,

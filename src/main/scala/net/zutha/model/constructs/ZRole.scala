@@ -5,6 +5,6 @@ object ZRole{
   def unapply(item: ZItem): Option[ZRole] =
     if(item.isRole) Some(item.toRole) else None
 }
-trait ZRole extends ZItem{
+trait ZRole extends ZItem with ZAssociationMemberType{
 
 }

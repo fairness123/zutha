@@ -14,7 +14,7 @@ trait ZAssociationType extends ZType{
   def getRoleCardMin(role: ZRole): ZNonNegativeInteger
   def getRoleCardMax(role: ZRole): ZUnboundedNNI
 
-  def definedAssocProperties: Set[ZPropertyType]
+  def definedAssocProperties: Set[ZAssociationPropertyType]
   def getAssocPropCardMin(propType: ZPropertyType): ZNonNegativeInteger
   def getAssocPropCardMax(propType: ZPropertyType): ZUnboundedNNI
 

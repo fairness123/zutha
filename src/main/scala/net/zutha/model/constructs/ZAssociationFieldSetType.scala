@@ -8,7 +8,8 @@ object ZAssociationFieldSetType{
   def apply(declaringType: ZType, assocFT:ZAssociationFieldType):ZAssociationFieldSetType =
     ZAssociationFieldSetType(declaringType,assocFT.role,assocFT.associationType)
 }
-case class ZAssociationFieldSetType(declaringType: ZType, role: ZRole, associationType: ZAssociationType){
+case class ZAssociationFieldSetType(declaringType: ZType, role: ZRole, associationType: ZAssociationType)
+    extends ZFieldSetType{
 
   def associationFieldType = ZAssociationFieldType(role,associationType)
 

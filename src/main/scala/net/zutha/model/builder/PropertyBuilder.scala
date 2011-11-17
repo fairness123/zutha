@@ -4,7 +4,8 @@ import net.zutha.model.datatypes.{PropertyValue, ZPermissionLevel}
 import net.zutha.model.constructs.{ZScope, ZItem, ZPropertyType}
 
 
-class PropertyBuilder private[builder](val parent: ItemBuilder, propType: ZPropertyType) {
+class PropertyBuilder private[builder](val parent: ItemBuilder, propType: ZPropertyType)
+    extends FieldBuilder{
   private val datatype = propType.dataType
   private var _value: PropertyValue = propType.dataType.default
   private var _scope: ZScope = ZScope()
@@ -16,6 +17,13 @@ class PropertyBuilder private[builder](val parent: ItemBuilder, propType: ZPrope
    * @throws IllegalArgumentException if the given value is not valid for this property's type
    */
   def value_= (value:String) {
+    value match {
+      case datatype(propVal) => _value = propVal
+      case _ => throw new IllegalArgumentException(value+" is not a valid value for properties of type: " + propType)
+    }
+  }
+  
+  def value_= (value: PropertyValue) {
     value match {
       case datatype(propVal) => _value = propVal
       case _ => throw new IllegalArgumentException(value+" is not a valid value for properties of type: " + propType)

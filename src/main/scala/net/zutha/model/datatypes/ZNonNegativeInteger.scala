@@ -11,7 +11,7 @@ object ZNonNegativeInteger extends DataType{
     }
   def apply(value: Int): ZNonNegativeInteger = {
       if (value < 0) throw new SchemaViolationException("ZNonNegativeInteger properties cannot be negative.")
-      else ZNonNegativeInteger(value)
+      else new ZNonNegativeInteger(value)
   }
   def unapply(value: String): Option[ZNonNegativeInteger] = try {
       Some(apply(value))

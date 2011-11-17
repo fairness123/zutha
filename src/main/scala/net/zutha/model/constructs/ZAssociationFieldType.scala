@@ -4,11 +4,20 @@ import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZUnboundedNNI}
 import ZUnboundedNNI.{Finite,Infinity}
 import net.zutha.model.db.DB.db
+import net.liftweb.common.Logger
 
-case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
+case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType) extends ZFieldType with Logger{
 
+  def name = associationType.nameF(role)
+  
+  def propertyTypes = associationType.definedAssocProperties
+  
   def companionAssociationFieldTypes = otherRoles.map(r => ZAssociationFieldType(r,associationType))
 
+  def companionAssociationFieldType(otherRole:ZRole) = {
+    require(otherRoles contains otherRole)
+    ZAssociationFieldType(otherRole,associationType)
+  }
   /**
    * @return a Set containing the other Roles that can be played in this field's Association.
    * If this field's Role can be played more than once, that Role will be included in the result Set
@@ -22,6 +31,14 @@ case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
       case Infinity => allRoles
     }
   }
+
+  def allowedPlayers = declaringTypes.flatMap(_.allInstances) //TODO filter out players based on other relevant rules
+
+  def allowedPlayersOf(role:ZRole): Set[ZItem] = {
+    val otherAssocFieldType = companionAssociationFieldType(role)
+    otherAssocFieldType.allowedPlayers
+  }
+
 
   def declarationAssociations: Set[ZAssociation] = {
     db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,false,
@@ -37,24 +54,25 @@ case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType){
     declarationAssociations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
   }
 
-  def declarersNotOverriddenBy(types: Set[ZType]):Set[ZType] = {
+  def declarersAmongTypes(types: Set[ZType]):Set[ZType] = {
     val nonOverriddenDeclarations = declarationAssociations.filter{decl =>
       val overridingDeclarers = decl.overriddenBy.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
-      (overridingDeclarers intersect types) == 0
+      (overridingDeclarers intersect types).size == 0
     }
-    nonOverriddenDeclarations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
+    val nonOverriddenDeclarers = nonOverriddenDeclarations.map(_.getPlayers(db.ASSOCIATION_FIELD_DECLARER).head.toType)
+    nonOverriddenDeclarers intersect types
   }
 
   def declarerForType(zType: ZType): Option[ZType]={
-    val nonOverriddenDeclarers = declarersNotOverriddenBy(zType.getAllSuperTypes)
-    nonOverriddenDeclarers.size match{
+    val declarers = declarersAmongTypes(zType.ancestors)
+    declarers.size match{
       case 0 => None
-      case 1 => Some(nonOverriddenDeclarers.head)
+      case 1 => Some(declarers.head)
       case _ => throw new SchemaViolationException(zType + " has more than one supertype with a non-overridden declaration of "+this)
     }
   }
   def declarerForItem(item: ZItem): Option[ZType]={
-    val nonOverriddenDeclarers = declarersNotOverriddenBy(item.getAllTypes)
+    val nonOverriddenDeclarers = declarersAmongTypes(item.getAllTypes)
     nonOverriddenDeclarers.size match{
       case 0 => None
       case 1 => Some(nonOverriddenDeclarers.head)

@@ -2,7 +2,7 @@ package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
 import org.tmapi.core.{Topic}
@@ -14,7 +14,7 @@ object TMAssociationType{
   def apply(topic: Topic):TMAssociationType = getItem(topic)
 }
 class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAssociationType{
-  lazy val getAllSuperAssociationTypes: Set[ZAssociationType] = getAllSuperTypes.filter(_.isAssociationType).map{_.toAssociationType}
+  lazy val getAllSuperAssociationTypes: Set[ZAssociationType] = ancestors.filter(_.isAssociationType).map{_.toAssociationType}
 
   // --------- Role Players ------------
 
@@ -71,7 +71,7 @@ class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAs
   }
 
   def definedAssocProperties = {
-    val definedProps = getAssocPropertyConstraints.map(_.getRoles(db.PROPERTY_TYPE).head.getPlayer.toPropertyType)
+    val definedProps = getAssocPropertyConstraints.map(_.getRoles(db.PROPERTY_TYPE).head.getPlayer.toAssocPropertyType)
     definedProps
   }
 

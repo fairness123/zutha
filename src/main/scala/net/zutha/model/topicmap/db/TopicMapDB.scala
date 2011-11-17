@@ -101,7 +101,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     val tmFile = File(TM_DATA_PATH + "tm.ctm")
 
     //regenerate tm.ctm if needed
-    val inputFileNames = List("schema_templates", "schema", "core","basic-entities")
+    val inputFileNames = List("schema_templates", "schema", "core","basic-entities","books","person","test")
     val inputFiles = inputFileNames.map{fn => File(TM_DATA_PATH + fn + ".ctm")}
 
     val changesMade = inputFiles.exists{f => f.lastModified > tmFile.lastModified}

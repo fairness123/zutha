@@ -3,7 +3,7 @@ package net.zutha.model.topicmap.constructs
 import org.tmapi.core.Topic
 
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.datatypes.DataType
 import net.zutha.model.constructs.{ZItem, ZPropertyType}
 import net.zutha.model.db.DB.db
@@ -17,7 +17,7 @@ class TMPropertyType protected (topic: Topic) extends TMTrait(topic) with ZPrope
 
   def dataTypeItem: ZItem = {
     //TODO resolve override rules
-    getAllSuperTypes.flatMap(propType => db.traverseAssociation(propType,db.PROPERTY_TYPE.toRole,
+    ancestors.flatMap(propType => db.traverseAssociation(propType,db.PROPERTY_TYPE.toRole,
       db.PROPERTY_DATATYPE_CONSTRAINT,db.DATATYPE.toRole))
       .headOption.getOrElse(throw new SchemaViolationException("propertyType: "+this.name+" is missing a datatype declaration"))
   }

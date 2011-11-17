@@ -11,7 +11,7 @@
 	</classpath>
     <web>
         <link target="/">
-          <dir name="D:\Programming Workspace\zutha_sbt\src\main\webapp"/>
+          <dir name="${myproject.root}/src/main/webapp"/>
         </link>
     </web>
 </application>

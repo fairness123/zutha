@@ -5,8 +5,9 @@ import scala.xml.{NodeSeq}
 import net.liftweb.util.Helpers._
 import model.constructs._
 import lib.uri.{ItemLoc, AssocLoc, RoleLoc, ItemInfo}
+import net.liftweb.common.Logger
 
-class Details(itemInfo: ItemInfo) {
+class Details(itemInfo: ItemInfo) extends Logger{
 
   private val item: ZItem = itemInfo.item
   private val propSets = item.getNonEmptyPropertySetsGrouped
@@ -28,7 +29,7 @@ class Details(itemInfo: ItemInfo) {
 
     ".field-group-name *" #> (definingType.name) &
     ".simple-field" #> {definedProps.map(makePropertySet(_)) ++ simpleAssocFields.map(makePlayerList(_))} &
-    ".association-set" #> complexAssocFields.map(makeAssocSetTable(_))
+    ".complex-field" #> complexAssocFields.map(makeAssocSetTable(_))
   }
 
   /** Render all properties in a Property Set*/
@@ -69,8 +70,8 @@ class Details(itemInfo: ItemInfo) {
     val role = assocFieldSet.role
     val assocType = assocFieldSet.associationType
 
-    ".field-type *" #> assocFieldSet.associationType.nameF(assocFieldSet.role) &
-    ".association-table" #> SnippetUtils.makeAssocSetTable(item, assocFieldSet) &
+    ".field-type *" #> assocFieldSet.associationType.nameF(role) &
+    ".association-table" #> AssocTable.makeAssocSetTable(assocFieldSet) &
     ".more-link [href]" #> AssocLoc.makeUri(item,role,assocType)
   }
 

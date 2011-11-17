@@ -1,17 +1,20 @@
 package net.zutha.lib.uri
 
 import net.liftweb.sitemap.Loc
-import net.zutha.model.constructs.{ZRole, ZAssociationType, ZItem}
 import net.liftweb.util.Helpers
 import xml.{NodeSeq, Text}
 import net.zutha.model.constants.ApplicationConstants._
 import net.liftweb.http.{RewriteResponse, ParsePath, RewriteRequest}
 import net.liftweb.common.{Full, Empty}
+import net.zutha.model.constructs.{ZAssociationFieldType, ZRole, ZAssociationType, ZItem}
 
 object RoleInfo{
   def apply(item:ZItem, role:ZRole, assoc:ZAssociationType, otherRole:ZRole):RoleInfo = RoleInfo(item,role,assoc,otherRole,"")
 }
-case class RoleInfo(item:ZItem, role:ZRole, assoc:ZAssociationType, otherRole:ZRole, view: String)
+case class RoleInfo(item:ZItem, role:ZRole, assocType:ZAssociationType, otherRole:ZRole, view: String){
+  val assocFieldType = ZAssociationFieldType(role,assocType)
+  val otherAssocFieldType = ZAssociationFieldType(otherRole,assocType)
+}
 
 object RoleLoc extends Loc[RoleInfo] {
   def name = "Role"
@@ -23,7 +26,7 @@ object RoleLoc extends Loc[RoleInfo] {
     override def pathList(in: RoleInfo): List[String] ={
       val item = in.item
       val role = in.role
-      val assoc = in.assoc
+      val assoc = in.assocType
       val otherRole = in.otherRole
       val view = in.view
       val maybeView = if(view=="") Nil else (view+"."+HTML_EXT)::Nil
@@ -51,7 +54,7 @@ object RoleLoc extends Loc[RoleInfo] {
     case RewriteRequest(ParsePath(
       List("item",ZIDLookup(itemFixed,item),itemName,ZIDLookup(roleFixed,ZRole(role)),roleName,
         ZIDLookup(assocFixed,ZAssociationType(assoc)),assocName,ZIDLookup(otherRoleFixed,ZRole(otherRole)),otherRoleName),
-    suffix,absolute,endSlash),_,_)
+        suffix,absolute,endSlash),_,_)
       if(!itemFixed && itemName==UriName(item.name) && !roleFixed && roleName==UriName(role.name) &&
         !assocFixed && assocName==UriName(assoc.nameF(role)) && !otherRoleFixed && otherRoleName==UriName(otherRole.name) &&
         !endSlash && absolute && suffix=="")
@@ -60,7 +63,7 @@ object RoleLoc extends Loc[RoleInfo] {
     case RewriteRequest(ParsePath(
       List("item",ZIDLookup(itemFixed,item),itemName,ZIDLookup(roleFixed,ZRole(role)),roleName,
         ZIDLookup(assocFixed,ZAssociationType(assoc)),assocName,ZIDLookup(otherRoleFixed,ZRole(otherRole)),otherRoleName,view),
-    suffix,absolute,endSlash),_,_)
+        suffix,absolute,endSlash),_,_)
       if(!itemFixed && itemName==UriName(item.name) && !roleFixed && roleName==UriName(role.name) &&
         !assocFixed && assocName==UriName(assoc.nameF(role)) && !otherRoleFixed && otherRoleName==UriName(otherRole.name) &&
         !endSlash && absolute && suffix==HTML_EXT)

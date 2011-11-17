@@ -3,17 +3,21 @@ package net.zutha.model.builder
 import net.zutha.model.constructs._
 import net.zutha.model.datatypes.ZUnboundedNNI._
 
-class PropertySetBuilder(val parent: ItemBuilder, propSetType: ZPropertySetType) {
-  val propType = propSetType.propertyType
+class PropertySetBuilder(val parent: ItemBuilder, val fieldSetType: ZPropertySetType)
+    extends FieldSetBuilder{
+  val fieldType = fieldSetType.propertyType
   private var _properties: Set[PropertyBuilder] = Set()
+
+  def properties = _properties
+  def fields = properties.map(p => p)
 
   /**
    * @return Some(new Property) if a new one is allowed
    *  or None if this PropertySet is not allowed to have more members
    */
   def addProperty: Option[PropertyBuilder] = {
-    if(_properties.size < propSetType.cardMax){
-      val newBuilder = new PropertyBuilder(parent,propType)
+    if(_properties.size < fieldSetType.cardMax){
+      val newBuilder = new PropertyBuilder(parent,fieldType)
       _properties += newBuilder
       Some(newBuilder)
     }
@@ -27,7 +31,7 @@ class PropertySetBuilder(val parent: ItemBuilder, propSetType: ZPropertySetType)
    *  and false if this PropertySet is not allowed to have less members
    */
   def removeProperty(toRemove:PropertyBuilder):Boolean = {
-    if(_properties.size > propSetType.cardMin){
+    if(_properties.size > fieldSetType.cardMin){
       _properties -= toRemove
       true
     }

@@ -94,9 +94,9 @@ end
 def may-have-trait($itemType, $trait, $reifier)
     $reifier isa zsi:item-type-trait-declaration;
     .
-    zsi:item-type-role-declaration(
+    zsi:item-type-trait-declaration(
         zsi:item-type: $itemType,
-        zsi:trait: $role
+        zsi:trait: $trait
     ) ~ $reifier
 end
 

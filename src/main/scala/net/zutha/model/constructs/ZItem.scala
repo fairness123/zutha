@@ -7,7 +7,7 @@ import net.zutha.model.datatypes.{PropertyValue, DataType}
 * and open the template in the editor.
 */
 
-trait ZItem {
+trait ZItem extends ZAssociationMember{
   // -------------- conversion --------------
   def isType: Boolean
   def toType: ZType
@@ -56,7 +56,7 @@ trait ZItem {
 
   // -------------- types --------------
   def hasType(itemType: ZType): Boolean;
-  def getType: ZType;
+  def itemType: ZItemType;
   def getAllTypes: Set[ZType];
   def getFieldDefiningTypes: Set[ZType];
 

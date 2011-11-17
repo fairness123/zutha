@@ -2,7 +2,7 @@ package net.zutha.model.topicmap.constructs
 
 import net.zutha.model.constructs.ZProperty
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import org.tmapi.core.{Name, Occurrence}
 import net.zutha.model.exceptions.SchemaViolationException
 
@@ -27,6 +27,8 @@ class TMOccurrenceProperty(occ: Occurrence) extends TMProperty {
   def propertyType = occ.getType.toPropertyType
 
   def valueString = occ.getValue
+
+  def parent = occ.getParent.toItem
 }
 
 object TMNameProperty{
@@ -39,5 +41,7 @@ class TMNameProperty protected (name: Name) extends TMProperty {
   def propertyType = name.getType.toPropertyType
 
   def valueString = name.getValue
+
+  def parent = name.getParent.toItem
 }
 

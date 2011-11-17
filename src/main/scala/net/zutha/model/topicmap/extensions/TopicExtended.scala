@@ -3,7 +3,7 @@ package net.zutha.model.topicmap.extensions
 import org.tmapi.core.{Occurrence, Topic}
 
 import net.zutha.model.constants.TopicMapConstants
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.topicmap.db.{TopicMapDB}
 
 object TopicExtended{

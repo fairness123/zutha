@@ -8,13 +8,14 @@ trait SchemaItems {
   protected def getSchemaItem(identifier: String): ZItem
   
   //kinds of item type
-  lazy val TYPE: ZItemType = getSchemaItem("item").toItemType
+  lazy val TYPE: ZItemType = getSchemaItem("type").toItemType
   lazy val ITEM_TYPE: ZItemType = getSchemaItem("item-type").toItemType
   lazy val TRAIT: ZItemType = getSchemaItem("trait").toItemType
 
   //kinds of Trait
   lazy val CONSTRUCT_TYPE: ZType = getSchemaItem("construct-type").toType
   lazy val PROPERTY_TYPE: ZType = getSchemaItem("property-type").toType
+  lazy val ASSOCIATION_PROPERTY_TYPE: ZType = getSchemaItem("association-property-type").toType
   lazy val ASSOCIATION_TYPE: ZType = getSchemaItem("association-type").toType
 
   //item types

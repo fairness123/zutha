@@ -7,7 +7,7 @@ import de.topicmapslab.tmql4j.components.processor.results.model.{IResultSet}
 import de.topicmapslab.tmql4j.components.processor.results.xml.XMLValue
 import xml._
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import de.topicmapslab.tmql4j.query.IQuery
 import de.topicmapslab.tmql4j.components.processor.results.tmdm.SimpleResult
 import org.tmapi.core.{Topic, Association}
@@ -121,6 +121,14 @@ trait TMQL {
     }
   }
 
+  private def runItemTypeQuery(q: IQuery): Seq[ZItemType] = {
+    try runItemQuery(q).map(_.toItemType)
+    catch {
+      case e: TypeConversionException =>
+        throw new IllegalArgumentException("query does not return ZItemType results")
+    }
+  }
+
   private def runAssociationQuery(q: IQuery): Seq[Association] = {
     val rs = q.getResults
     val results = rs.map{_ match {
@@ -150,9 +158,9 @@ trait TMQL {
    *  @return non-empty result-set if this item is an instance of zType
    */
   def itemIsA(item: ZItem, zType: ZType): Boolean = {
-    val statement = prepareStatement(TRANSITIVE + "?item >> types == ?zdmType")
+    val statement = prepareStatement(TRANSITIVE + "?item >> types == ?zType")
     statement.setTopic("?item",item)
-    statement.setTopic("?zdmType",zType)
+    statement.setTopic("?zType",zType)
     statement.run()
     runBooleanQuery(statement)
   }
@@ -177,16 +185,34 @@ trait TMQL {
     runTypeQuery(statement).toSet
   }
 
-  /** get all supertypes of a ?zdmType (transitive)
-   *  @params zdmType
+  /** get all instances of an Item (transitive)
+   *  @params item
    */
-  def allSupertypesOfItem(zdmType: ZType): Set[ZType] = {
-    val statement = prepareStatement(TRANSITIVE + "?zdmType >> supertypes")
-    statement.setTopic("?zdmType",zdmType)
+  def allInstancesOfItem(item: ZItem): Set[ZItem] = {
+    val statement = prepareStatement(TRANSITIVE + "?item >> instances")
+    statement.setTopic("?item",item)
+    statement.run()
+    runItemQuery(statement).toSet
+  }
+
+  /** get all ancestors of a ?zType
+   *  @params zType the type whose ancestors we want to find
+   */
+  def findAncestorsOfType(zType: ZType): Set[ZType] = {
+    val statement = prepareStatement(TRANSITIVE + "?zType >> supertypes")
+    statement.setTopic("?zType",zType)
     statement.run()
     runTypeQuery(statement).toSet
   }
-
+  /** get all descendants of a ?zType
+   *  @params zType the type whose descendants we want to find
+   */
+  def findDescendantsOfType(zType: ZType): Set[ZType] = {
+    val statement = prepareStatement(TRANSITIVE + "?zType >> subtypes")
+    statement.setTopic("?zType",zType)
+    statement.run()
+    runTypeQuery(statement).toSet
+  }
   /** get all players of ?otherRole of type ?playerType in associations of type ?assocType where ?item plays the role ?role
    *  @params item, role, assocType, otherRole, playerType
    */

@@ -1,7 +1,7 @@
 package net.zutha.model.topicmap.constructs
 
 import org.tmapi.core.Topic
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.constructs.{ZItemType, ZTrait}
 import net.zutha.model.db.DB.db
 

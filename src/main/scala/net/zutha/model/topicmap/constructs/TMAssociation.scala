@@ -4,7 +4,7 @@ import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.constructs._
 import org.tmapi.core.{Topic, Association, Role}
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.db.DB.db
 import net.zutha.model.datatypes.PropertyValue
 

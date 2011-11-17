@@ -1,0 +1,56 @@
+# ==================== Item Types ====================
+
+# WRITTEN WORK
+zsi:written-work %zid%; isa zsi:entity-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:zutha-object,%zid%);
+
+    name("Written Work",%zid%);
+
+    plays-role(zsi:written-work,
+        zsi:authorship,1,1,%zid%);
+.
+
+# BOOK
+zsi:book %zid%; isa zsi:entity-type;
+    kind-of(zsi:written-work,%zid%);
+
+    name("Book",%zid%);
+.
+
+# ARTICLE
+zsi:article %zid%; isa zsi:entity-type;
+    kind-of(zsi:written-work,%zid%);
+
+    name("Article (Written Work)",%zid%);
+    name("Article",zsi:written-work,%zid%);
+.
+
+# ==================== Traits ====================
+
+# AUTHOR
+zsi:author %zid%; isa zsi:trait;
+    has-trait(zsi:role,%zid%);
+
+    name("Author",%zid%);
+    name("Co-Authors",zsi:author,%zid%);
+
+    plays-role(zsi:author,
+        zsi:authorship,0,*,%zid%);
+.
+
+# ==================== Association Types ====================
+
+# AUTHORSHIP
+zsi:authorship %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:reified-association,%zid%);
+
+    name("Authorship",%zid%);
+    name("Written By",zsi:written-work,%zid%);
+    name("Works Written",zsi:author,%zid%);
+
+    has-role(zsi:author,1,*,%zid%);
+    has-role(zsi:written-work,1,1,%zid%);
+.
+
+# ==================== Property Types ====================

@@ -2,7 +2,7 @@ package net.zutha.util
 
 import scala.collection.mutable.Map
 
-object Helpers {
+object Cache {
 
   def makeCache[IN,K,V](makeKey:IN=>K, makeVal:IN=>V) = {
     val items: Map[K,V] = Map()

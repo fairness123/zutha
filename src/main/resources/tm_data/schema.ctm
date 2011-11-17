@@ -75,6 +75,8 @@ zsi:item-type %zid%; isa zsi:item-type;
         zsi:type-instance,0,*,%zid%);
     plays-role(zsi:item-type,
         zsi:item-type-trait-declaration,0,*,%zid%);
+    may-have-trait(zsi:role,%zid%);
+    may-have-trait(zsi:trait,%zid%);
 .
 
 # ENTITY TYPE
@@ -98,6 +100,7 @@ zsi:trait %zid%; isa zsi:item-type;
         zsi:item-has-trait,0,*,%zid%);
     plays-role(zsi:trait,
         zsi:item-type-trait-declaration,0,*,%zid%);
+    may-have-trait(zsi:role,%zid%);
 .
 
 # ROLE
@@ -237,6 +240,7 @@ zsi:property-type %zid%; isa zsi:item-type;
         zsi:property-with-scope-item-type-declaration,0,*,%zid%);
     plays-role(zsi:property-type,
         zsi:property-set-permission-level,0,*,%zid%);
+    may-have-trait(zsi:datatype,%zid%);
 .
 
 # CALCULATED PROPERTY TYPE

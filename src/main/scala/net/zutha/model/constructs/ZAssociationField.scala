@@ -1,6 +1,6 @@
 package net.zutha.model.constructs
 
-trait ZAssociationField {
+trait ZAssociationField extends ZField{
   def parent: ZItem
   def role: ZRole
   def association: ZAssociation

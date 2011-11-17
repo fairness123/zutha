@@ -15,7 +15,7 @@ seq(webSettings :_*)
 
 scanDirectories in Compile := Nil //for JRebel
 
-port in container.Configuration := 8081
+port in container.Configuration := 8082
 
 
 resolvers ++= Seq(
@@ -26,7 +26,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= {
-    val liftVersion = "2.4-M4"
+    val liftVersion = "2.4-M5"
     val tmql4j_version = "3.2.0-SNAPSHOT"
     val majortom_version = "1.2.0"
     Seq(
@@ -35,7 +35,8 @@ libraryDependencies ++= {
 	  "ch.qos.logback" % "logback-classic" % "0.9.26",
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-mapper" % liftVersion % "compile",
-    "net.liftweb" %% "lift-openid" % liftVersion % "compile",
+    "net.liftweb" %% "lift-widgets" % liftVersion % "compile" withSources(),
+    "net.liftweb" %% "lift-openid" % liftVersion % "compile" withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-path" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-draft2010" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-draft2011" % tmql4j_version withJavadoc() withSources(),

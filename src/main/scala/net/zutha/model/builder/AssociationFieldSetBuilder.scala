@@ -1,23 +1,33 @@
 package net.zutha.model.builder
 
 import net.zutha.model.constructs._
+import net.liftweb.common.{Full, Empty, Box}
 
 
-class AssociationFieldSetBuilder(val parent: ItemBuilder, val assocFieldSetType:ZAssociationFieldSetType) {
-  val assocFieldType = assocFieldSetType.associationFieldType
+class AssociationFieldSetBuilder(val parent: ItemBuilder, val fieldSetType:ZAssociationFieldSetType)
+    extends FieldSetBuilder{
+  val fieldType = fieldSetType.associationFieldType
   private var _associationFields: Set[AssociationFieldBuilder] = Set()
+
+  val role = fieldType.role
+  val associationType = fieldType.associationType
+  val otherRoles = fieldType.otherRoles
+  val propertyTypes = fieldType.propertyTypes
+  
+  def associationFields = _associationFields
+  def fields = associationFields.map(af => af)
 
   /**
    * @return Some(new assocField) if a new one is allowed
    *  or None if this AssocFieldSet is not allowed to have more members
    */
-  def addAssociationField: Option[AssociationFieldBuilder] = {
-    if(_associationFields.size < assocFieldSetType.cardMax){
-      val newBuilder = new AssociationFieldBuilder(parent,assocFieldType)
+  def addAssociationField: Box[AssociationFieldBuilder] = {
+    if(_associationFields.size < fieldSetType.cardMax){
+      val newBuilder = new AssociationFieldBuilder(parent,fieldType)
       _associationFields += newBuilder
-      Some(newBuilder)
+      Full(newBuilder)
     }
-    else None
+    else Empty
   }
   /**
    * Removes the given AssocField from this AssocFieldSet
@@ -25,7 +35,7 @@ class AssociationFieldSetBuilder(val parent: ItemBuilder, val assocFieldSetType:
    *  and false if this AssocFieldSet is not allowed to have less members
    */
   def removeAssociationField(toRemove:AssociationFieldBuilder):Boolean = {
-    if(_associationFields.size > assocFieldSetType.cardMin){
+    if(_associationFields.size > fieldSetType.cardMin){
       _associationFields -= toRemove
       true
     }

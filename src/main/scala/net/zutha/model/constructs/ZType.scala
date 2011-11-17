@@ -1,13 +1,23 @@
 package net.zutha.model.constructs
 
+import net.zutha.model.db.DB.db
 
 trait ZType extends ZItem{
   //type information
   def isAbstract: Boolean;
-  def hasSuperType(superType: ZType): Boolean
-  
-  /** @return the set of all this type's supertypes (including this type itself)*/
-  def getAllSuperTypes: Set[ZType]
+  def hasAncestor(ancestor: ZType): Boolean
+
+  //hierarchy
+
+  /** @return the set of all this type's ancestor types (including this type itself)*/
+  def ancestors: Set[ZType]
+
+  /** @return the set of all this type's descendant types (including this type itself)*/
+  def descendants: Set[ZType]
+
+  def allInstances: Set[ZItem] = {
+    db.allInstancesOfItem(this)
+  }
 
   // field definition
   def declaresFields: Boolean;
@@ -15,4 +25,5 @@ trait ZType extends ZItem{
   def declaredAssociationFieldSets: Set[ZAssociationFieldSetType];
   def requiredPropertySets: Set[ZPropertySetType];
   def requiredAssociationFieldSets: Set[ZAssociationFieldSetType];
+
 }

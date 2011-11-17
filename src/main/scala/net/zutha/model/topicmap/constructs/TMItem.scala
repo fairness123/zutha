@@ -2,7 +2,7 @@ package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.constants.ZuthaConstants
 import ZuthaConstants._
 import net.zutha.model.constructs._
@@ -34,7 +34,7 @@ class TMItem protected (topic: Topic) extends ZItem{
   lazy val isType = db.itemIsA(this,db.TYPE)
   def toType: ZType = TMType(topic)
 
-  lazy val isItemType = db.itemIsA(this,db.ITEM_TYPE)
+  def isItemType = db.itemIsA(this,db.ITEM_TYPE)
   def toItemType: ZItemType = TMItemType(topic)
 
   lazy val isTrait = db.itemIsA(this,db.TRAIT)
@@ -48,6 +48,9 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   lazy val isPropertyType = db.itemIsA(this,db.PROPERTY_TYPE)
   def toPropertyType: ZPropertyType = TMPropertyType(topic)
+
+  lazy val isAssocPropertyType = db.itemIsA(this,db.ASSOCIATION_PROPERTY_TYPE)
+  def toAssocPropertyType: ZAssociationPropertyType = TMAssociationPropertyType(topic)
 
   // -------------- ZIDs --------------
   lazy val ZIDs: Set[String] = {
@@ -93,7 +96,9 @@ class TMItem protected (topic: Topic) extends ZItem{
   // -------------- types --------------
   def hasType(zType: ZType): Boolean = getAllTypes.contains(zType)
 
-  def getType = db.directTypesOfItem(this).toSet.head
+  def itemType = db.directTypesOfItem(this).collect{
+    case ZItemType(it) => it
+  }.head
 
   def getAllTypes = db.allTypesOfItem(this).toSet
 
@@ -125,7 +130,7 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   def getProperties(propType: ZPropertyType): Set[ZProperty] = {
     //check if propType is a name
-    if(propType.hasSuperType(db.NAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
+    if(propType.hasAncestor(db.NAME)){ //no need to check if propType is zsi:name itself because zsi:name is abstract
       val names = topic.getNames.map(_.toProperty).toSet
       return names
     }

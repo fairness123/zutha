@@ -32,6 +32,6 @@ class AssocPage(assocInfo: AssocInfo) {
     ".assoc-type [href]" #> ItemLoc.makeUri(assocType)
   }
 
-  def assocTable = ".association-table" #> SnippetUtils.makeAssocSetTable(item, assocFieldSet)
+  def assocTable = ".association-table" #> AssocTable.makeAssocSetTable(assocFieldSet)
   
 }

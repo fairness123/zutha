@@ -8,7 +8,7 @@ import net.zutha.lib.uri.{ItemLoc, RoleInfo, ItemInfo}
 class RolePage(roleInfo: RoleInfo) {
 
   private val item = roleInfo.item
-  private val assocType = roleInfo.assoc
+  private val assocType = roleInfo.assocType
   private val role = roleInfo.role
   private val otherRole = roleInfo.otherRole
 

@@ -15,8 +15,10 @@ trait DB extends SchemaItems{
   def findAssociations(assocType: ZAssociationType, strict: Boolean, rolePlayers:(ZRole,ZItem)*): Set[ZAssociation]
   def itemIsA(item: ZItem, zType: ZType): Boolean
   def allTypesOfItem(item: ZItem): Set[ZType]
+  def allInstancesOfItem(item: ZItem): Set[ZItem]
   def directTypesOfItem(item: ZItem): Set[ZType]
-  def allSupertypesOfItem(zdmType: ZType): Set[ZType]
+  def findAncestorsOfType(zType: ZType): Set[ZType]
+  def findDescendantsOfType(zType: ZType): Set[ZType]
   def traverseAssociation(item: ZItem, role: ZRole, assocType: ZAssociationType, otherRole: ZRole): Set[ZItem]
 }
 

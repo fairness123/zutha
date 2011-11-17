@@ -5,7 +5,7 @@ import org.tmapi.core.Topic
 
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.db.DB.db
-import net.zutha.util.Helpers._
+import net.zutha.util.Cache._
 import net.zutha.model.constructs.{ZPropertySetType, ZAssociationFieldSetType, ZType}
 import net.zutha.model.datatypes.ZUnboundedNNI.Finite
 
@@ -19,11 +19,15 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
     !abstractConstAssoc.isEmpty
   }
 
-  def hasSuperType(superType: ZType): Boolean = getAllSuperTypes.contains(superType)
+  def hasAncestor(superType: ZType): Boolean = ancestors.contains(superType)
 
-  lazy val getAllSuperTypes: Set[ZType] = { //TODO allow an item's supertypes to be modified
-    val supertypes = db.allSupertypesOfItem(this) + this
-    supertypes
+  lazy val ancestors: Set[ZType] = { //TODO allow an item's supertypes to be modified
+    val ancestors = db.findAncestorsOfType(this) + this
+    ancestors
+  }
+  def descendants: Set[ZType] = {
+    val descendants = db.findDescendantsOfType(this) + this
+    descendants
   }
 
   // --------------- defined fields ---------------
