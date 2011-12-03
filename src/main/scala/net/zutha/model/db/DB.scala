@@ -1,6 +1,5 @@
 package net.zutha.model.db
 
-import net.zutha.model.ProposedItem
 import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.constructs._
 
@@ -8,8 +7,6 @@ trait DB extends SchemaItems{
   def getNextZID: Zid;
 
   def getItemByZid(zid: Zid): Option[ZItem];
-
-  def createItem(item: ProposedItem);
 
   //Queries
   def findAssociations(assocType: ZAssociationType, strict: Boolean, rolePlayers:(ZRole,ZItem)*): Set[ZAssociation]

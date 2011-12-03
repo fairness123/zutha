@@ -12,7 +12,6 @@ import net.liftweb.common.{Loggable}
 import net.zutha.model.constants._
 import ZuthaConstants._
 import ApplicationConstants._
-import net.zutha.model.{ProposedItem}
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB
@@ -87,42 +86,6 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     val assocReifier = createTopic(assocType.toItemType)
     assoc.setReifier(assocReifier)
     assoc
-  }
-
-  def createItem(item: ProposedItem) {
-    //start transaction
-    val txn = if(ENABLE_TRANSACTIONS) tmm.createTransaction() else tmm
-
-    val topic = txn.createTopic()
-
-    //add names
-    for(nameProp <- item.names.props){
-      val name = topic.createName(nameProp.value)
-    }
-
-    //add Subject Indicators
-    for(siProp <- item.subjectIndicators.props){
-      try{
-        val loc = txn.createLocator(siProp.uri)
-        topic.addSubjectIdentifier(loc)
-      } catch{
-        case e:MalformedIRIException => //send error message to siProp
-      }
-    }
-
-    //add Topic Types
-    for(typeProp <- item.types.props){
-      txn.lookupTopicByZSI(typeProp.typeZSI) match {
-        case Some(tt) => topic.addType(tt)
-        case _ => //TODO send error: topic type not found
-      }
-    }
-
-    //create a ZID for this new item
-    topic.addZID(getNextZID)
-
-    //commit proposed item
-    if(ENABLE_TRANSACTIONS) txn.asInstanceOf[ITransaction].commit()
   }
 
   def printTMLocators(){
