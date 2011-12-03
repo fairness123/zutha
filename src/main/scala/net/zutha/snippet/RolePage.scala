@@ -6,6 +6,7 @@ import xml.{Text, NodeSeq}
 import net.zutha.lib.uri.{ItemLoc, RoleInfo, ItemInfo}
 import net.liftweb.util.ValueCell
 import net.liftweb.http.WiringUI
+import net.zutha.model.auth.CurrentUser
 
 class RolePage(roleInfo: RoleInfo) {
 
@@ -17,7 +18,8 @@ class RolePage(roleInfo: RoleInfo) {
   val rolePlayers = ValueCell[Set[ZItem]]{
     item.getAssociationFields(role,assocType).flatMap{_.getPlayers(otherRole)}
   }
-  val createItemForm = if(true /*TODO logged in*/){
+
+  val createItemForm = if(CurrentUser.loggedIn){
     Some(new CreateItemForm(roleInfo,rolePlayers))
   } else None
 

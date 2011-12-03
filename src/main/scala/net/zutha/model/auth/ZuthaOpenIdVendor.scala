@@ -8,16 +8,13 @@ import net.liftweb.http.{SessionVar, S}
 import net.liftweb.common.{Empty, Full, Box}
 import net.zutha.model.item.ZuthaIdentity
 
-
 object ZuthaOpenIdVendor extends ZuthaOpenIdVendor
-
-object CurrentUserVar extends SessionVar[Box[ZuthaIdentity]](Empty)
 
 trait ZuthaOpenIdVendor extends OpenIDVendor {
   type UserType = ZuthaIdentity
   type ConsumerType = ZuthaOpenIdConsumer[UserType]
 
-  def currentUser = CurrentUserVar.is
+  def currentUser = CurrentUser.is
 
   /**
    * If verification failed, generate a polite message to that
@@ -30,11 +27,11 @@ trait ZuthaOpenIdVendor extends OpenIDVendor {
     id match {
       case Full(id) => {
         val zuthaIdentityItem = Users(id.getIdentifier)
-        CurrentUserVar(Full(zuthaIdentityItem))
+        CurrentUser(Full(zuthaIdentityItem))
       }
 
       case _ => {
-        CurrentUserVar(Empty)
+        CurrentUser(Empty)
         S.error(generateAuthenticationFailure(res))
       }
     }
@@ -44,7 +41,7 @@ trait ZuthaOpenIdVendor extends OpenIDVendor {
   def logoutUrl = "/"+PathRoot+"/"+LogOutPath
   
   def logUserOut() {
-    CurrentUserVar.remove
+    CurrentUser.remove
   }
 
   /**
