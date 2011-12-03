@@ -4,6 +4,8 @@ import net.liftweb.util.Helpers._
 import net.zutha.model.constructs.ZItem
 import xml.{Text, NodeSeq}
 import net.zutha.lib.uri.{ItemLoc, RoleInfo, ItemInfo}
+import net.liftweb.util.ValueCell
+import net.liftweb.http.WiringUI
 
 class RolePage(roleInfo: RoleInfo) {
 
@@ -11,6 +13,13 @@ class RolePage(roleInfo: RoleInfo) {
   private val assocType = roleInfo.assocType
   private val role = roleInfo.role
   private val otherRole = roleInfo.otherRole
+
+  val rolePlayers = ValueCell[Set[ZItem]]{
+    item.getAssociationFields(role,assocType).flatMap{_.getPlayers(otherRole)}
+  }
+  val createItemForm = if(true /*TODO logged in*/){
+    Some(new CreateItemForm(roleInfo,rolePlayers))
+  } else None
 
   def title(content: NodeSeq): NodeSeq = {
     val viewStr = roleInfo.view match {
@@ -32,13 +41,15 @@ class RolePage(roleInfo: RoleInfo) {
     ".other_role [href]" #> ItemLoc.makeUri(otherRole)
   }
 
-  private def getRolePlayers: Seq[ZItem] = {
-    val players = item.getAssociationFields(role,assocType).flatMap{_.getPlayers(otherRole)}
-      .toSeq.sortBy(_.name) //TODO sort by worth
-    players
-  }
+  val rolePlayersSorted = rolePlayers.lift(_.toSeq.sortBy(_.name)) //TODO sort by worth
+
   private def renderRolePlayer(player: ZItem) = SnippetUtils.itemSummary(player,false)
 
-  def rolePlayers =
-    ".role_player *" #> getRolePlayers.map(renderRolePlayer(_))
+  def renderRolePlayers = //TODO use history and calculateDeltas
+    "#role-players" #> WiringUI.toNode(rolePlayersSorted){(rps,ns) =>
+      val sel = ".role-player" #> rps.map{rp => renderRolePlayer(rp)}
+      sel(ns)
+    }
+
+  def renderCreateItemForm = "*" #> createItemForm.map(_.render)
 }

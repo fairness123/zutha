@@ -1,13 +1,17 @@
 package net.zutha.model.builder
 
 import net.zutha.model.datatypes.{PropertyValue, ZPermissionLevel}
-import net.zutha.model.constructs.{ZScope, ZItem, ZPropertyType}
+import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.constructs.{ZProperty, ZScope, ZItem, ZPropertyType}
+import org.tmapi.core.Topic
+import net.zutha.model.topicmap.constructs.TMOccurrenceProperty
+import net.zutha.model.db.DB.db
+import net.zutha.model.topicmap.TMConversions._
 
-
-class PropertyBuilder private[builder](val parent: ItemBuilder, propType: ZPropertyType)
+class PropertyBuilder private[builder](val parent: ItemBuilder, val propertyType: ZPropertyType)
     extends FieldBuilder{
-  private val datatype = propType.dataType
-  private var _value: PropertyValue = propType.dataType.default
+  private val datatype = propertyType.dataType
+  private var _value: PropertyValue = propertyType.dataType.default
   private var _scope: ZScope = ZScope()
 
   def value = _value
@@ -19,14 +23,14 @@ class PropertyBuilder private[builder](val parent: ItemBuilder, propType: ZPrope
   def value_= (value:String) {
     value match {
       case datatype(propVal) => _value = propVal
-      case _ => throw new IllegalArgumentException(value+" is not a valid value for properties of type: " + propType)
+      case _ => throw new IllegalArgumentException(value+" is not a valid value for properties of type: " + propertyType)
     }
   }
   
   def value_= (value: PropertyValue) {
     value match {
       case datatype(propVal) => _value = propVal
-      case _ => throw new IllegalArgumentException(value+" is not a valid value for properties of type: " + propType)
+      case _ => throw new IllegalArgumentException(value+" is not a valid value for properties of type: " + propertyType)
     }
   }
 
@@ -38,4 +42,21 @@ class PropertyBuilder private[builder](val parent: ItemBuilder, propType: ZPrope
   private var _permissionLevel: ZPermissionLevel = ZPermissionLevel.Inherit
   def permissionLevel = _permissionLevel
   def permissionLevel_= (level: Int) {_permissionLevel = ZPermissionLevel(level)}
+
+  private[builder] def build(parentTopic: Topic): ZProperty = {
+    val propTypeTopic: Topic = propertyType
+    val propValue = value.toString
+    val occ = parentTopic.createOccurrence(propTypeTopic,propValue)
+
+    val propTopic = TopicMapDB.createTopic()
+    //add permission-level field if set
+    if(permissionLevel != ZPermissionLevel.Inherit){
+      val permLevelValue = permissionLevel.toString
+      val permLevelType = db.PERMISSION_LEVEL
+      propTopic.createOccurrence(permLevelType, permLevelValue)
+    }
+    occ.setReifier(propTopic)
+
+    TMOccurrenceProperty(occ)
+  }
 }

@@ -1,22 +1,24 @@
 package net.zutha.snippet
 
 import net.liftweb._
-import common.{Logger, Full, Box, Empty}
+import common._
+import common.Full._
 import http._
-import js.JsCmd
+import js.jquery.JqJsCmds
 import js.JsCmds._
+import js.{JsExp, JsCmds, JsCmd}
 import util._
 import Helpers._
 import net.zutha.model.db.DB.db
-import net.zutha.lib.uri.RoleInfo
-import net.zutha.model.constructs.{ZTrait, Zid, ZAssociationFieldType}
 import widgets.autocomplete._
 import xml.{Text, NodeSeq}
 import net.zutha.model.builder.{AssociationFieldSetBuilder, FieldSetBuilder, ItemBuilder}
 import net.zutha.lib.widgets.{AssocTableEdit, SimpleFieldSetEdit}
+import net.zutha.model.constructs.{ZItem, ZTrait, Zid, ZAssociationFieldType}
+import net.zutha.lib.uri.{ItemLoc, ItemInfo, RoleInfo}
 
 
-class CreateItemForm(roleInfo: RoleInfo) extends Logger{
+class CreateItemForm(roleInfo: RoleInfo, rolePlayers: ValueCell[Set[ZItem]]) extends Logger{
   private val item = roleInfo.item
   private val assocType = roleInfo.assocType
   private val role = roleInfo.role
@@ -24,7 +26,16 @@ class CreateItemForm(roleInfo: RoleInfo) extends Logger{
 
   private val requiredAssocFieldType = ZAssociationFieldType(otherRole,assocType)
   private val itemBuilderCell = ValueCell[ItemBuilder](
-    new ItemBuilder(requiredAssocFieldType,(role,item)))
+    new ItemBuilder(requiredAssocFieldType,(role,item))
+  )
+
+  /**
+   * resets the Create Item Form to its initial state
+   */
+  def reset():JsCmd = {
+    itemBuilderCell.atomicUpdate(_ => new ItemBuilder(requiredAssocFieldType,(role,item)))
+    JsCmds.Run("$('#create-item-name').val('');")
+  }
 
   // name autocomplete
   private def candidateItems(str: String,limit: Int):Seq[String] = {
@@ -36,13 +47,13 @@ class CreateItemForm(roleInfo: RoleInfo) extends Logger{
 
   //item name
   private def setName(name: String) = {
-    //TODO set name property in itemBuilder
+    itemBuilderCell.itemName = name
     Noop
   }
 
   //itemType helpers
-  private def selectedItemTypeZid = itemBuilderCell.is.selectedItemType.zid
-  private val itemTypeOptions = itemBuilderCell.is.allowedItemTypes.map(it => (it.zid,it.name)).toSeq.sortBy(_._2)
+  private def selectedItemTypeZid = itemBuilderCell.selectedItemType.zid
+  private val itemTypeOptions = itemBuilderCell.allowedItemTypes.map(it => (it.zid,it.name)).toSeq.sortBy(_._2)
   private def setItemType(zid:String): JsCmd = {
     try{
       val resolvedItemType = db.getItemByZid(Zid(zid)).get.toItemType
@@ -103,10 +114,32 @@ class CreateItemForm(roleInfo: RoleInfo) extends Logger{
     sel(ns)
   }
 
+  //Create Item button
+  def createItem = () => {
+//    S.clearCurrentNotices //this is apparently useless
+    itemBuilderCell.build() match {
+      case Full(newItem) => {
+        rolePlayers.atomicUpdate(_ + newItem)
+
+        val itemUri = ItemLoc.makeUri(newItem)
+        val itemName = newItem.nameF(role)
+        val itemCreatedNotification = <span>You item <a href={itemUri}>{itemName}</a> has been created successfully.</span>
+        S.notice("item-created-notification",itemCreatedNotification)
+        //JqJsCmds.FadeOut("item-created-notification", 2 seconds, 2 seconds) &
+        reset()
+
+      }
+      case Failure(msg,e,tail) => S.error(msg); Noop
+      case _ => S.error("There are errors with your input"); Noop
+    }
+  }
+
   def render = {
+//    "#create-item-name" #> WiringUI.toNode(itemBuilderCell){(ib,ns) => SHtml.ajaxText(ib.itemName,setName)} &
     "#create-item-name" #> SHtml.ajaxText("",setName) &
     "#select-item-type" #> SHtml.ajaxSelect(itemTypeOptions,Full(selectedItemTypeZid),v => setItemType(v)) &
-    "#trait" #> WiringUI.toNode(traitSelectState){renderTraitsSelect} &
-    ".fields" #> WiringUI.toNode(fieldStateCell){renderFields}
+    "#trait-selection" #> WiringUI.toNode(traitSelectState){renderTraitsSelect} &
+    ".fields" #> WiringUI.toNode(fieldStateCell){renderFields} &
+    "#create-item-button" #> SHtml.ajaxButton("Create Item",createItem)
   }
 }

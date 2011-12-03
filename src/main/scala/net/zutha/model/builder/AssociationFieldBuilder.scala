@@ -4,6 +4,10 @@ import net.zutha.model.constructs._
 import net.zutha.model.datatypes.PropertyValue
 import net.liftweb.common.Logger
 import net.liftweb.util.ValueCell
+import org.tmapi.core.Topic
+import net.zutha.model.topicmap.TMConversions._
+import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.db.DB._
 
 class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val associationFieldType: ZAssociationFieldType)
     extends FieldBuilder with Logger{
@@ -13,6 +17,7 @@ class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val asso
   //TODO validate add/remove actions before executing them
 
   def role = associationFieldType.role
+  def associationType = associationFieldType.associationType
   def otherRoles = associationFieldType.otherRoles
   
   def rolePlayers = _rolePlayers.map{ case (r,i,l) => (r,i) }
@@ -24,9 +29,7 @@ class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val asso
   }
 
   private def _addRolePlayer( role: ZRole, player: ZItem, locked: Boolean ): Boolean = {
-    debug("Before adding Role Player: rolePlayers = " + _rolePlayers)
     _rolePlayers.atomicUpdate{_ + ((role,player,locked))}
-    debug("After adding Role Player: rolePlayers = " + _rolePlayers)
     true
   }
   private[builder] def addLockedRolePlayer( rolePlayer: (ZRole,ZItem) ): Boolean = {
@@ -36,9 +39,7 @@ class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val asso
     _addRolePlayer(role,player,false)
   }
   def removeRolePlayer( role: ZRole, player: ZItem ): Boolean = {
-    debug("Before removing Role Player: rolePlayers = " + _rolePlayers)
      _rolePlayers.atomicUpdate{_ - ((role,player,false))}
-    debug("After removing Role Player: rolePlayers = " + _rolePlayers)
     true
   }
 
@@ -57,7 +58,15 @@ class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val asso
   }
 
   /** Create a concrete Association item from this AssociationFieldBuilder */
-  def build = {
+  private[builder] def build(parentTopic: Topic) = {
+    val rps: Seq[(ZRole, ZItem)] = (rolePlayers + ((role,parentTopic)) ).toSeq
+    val assoc = TopicMapDB.createReifiedAssociation(associationType, rps:_*)
+    val reifier = assoc.getReifier
 
+    //add properties to association reifier
+    for((propType,prop) <- properties){
+      val occ = reifier.createOccurrence(propType,prop.toString)
+    }
+    assoc
   }
 }

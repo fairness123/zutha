@@ -3,9 +3,11 @@ package bootstrap.liftweb
 import net.liftweb._
 import common._
 import http._
+import js.jquery.JqJsCmds
 import sitemap.{Menu, SiteMap}
 import net.zutha.lib.uri.{RoleLoc, AssocLoc, ItemLoc, UriRedirector}
 import net.zutha.model.auth.ZuthaOpenIdVendor
+import util.Helpers._
 import widgets.autocomplete.AutoComplete
 
 /**
@@ -47,8 +49,23 @@ class Boot {
     LiftRules.ajaxEnd =
       Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
 
+    // make ajax calls wait longer before timing out
+    LiftRules.ajaxPostTimeout = 10000
+
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+
+    /*LiftRules.noticesEffects.default.set((notice: Box[NoticeType.Value],
+                                          id: String) => {
+      Full(JqJsCmds.FadeOut(id, 5 seconds, 2 seconds))
+    })
+
+    LiftRules.noticesAutoFadeOut.default.set( (notices: NoticeType.Value) => {
+      notices match {
+        case NoticeType.Notice => Full((5 seconds, 2 seconds))
+        case _ => Empty
+      }
+    })*/
 
     //initialize widgets
     AutoComplete.init

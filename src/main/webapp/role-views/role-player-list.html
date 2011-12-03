@@ -17,14 +17,14 @@
 
     <!-- Content Binding -->
 	<div class="lift:bind-at?name=content rounded" id="container" >
-        <div class="item rounded">
+        <div id="item" class="item rounded">
             <!-- Item Summary bubble -->
             <div class="lift:rolePage.summary?eager_eval=true">
                 <div class="lift:embed?what=_item-summary"></div>
             </div>
         </div>
 
-        <div class="bridge">
+        <div id="bridge">
             <h2 class="role_list_name lift:rolePage.roleListName">
                 <a class="role" href="">Item</a> ::
                 <a class="assoc_type" href="">Instance Of</a> ::
@@ -33,15 +33,15 @@
         </div>
 
 
-        <div class="role_players lift:rolePage.rolePlayers?eager_eval=true">
-            <div class="role_player item rounded">
+        <div id="role-players" class="lift:rolePage.renderRolePlayers?eager_eval=true">
+            <div class="role-player item rounded">
                 <div class="lift:embed?what=_item-summary"></div>
-                
             </div>
         </div>
 
-        <div class="lift:embed?what=_create-item-form"></div>
-
+        <div class="lift:rolePage.renderCreateItemForm?eager_eval=true">
+            <div class="lift:embed?what=_create-item-form"></div>
+        </div>
     </div>
 </div>
 

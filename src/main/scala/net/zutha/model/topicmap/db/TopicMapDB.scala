@@ -55,6 +55,36 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
 
   def getItemByZid(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
 
+  def createTopic(name: String): Topic = {
+    val topic = createTopic()
+    val nameObject = topic.createName(MODIFIABLE_NAME,name)
+    val nameReifier = createTopic()
+    nameReifier.addType(MODIFIABLE_NAME)
+    nameObject.setReifier(nameReifier)
+    topic
+  }
+  def createTopic(): Topic = {
+    val zid = getNextZID
+    val zidUri = ZID_PREFIX + zid
+    val loc = tm.createLocator(zidUri)
+    val topic = tm.createTopicBySubjectIdentifier(loc)
+    topic
+  }
+  def createAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
+    val assoc = tmm.createAssociation(assocType)
+    for((r,p) <- rolePlayers){
+      assoc.createRole(r,p)
+    }
+    assoc
+  }
+  def createReifiedAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
+    val assoc = createAssociation(assocType, rolePlayers:_*)
+    val assocReifier = createTopic()
+    assocReifier.addType(assocType)
+    assoc.setReifier(assocReifier)
+    assoc
+  }
+
   def createItem(item: ProposedItem) {
     //start transaction
     val txn = if(ENABLE_TRANSACTIONS) tmm.createTransaction() else tmm
@@ -99,18 +129,18 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
 
   def generateSchema(){
     val tmFile = File(TM_DATA_PATH + "tm.ctm")
+    val zidTickerFile = File(TM_DATA_PATH + "zid-ticker.dat")
 
     //regenerate tm.ctm if needed
-    val inputFileNames = List("schema_templates", "schema", "core","basic-entities","books","person","test")
+    val inputFileNames = List("schema_templates", "schema", "core","basic-entities","books","person","test-data")
     val inputFiles = inputFileNames.map{fn => File(TM_DATA_PATH + fn + ".ctm")}
 
     val changesMade = inputFiles.exists{f => f.lastModified > tmFile.lastModified}
-    if(changesMade) {
-      val inputSources = inputFiles.map(_.chars.getLines)
-      val lines = inputSources.reduceLeft(_ ++ _)
+    if( !tmFile.exists || changesMade ) {
+      val lines = inputFiles.flatMap(_.chars.getLines)
       val namedZidPlaceholderMap = Map[String,String]()
       val matcher = """(%zid%)([\w]+%)?""".r
-      val writer = tmFile.bufferedWriter()
+      val writer = tmFile.printWriter()
 
       //Replace %zid% markers with unique ZIDs
       //For markers of the form %zid%<tag>%,
@@ -123,17 +153,25 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
             case _ => newZID //this is an anonymous ZID placeholder
           }
         })
-        newLine foreach (writer write _)
-        writer.newLine()
+//        newLine foreach (writer write _)
+        writer println newLine
       }
       writer.flush()
       writer.close
+
+      //save the final value of the zid-ticker
+      val lastUsedZID = zidTicker.getCurrentAsLong.toString
+      zidTickerFile.writeAll(lastUsedZID)
     }
 
     //make a topic map from the ctm schema
     val source: java.io.File = tmFile.jfile
     val reader: CTMTopicMapReader = new CTMTopicMapReader(tmm, source,ZUTHA_TOPIC_MAP_URI)
     reader.read()
+
+    //set ZID Ticker start value
+    val tickerValue = zidTickerFile.slurp().toLong
+    zidTicker.setTickerValue(tickerValue)
 
     logger.info("database has been reset back to schema")
   }

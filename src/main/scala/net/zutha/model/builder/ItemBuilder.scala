@@ -2,7 +2,13 @@ package net.zutha.model.builder
 
 import net.zutha.model.db.DB.db
 import net.zutha.model.constructs._
-import net.liftweb.common.{Full, Empty, Box}
+import net.zutha.model.topicmap.db.TopicMapDB
+import org.tmapi.core.Topic
+import net.zutha.model.db.DB.db
+import net.zutha.model.topicmap.TMConversions._
+import net.zutha.model.topicmap.constructs.TMItem
+import net.liftweb.http.S
+import net.liftweb.common.{Failure, Full, Empty, Box}
 
 /** used for constructing a new Item starting from a single constraint
  *  in the form of an associationFieldType with at least one other rolePlayer specified
@@ -12,7 +18,9 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
 
   //TODO if requiredAssocFieldType is subtype:has-direct-supertype this affects allowed types
   //TODO itemType effects allowed supertypes (because of type-has-root-item-constraint
-  
+
+  private var _itemName: String = ""
+
   /** true if the requiredAssociationFieldType is neither type-instance or item-has-trait */
   private var requiredFieldIsMisc = false
 
@@ -69,6 +77,7 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
   }
 
   // --------------- Getters -------------------
+  def itemName = _itemName
   def allowedItemTypes = availableItemTypes
   def allowedTraits = _allowedTraits
   def selectedItemType = _selectedItemType.open_!
@@ -78,11 +87,15 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
   def fieldSets: Set[FieldSetBuilder] = propertySets ++ associationFieldSets
 
   // --------------- Setters --------------------
+  def itemName_= (name: String) {
+    //TODO check for uniqueness of proposed name
+    _itemName = name
+  }
 
   /** Set the selectedItemType and update fieldSets accordingly
    * if requiredAssociationFieldType is type-instance this function should only be run once, at initialization
    */
-  def selectedItemType_= (itemType: ZItemType):Unit = {
+  def selectedItemType_= (itemType: ZItemType) {
     //throw an exception if the selectedItemType is not allowed
     if (! allowedItemTypes.contains(itemType))
         throw new IllegalArgumentException(itemType.name + " is not one of the allowed Item Types")
@@ -127,7 +140,7 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
     * If requiredAssociationFieldType is misc. then it should only be called when the assocFieldType
     *   is not provided by the selectedItemType. Otherwise allowedTraits will be empty.
     */
-  def selectedTrait_= (selectedTrait: ZTrait): Unit = {
+  def selectedTrait_= (selectedTrait: ZTrait) {
     //throw an exception if the selectedTrait is not allowed
     if (! allowedTraits.contains(selectedTrait))
         throw new IllegalArgumentException(selectedTrait.name + " is not one of the allowed Traits")
@@ -157,6 +170,43 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
         }
       }
     }
+  }
+
+
+  def build(): Box[ZItem] = {
+    //TODO check item validity
+
+    if(itemName=="") {
+      S.error("name-error","Item must have a name")
+      return Empty
+    } else S.error("name-error","") //clear the error message if the name causes no errors
+
+    val topic = TopicMapDB.createTopic(itemName)
+
+    //set itemType
+    TopicMapDB.createAssociation(db.TYPE_INSTANCE,
+      db.TYPE.toRole -> selectedItemType,
+      db.INSTANCE -> topic
+    )
+
+    //set trait
+    for(t <- selectedTrait){
+      TopicMapDB.createReifiedAssociation(db.ITEM_HAS_TRAIT,
+        db.ITEM.toRole -> topic,
+        db.TRAIT.toRole -> t
+      )
+    }
+
+    //create properties
+    for(ps <- propertySets; p <- ps.properties){
+      p.build(topic)
+    }
+
+    //create associations
+    for(as <- associationFieldSets; a <- as.associationFields){
+      a.build(topic)
+    }
+    Full(TMItem(topic))
   }
 
   // -------------- Helper Methods ---------------

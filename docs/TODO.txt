@@ -1,3 +1,10 @@
+
+show traits under item-types in item summary
+
+
+
+
+
 --------------------- UI ---------------------
 *DONE* Hide empty field-sets
 ??? Don't show association-field-sets for abstract association-types

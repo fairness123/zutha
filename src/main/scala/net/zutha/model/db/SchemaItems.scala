@@ -23,6 +23,9 @@ trait SchemaItems {
   lazy val ROLE: ZItemType = getSchemaItem("role").toItemType
   lazy val DATATYPE: ZItemType = getSchemaItem("datatype").toItemType
 
+  //construct types
+  lazy val REIFIED_ASSOCIATION: ZItem = getSchemaItem("reified-association")
+
   //association types
   lazy val TYPE_INSTANCE: ZAssociationType = getSchemaItem("type-instance").toAssociationType
   lazy val SUPERTYPE_SUBTYPE: ZAssociationType = getSchemaItem("supertype-subtype").toAssociationType

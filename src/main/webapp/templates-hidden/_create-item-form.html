@@ -1,20 +1,19 @@
 <html>
-<body class="lift:content_id=real_content">
-<div id="real_content">
+<body class="lift:content_id=create-item-form">
+    <div id="create-item-form" class="lift">
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/_create-item-form.css" />
+        </head>
 
-    <!-- Head Merge -->
-	<head>
-		<link rel="stylesheet" type="text/css" href="/css/_create-item-form.css" />
-	</head>
+        <span class="lift:Msg?id=item-created-notification"></span>
 
-	<!-- Content Binding -->
-    <div id="create-item-form" class="lift:CreateItemForm?eager_eval=true">
         <div class="name-field">
             <label>Name: </label>
             <input id="create-item-name" />
+            <span class="lift:Msg?id=name-error;errorClass=error">error</span>
         </div>
-        <div id="item-type" ><label for="select-item-type">Item Type:</label><select id="select-item-type" ></select></div>
-        <div id="trait" ><label for="select-trait">Trait:</label><select id="select-trait" ></select></div>
+        <div id="item-type-selection"><label for="select-item-type">Item Type:</label><select id="select-item-type" ></select></div>
+        <div id="trait-selection"><label for="select-trait">Trait:</label><select id="select-trait" ></select></div>
 
         <ul class="fields">
             <!-- vertical list of fields -->
@@ -40,7 +39,8 @@
 
         </ul>
 
+        <button id="create-item-button" >Create Item</button>
+
     </div>
-</div>
 </body>
 </html>
