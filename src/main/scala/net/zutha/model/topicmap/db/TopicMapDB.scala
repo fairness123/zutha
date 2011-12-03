@@ -48,29 +48,33 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  protected def getSchemaItem(identifier: String): ZItem = tmm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
-    case Some(topic) => topic.toItem
+  protected def getSchemaItem(identifier: String): ZItem = getSchemaTopic(identifier).toItem
+
+  protected def getSchemaTopic(identifier: String): Topic = tmm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
+    case Some(topic) => topic
     case None => throw new SchemaItemMissingException
   }
 
   def getItemByZid(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
 
-  def createTopic(name: String): Topic = {
-    val topic = createTopic()
-    val nameObject = topic.createName(MODIFIABLE_NAME,name)
-    val nameReifier = createTopic()
-    nameReifier.addType(MODIFIABLE_NAME)
+  def createTopic(topicType: ZType, name: String): Topic = {
+    val topic = createTopic(topicType)
+    val nameObject = topic.createName(MODIFIABLE_NAME, name)
+    val nameReifier = createTopic(MODIFIABLE_NAME.toItemType)
     nameObject.setReifier(nameReifier)
     topic
   }
-  def createTopic(): Topic = {
+
+  def createTopic(topicType: ZType): Topic = {
     val zid = getNextZID
     val zidUri = ZID_PREFIX + zid
     val loc = tm.createLocator(zidUri)
     val topic = tm.createTopicBySubjectIdentifier(loc)
+    topic.addType(topicType)
     topic
   }
-  def createAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
+
+  def createAssociation(assocType: Topic, rolePlayers: (Topic, Topic)*) = {
     val assoc = tmm.createAssociation(assocType)
     for((r,p) <- rolePlayers){
       assoc.createRole(r,p)
@@ -78,9 +82,9 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     assoc
   }
   def createReifiedAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
-    val assoc = createAssociation(assocType, rolePlayers:_*)
-    val assocReifier = createTopic()
-    assocReifier.addType(assocType)
+    val rolePlayerTopics: Seq[(Topic,Topic)] = rolePlayers.map{case (r,i) => (r,i): (Topic,Topic)}
+    val assoc = createAssociation(assocType, rolePlayerTopics:_*)
+    val assocReifier = createTopic(assocType.toItemType)
     assoc.setReifier(assocReifier)
     assoc
   }

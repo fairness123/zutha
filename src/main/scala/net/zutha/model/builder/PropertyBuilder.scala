@@ -44,11 +44,11 @@ class PropertyBuilder private[builder](val parent: ItemBuilder, val propertyType
   def permissionLevel_= (level: Int) {_permissionLevel = ZPermissionLevel(level)}
 
   private[builder] def build(parentTopic: Topic): ZProperty = {
-    val propTypeTopic: Topic = propertyType
+    val propTypeTopic = propertyType
     val propValue = value.toString
     val occ = parentTopic.createOccurrence(propTypeTopic,propValue)
 
-    val propTopic = TopicMapDB.createTopic()
+    val propTopic = TopicMapDB.createTopic(propTypeTopic)
     //add permission-level field if set
     if(permissionLevel != ZPermissionLevel.Inherit){
       val permLevelValue = permissionLevel.toString

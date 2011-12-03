@@ -16,8 +16,9 @@ import net.zutha.model.constructs._
 import net.zutha.model.constants.ZuthaConstants._
 import de.topicmapslab.tmql4j.components.processor.prepared.IPreparedStatement
 import de.topicmapslab.majortom.model.core.ITopicMap
+import net.liftweb.common.Logger
 
-trait TMQL {
+trait TMQL extends Logger{
   def tmm: ITopicMap;
 
   private lazy val runtime = TMQLRuntimeFactory.newFactory().newRuntime("tmql-2007")
@@ -182,7 +183,9 @@ trait TMQL {
     val statement = prepareStatement("?item >> types")
     statement.setTopic("?item",item)
     statement.run()
-    runTypeQuery(statement).toSet
+    val result = runTypeQuery(statement).toSet
+    debug("types of " + item.zid + ": " + result)
+    result
   }
 
   /** get all instances of an Item (transitive)

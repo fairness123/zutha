@@ -181,20 +181,11 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
       return Empty
     } else S.error("name-error","") //clear the error message if the name causes no errors
 
-    val topic = TopicMapDB.createTopic(itemName)
+    val topic = TopicMapDB.createTopic(selectedItemType, itemName)
 
-    //set itemType
-    TopicMapDB.createAssociation(db.TYPE_INSTANCE,
-      db.TYPE.toRole -> selectedItemType,
-      db.INSTANCE -> topic
-    )
-
-    //set trait
+    //add trait
     for(t <- selectedTrait){
-      TopicMapDB.createReifiedAssociation(db.ITEM_HAS_TRAIT,
-        db.ITEM.toRole -> topic,
-        db.TRAIT.toRole -> t
-      )
+      topic.addTrait(t)
     }
 
     //create properties

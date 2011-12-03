@@ -12,20 +12,30 @@ trait MajortomDB {
   val rdbms = "de.topicmapslab.majortom.database.store.JdbcTopicMapStore"
   val queued = "de.topicmapslab.majortom.queued.store.QueuedTopicMapStore"
   val inMemory = "de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore"
+  val redis = "de.topicmapslab.majortom.redis.store.RedisTopicMapStore"
 
-  val useStore = inMemory
+  val useStore = redis
   
   def makeTopicMapSystem: ITopicMapSystem = {
     val factory = TopicMapSystemFactory.newInstance();
     factory.setProperty(TopicMapStoreProperty.TOPICMAPSTORE_CLASS,useStore)
+    //JDBC properties
     factory.setProperty("de.topicmapslab.majortom.jdbc.host", "localhost")
     factory.setProperty("de.topicmapslab.majortom.jdbc.database", "majortom")
     factory.setProperty("de.topicmapslab.majortom.jdbc.user", "postgres")
     factory.setProperty("de.topicmapslab.majortom.jdbc.password", "postgres")
     factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL99")
+
+    //Redis properties
+    factory.setProperty("de.topicmapslab.majortom.redis.host", "localhost")
+    factory.setProperty("de.topicmapslab.majortom.redis.port", "6379")
+    factory.setProperty("de.topicmapslab.majortom.redis.database", "0")
+//    factory.setProperty("de.topicmapslab.majortom.redis.password", "pass")
+
+
+    //Features
     factory.setFeature(FeatureStrings.AUTOMATIC_MERGING,true)
     factory.setFeature(FeatureStrings.MERGING_SUPPORT_FEATURE_BY_TOPIC_NAME,true)
-    
     //factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
 
     factory.newTopicMapSystem().asInstanceOf[ITopicMapSystem]
