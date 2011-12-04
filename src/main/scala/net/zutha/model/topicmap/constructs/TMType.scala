@@ -22,11 +22,11 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
   def hasAncestor(superType: ZType): Boolean = ancestors.contains(superType)
 
   lazy val ancestors: Set[ZType] = { //TODO allow an item's supertypes to be modified
-    val ancestors = db.findAncestorsOfType(this) + this
+    val ancestors = db.ancestorsOfType(this) + this //make sure this item itself is included
     ancestors
   }
   def descendants: Set[ZType] = {
-    val descendants = db.findDescendantsOfType(this) + this
+    val descendants = db.descendantsOfType(this) + this
     descendants
   }
 

@@ -10,8 +10,8 @@ import net.liftweb.common.Logger
 class Details(itemInfo: ItemInfo) extends Logger{
 
   private val item: ZItem = itemInfo.item
-  private val propSets = item.getNonEmptyPropertySetsGrouped
-  private val assocFieldSets = item.getNonEmptyAssociationFieldSetsGrouped
+  private val propSets = item.getPropertySetsGrouped
+  private val assocFieldSets = item.getAssociationFieldSetsGrouped
   private val fieldDefiningTypes = propSets.keySet union assocFieldSets.keySet
   
   def render: NodeSeq => NodeSeq = {

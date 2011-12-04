@@ -19,9 +19,9 @@ class TMAssociation protected (association: Association) extends ZAssociation{
   def associationType = TMAssociationType(association.getType)
   def associationFields: Set[ZAssociationField] = association.getRoles.toSet.map(TMAssociationField(_:Role))
   def playedRoles = association.getRoleTypes.map(TMRole(_:Topic)).toSet
-  def players = association.getRoles.toSet.map((role:Role) => role.getPlayer.toItem)
-  def getPlayers(role: ZRole): Set[ZItem] = association.getRoles(role).map(_.getPlayer.toItem).toSet
-  def rolePlayers: Set[(ZRole,ZItem)] = playedRoles.flatMap{r => getPlayers(r).map(p => (r,p))}
+  def players = rolePlayers.map(_._2)
+  def getPlayers(role: ZRole): Set[ZItem] = rolePlayers.filter(_._1 == role).map(_._2)
+  lazy val rolePlayers: Set[(ZRole,ZItem)] = association.getRolePlayersT.map{case (r,p) => (r.toRole,p.toItem)}
   def associationProperties: Set[(ZPropertyType,PropertyValue)] = {
     associationType.definedAssocProperties.flatMap{pt => getPropertyValues(pt).map(pv => (pt,pv))}
   }

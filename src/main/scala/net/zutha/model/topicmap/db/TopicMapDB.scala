@@ -6,19 +6,22 @@ import org.tmapi.core._
 import org.tmapix.io.CTMTopicMapReader
 import tools.nsc.io.{File}
 import de.topicmapslab.majortom.model.transaction.ITransaction
-import de.topicmapslab.majortom.model.core.{ITopicMapSystem}
 import net.liftweb.common.{Loggable}
 
 import net.zutha.model.constants._
 import ZuthaConstants._
 import ApplicationConstants._
-import net.zutha.model.topicmap.TMConversions._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB
 import net.zutha.model.exceptions.SchemaItemMissingException
+import net.zutha.model.topicmap.constructs.TMType
+import net.zutha.model.topicmap.TMConversions._
+import de.topicmapslab.majortom.model.index.{ITypeInstanceIndex, IIndex, ISupertypeSubtypeIndex}
+import org.tmapi.index.{Index, TypeInstanceIndex}
+import de.topicmapslab.majortom.model.core.{ITopicMap, ITopic, ITopicMapSystem}
 
 
-object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
+object TopicMapDB extends DB with MajortomDB with Loggable{
   val ENABLE_TRANSACTIONS = true
 
   val sys: ITopicMapSystem = makeTopicMapSystem
@@ -30,7 +33,7 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
   }
 
   // Zutha Topic Map
-  def tmm = {
+  def tmm: ITopicMap = {
     Option(sys.getTopicMap(ZUTHA_TOPIC_MAP_URI)) match {
       case Some(ztm) => ztm
       case None => sys.createTopicMap(ZUTHA_TOPIC_MAP_URI)
@@ -140,7 +143,90 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
     val tickerValue = zidTickerFile.slurp().toLong
     zidTicker.setTickerValue(tickerValue)
 
+    //redo all the supertype-subtype associations so that they are indexed
+    val index = getIndex(classOf[TypeInstanceIndex])
+    val akoAssociations = index.getAssociations(SUPERTYPE_SUBTYPE).toSeq
+    for( assoc <- akoAssociations ){
+      val subtype = assoc.getPlayersOfRoleT(SUBTYPE).head
+      val supertype = assoc.getPlayersOfRoleT(SUPERTYPE).head
+      subtype.addSupertype(supertype)
+    }
+
     logger.info("database has been reset back to schema")
+  }
+
+  //*********************************************************
+  //*********************************************************
+  //***************      DB Access methods      *************
+  //*********************************************************
+  //*********************************************************
+
+  // ------------ Internal Methods -------------
+
+  private def getIndex[T <: Index](clazz: Class[T]) = {
+    val index = tmm.getStore.getIndex(clazz)
+    if (!index.isOpen()) {
+      index.open();
+    }
+    index
+  }
+
+  private def topicsToItems(topics: Set[Topic]): Set[ZItem] = {
+    topics.filterNot(_.isAnonymous).map(_.toItem)
+  }
+
+  private def rawAncestorsOfType(topic: Topic) = {
+    val supertypes = topic.getSupertypes.toSet
+    supertypes + topic
+  }
+
+  private def rawDescendentsOfType(topic: Topic) = {
+    val index = getIndex(classOf[ISupertypeSubtypeIndex])
+    val subtypes = index.getSubtypes(topic).toSet
+    subtypes
+  }
+
+  private def rawAllInstancesOfType(topic: Topic): Set[Topic] = {
+    val index = getIndex(classOf[TypeInstanceIndex])
+    val instances = index.getTopics(topic).toSet
+    instances
+  }
+
+  // ------------ Exported Methods -------------
+
+  def directTypesOfItem(item: ZItem): Set[ZType] = {
+    val rawTypes = item.getTypes.toSet
+    val zTypes = topicsToItems(rawTypes)
+    zTypes.map(_.toType)
+  }
+
+  def ancestorsOfType(zType: ZType): Set[ZType] = {
+    val supertypes = rawAncestorsOfType(zType).map(_.toType)
+    supertypes
+  }
+
+  def allTypesOfItem(item: ZItem): Set[ZType] = {
+    val directTypes = item.getTypes.toSet
+    val allTypesRaw = directTypes.flatMap(rawAncestorsOfType(_))
+    val allTypes = topicsToItems(allTypesRaw).map(_.toType)
+    allTypes
+  }
+
+  def itemIsA(item: ZItem, zType: ZType): Boolean = {
+    allTypesOfItem(item).contains(zType)
+  }
+
+  def allInstancesOfType(zType: ZType): Set[ZItem] = {
+    val subtypes = rawDescendentsOfType(zType)
+    val instancesRaw = subtypes.flatMap(rawAllInstancesOfType(_))
+    val instances = topicsToItems(instancesRaw)
+    instances
+  }
+
+  def descendantsOfType(zType: ZType): Set[ZType] = {
+    val rawDesc = rawDescendentsOfType(zType)
+    val descendents = topicsToItems(rawDesc).map(_.toType)
+    descendents
   }
 
   /** get all associations of type assocType with the given (role,player) pairs
@@ -149,14 +235,60 @@ object TopicMapDB extends DB with MajortomDB with TMQL with Loggable{
    *    If false, matched associations  must have at least the set of rolePlayers given
    *  @param rolePlayers a set of (Role,Player) pairs that matched associations must contain
    **/
-  def findAssociations(assocType: ZAssociationType, strict: Boolean, rolePlayers:(ZRole,ZItem)*) = {
+  def findAssociations(assocType: ZAssociationType, strict: Boolean, rolePlayers:(ZRole,ZItem)*): Set[ZAssociation] = {
     val requiredRolePlayers = rolePlayers.toSet
-    val allAssoc = tmm.getAssociations[Association](assocType:Topic).toSet.map((a:Association) => a.toZAssociation)
-    val results = allAssoc.filter{assoc =>
-      val assocRolePlayers = assoc.rolePlayers
-      if(strict) assocRolePlayers == requiredRolePlayers
-      else requiredRolePlayers.forall(assocRolePlayers contains)
+    val candidateAssocSets = for {
+      (r,p) <- requiredRolePlayers
+    } yield {
+      p.getRolesPlayed(r,assocType).map(_.getParent)
     }
+    val intersectingAssocSets: Set[Association] = candidateAssocSets.reduceLeft(_ intersect _).toSet
+    val results = if(strict){
+      intersectingAssocSets.collect{
+        case a if(requiredRolePlayers == a.rolePlayers) => a.toZAssociation
+      }
+    } else intersectingAssocSets.map(_.toZAssociation)
+
     results
+
+//    val typeIndex = getIndex(classOf[TypeInstanceIndex])
+//    val allAssocRaw = typeIndex.getAssociations(assocType: Topic).toSet
+//    val allAssoc = allAssocRaw.map((a:Association) => a.toZAssociation)
+//    val results = allAssoc.filter{assoc =>
+//      val assocRolePlayers = assoc.rolePlayers
+//      if(strict) requiredRolePlayers == assocRolePlayers
+//      else requiredRolePlayers.forall(assocRolePlayers contains)
+//    }
+  }
+
+  def traverseAssociation(item: ZItem,
+                          role: ZRole,
+                          assocType: ZAssociationType,
+                          otherRole: ZRole): Set[ZItem] = {
+    val startTopic: Topic = item
+    val rolesPlayed = startTopic.getRolesPlayed(role, assocType).toSet
+    val otherPlayers = rolesPlayed.flatMap{r =>
+      r.getParent.getPlayersOfRoleT(otherRole).map(_.toItem)
+    }
+    otherPlayers
+  }
+
+  //Topic-Map specific methods
+
+  /** check if this Topic is an Anonymous Topic which doesn't exist in the ZDM
+   *  @params topic
+   *  @return true if this topic is an AnonymousTopic
+   */
+  def topicIsAnonymous(topic: Topic): Boolean = {
+    topic.getTypes.toSet.contains(ANONYMOUS_TOPIC)
+  }
+
+  /** check if this Association is has a player which is an Anonymous Topic
+   *  @params association
+   *  @return true if this association is anonymous
+   */
+  def associationIsAnonymous(association: Association): Boolean = {
+    val players = association.getRoles.map(_.getPlayer).toSet
+    players.contains(ANONYMOUS_TOPIC)
   }
 }

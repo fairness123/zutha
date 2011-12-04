@@ -16,7 +16,7 @@ trait ZType extends ZItem{
   def descendants: Set[ZType]
 
   def allInstances: Set[ZItem] = {
-    db.allInstancesOfItem(this)
+    db.allInstancesOfType(this)
   }
 
   // field definition

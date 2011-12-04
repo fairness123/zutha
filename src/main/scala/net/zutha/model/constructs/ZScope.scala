@@ -5,4 +5,4 @@ object ZScope{
     new ZScope(scopeItems.toSet)
   }
 }
-case class ZScope(val scopeItems: Set[ZItem])
+case class ZScope(scopeItems: Set[ZItem])

@@ -5,9 +5,14 @@ import net.liftweb._
 import http._
 import util._
 import Helpers._
-import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.topicmap.db.{TMQL, TopicMapDB}
 
 class ZuthaConsole extends StatefulSnippet {
+
+  object tmqlDB extends TMQL {
+    val tmm = TopicMapDB.tmm
+  }
+
   private var queryStr = ""
   private var queryRes = ""
     
@@ -17,7 +22,7 @@ class ZuthaConsole extends StatefulSnippet {
     case "buttons" => buttons
   }
     
-  def prefixes = ".prefix_entry *" #> TopicMapDB.getPrefixes.map{pre =>
+  def prefixes = ".prefix_entry *" #> tmqlDB.getPrefixes.map{pre =>
       ".prefix" #> pre._1 &
       ".uri" #> pre._2
   }
@@ -28,7 +33,7 @@ class ZuthaConsole extends StatefulSnippet {
     "type=submit" #> SHtml.onSubmitUnit(processQuery)
  
   def processQuery() = {
-      queryRes = TopicMapDB.runStringQuery(queryStr)
+      queryRes = tmqlDB.runStringQuery(queryStr)
   }
 
   def buttons =

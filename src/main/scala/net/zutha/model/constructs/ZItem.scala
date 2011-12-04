@@ -38,7 +38,7 @@ trait ZItem extends ZAssociationMember{
   /** @return a set of names having the scope specified by the given list of Items*/
   def names(scopeItems: ZItem*):Set[String]
   /** @return all names in any scope*/
-  def allNames:Set[String]
+  def allNames:Set[String] //TODO the actual name objects would be more useful
   /** @return all names in the unconstrained scope*/
   def unconstrainedNames:Set[String]
   /** @return this item's primary name in the given scope or None*/

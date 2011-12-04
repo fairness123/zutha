@@ -169,7 +169,25 @@ zsi:datatype %zid%; isa zsi:entity-type;
         zsi:property-datatype-constraint,0,*,%zid%);
 .
 
+# ==================== Roles ====================
 
+# SUPERTYPE
+zsi:supertype %zid%; isa zsi:role;
+    external-identifier(tmdm:supertype, %zid%);
+    name("Supertype",%zid%);
+.
+
+# SUBTYPE
+zsi:subtype %zid%; isa zsi:role;
+    external-identifier(tmdm:subtype, %zid%);
+    name("Subtype",%zid%);
+.
+
+# INSTANCE
+zsi:instance %zid%; isa zsi:role;
+    external-identifier(tmdm:instance, %zid%);
+    name("Instance",%zid%);
+.
 
 # ---------------------- kinds of Construct Type ----------------------
 
@@ -553,26 +571,6 @@ zsi:association-field-set-permission-level %zid%; isa zsi:reified-association-ty
 
     has-role(zsi:association-type,1,1,%zid%);
     has-role(zsi:role,1,1,%zid%);
-.
-
-# ==================== Roles ====================
-
-# SUPERTYPE
-zsi:supertype %zid%; isa zsi:role;
-    external-identifier(tmdm:supertype, %zid%);
-    name("Supertype",%zid%);
-.
-
-# SUBTYPE
-zsi:subtype %zid%; isa zsi:role;
-    external-identifier(tmdm:subtype, %zid%);
-    name("Subtype",%zid%);
-.
-
-# INSTANCE
-zsi:instance %zid%; isa zsi:role;
-    external-identifier(tmdm:instance, %zid%);
-    name("Instance",%zid%);
 .
 
 # ==================== Property Types ====================

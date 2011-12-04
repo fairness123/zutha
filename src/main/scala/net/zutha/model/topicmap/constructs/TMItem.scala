@@ -78,14 +78,19 @@ class TMItem protected (topic: Topic) extends ZItem{
   }
 
   // -------------- names --------------
-  def names(scope: ZScope):Set[String] = topic.getNames(scope:IScope).toSet.map((_:Name).getValue)
+  lazy val namesGrouped: Map[ZScope,Set[String]] = {
+    val kvPairs = topic.getNames.toList.map((n:Name) => (ZScope(n.getScope.map(_.toItem).toSet),n.getValue))
+    val grouped = kvPairs.groupBy(e => e._1).mapValues(e => e.map(x => x._2).toSet)
+    grouped
+  }
+  def names(scope: ZScope):Set[String] = namesGrouped.getOrElse(scope,Set())
   def names(scopeItems: ZItem*):Set[String] = names(ZScope(scopeItems.toSet))
-  def allNames:Set[String] = topic.getNames.toSet.map((_:Name).getValue)
+  def allNames:Set[String] = namesGrouped.values.flatten.toSet
   def unconstrainedNames:Set[String] = names(ZScope())
 
   def name(scope: ZScope) = names(scope).headOption
   def name(scopeItems: ZItem*) = names(ZScope(scopeItems.toSet)).headOption
-  def name = unconstrainedNames.headOption match {
+  lazy val name = unconstrainedNames.headOption match {
     case Some(str) => str
     case None => { //TODO implement autoNames
       "Item " + zid
@@ -96,9 +101,12 @@ class TMItem protected (topic: Topic) extends ZItem{
   // -------------- types --------------
   def hasType(zType: ZType): Boolean = getAllTypes.contains(zType)
 
-  def itemType = db.directTypesOfItem(this).collect{
-    case ZItemType(it) => it
-  }.head
+  def itemType = {
+    val itemTypes = db.directTypesOfItem(this).collect{
+      case ZItemType(it) => it
+    }
+    itemTypes.head
+  }
 
   def getAllTypes = db.allTypesOfItem(this).toSet
 
@@ -153,7 +161,7 @@ class TMItem protected (topic: Topic) extends ZItem{
     getPropertyValues(propType).headOption
 
 
-  lazy val getAssociationFieldSetsGrouped = {
+  def getAssociationFieldSetsGrouped = {
     val kvPairs: Set[(ZType,Set[ZAssociationFieldSet])] = getFieldDefiningTypes.map{definingType =>
       val assocFieldSets: Set[ZAssociationFieldSet] = definingType.declaredAssociationFieldSets
         .map{ZAssociationFieldSet(this,_)}

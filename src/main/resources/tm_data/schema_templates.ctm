@@ -8,6 +8,7 @@
 def kind-of($subtype, $supertype, $reifier)
     $reifier isa zsi:supertype-subtype
     .
+    $subtype ako $supertype.
     tmdm:supertype-subtype(
         tmdm:subtype: $subtype,
         tmdm:supertype: $supertype
