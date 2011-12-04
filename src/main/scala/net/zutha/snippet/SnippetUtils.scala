@@ -31,7 +31,7 @@ object SnippetUtils {
     } &
     //Types
     ".item_type" #> makeItemLink(item.itemType) &
-    ".traits" #> makeItemLinkList(Seq(item.itemType)) //TODO: get Item Traits
+    ".traits" #> makeItemLinkList(item.traits.toSeq.sortBy(_.name))
   }
 
 }

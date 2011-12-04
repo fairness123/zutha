@@ -16,9 +16,9 @@ import net.zutha.model.db.DB
 import net.zutha.model.exceptions.SchemaItemMissingException
 import net.zutha.model.topicmap.constructs.TMType
 import net.zutha.model.topicmap.TMConversions._
-import de.topicmapslab.majortom.model.index.{ITypeInstanceIndex, IIndex, ISupertypeSubtypeIndex}
 import org.tmapi.index.{Index, TypeInstanceIndex}
 import de.topicmapslab.majortom.model.core.{ITopicMap, ITopic, ITopicMapSystem}
+import de.topicmapslab.majortom.model.index.{ITransitiveTypeInstanceIndex, ITypeInstanceIndex, IIndex, ISupertypeSubtypeIndex}
 
 
 object TopicMapDB extends DB with MajortomDB with Loggable{
@@ -187,8 +187,8 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
   }
 
   private def rawAllInstancesOfType(topic: Topic): Set[Topic] = {
-    val index = getIndex(classOf[TypeInstanceIndex])
-    val instances = index.getTopics(topic).toSet
+    val index = getIndex(classOf[ITransitiveTypeInstanceIndex])
+    val instances = index.getTopics(Seq(topic)).toSet
     instances
   }
 
@@ -217,8 +217,7 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
   }
 
   def allInstancesOfType(zType: ZType): Set[ZItem] = {
-    val subtypes = rawDescendentsOfType(zType)
-    val instancesRaw = subtypes.flatMap(rawAllInstancesOfType(_))
+    val instancesRaw = rawAllInstancesOfType(zType)
     val instances = topicsToItems(instancesRaw)
     instances
   }
@@ -289,6 +288,6 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
    */
   def associationIsAnonymous(association: Association): Boolean = {
     val players = association.getRoles.map(_.getPlayer).toSet
-    players.contains(ANONYMOUS_TOPIC)
+    players.exists(_.isAnonymous)
   }
 }

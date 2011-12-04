@@ -101,16 +101,18 @@ class TMItem protected (topic: Topic) extends ZItem{
   // -------------- types --------------
   def hasType(zType: ZType): Boolean = getAllTypes.contains(zType)
 
-  def itemType = {
+  lazy val itemType = {
     val itemTypes = db.directTypesOfItem(this).collect{
       case ZItemType(it) => it
     }
     itemTypes.head
   }
 
-  def getAllTypes = db.allTypesOfItem(this).toSet
+  lazy val traits = db.traverseAssociation(this, db.ITEM.toRole, db.ITEM_HAS_TRAIT, db.TRAIT.toRole).map(_.toTrait)
 
-  def getFieldDefiningTypes = {
+  lazy val getAllTypes = db.allTypesOfItem(this).toSet
+
+  lazy val getFieldDefiningTypes = {
     val fieldDefiningTypes = getAllTypes.filter(_.declaresFields)
     fieldDefiningTypes
   }

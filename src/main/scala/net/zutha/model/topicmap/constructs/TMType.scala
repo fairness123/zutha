@@ -31,13 +31,13 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
   }
 
   // --------------- defined fields ---------------
-  def declaresFields: Boolean = {
+  lazy val declaresFields: Boolean = {
     val propertyDefRoles = topic.getRolesPlayed(db.PROPERTY_DECLARER,db.PROPERTY_DECLARATION)
     val assocDefRoles = topic.getRolesPlayed(db.ASSOCIATION_FIELD_DECLARER,db.ASSOCIATION_FIELD_DECLARATION)
     propertyDefRoles.size > 0 || assocDefRoles.size > 0
   }
 
-  def declaredPropertySets = { //TODO get inherited property types
+  lazy val declaredPropertySets = { //TODO get inherited property types
     val definedPropTypes = db.traverseAssociation(topic,db.PROPERTY_DECLARER,db.PROPERTY_DECLARATION,
       db.PROPERTY_TYPE.toRole).map(_.toPropertyType)
     definedPropTypes.map(ZPropertySetType(this,_))
