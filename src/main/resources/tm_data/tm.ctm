@@ -4,10 +4,18 @@
 
 # ==================== General Purpose Templates ====================
 
-# A KIND OF
+# IS A
+def is-a($instance, $type)
+    $instance isa $type.
+    tmdm:type-instance(
+        tmdm:type: $type,
+        tmdm:instance: $instance
+    )
+end
+
+# KIND OF
 def kind-of($subtype, $supertype, $reifier)
-    $reifier isa zsi:supertype-subtype
-    .
+    $reifier isa zsi:supertype-subtype.
     $subtype ako $supertype.
     tmdm:supertype-subtype(
         tmdm:subtype: $subtype,
@@ -1615,16 +1623,15 @@ zsi:unbounded-non-negative-integer zid:0M7; isa zsi:datatype;
 #--- and an anonymous topic.
 #--- Used for locating the anonymous topic when the ZDM association
 #--- is deleted so the anonymous topic can also be deleted
-ztm:anonymous-topic-link.
+ztm:anonymous-topic-link isa ztm:anonymous-topic.
 
 # TOPIC,ROLE: ANONYMOUS TOPIC
 #--- A topic that doesn't exist in the ZDM.
 #--- May be used for implementing ZDM concepts in TM friendly form
-ztm:anonymous-topic.
+ztm:anonymous-topic isa ztm:anonymous-topic.
 
 # ROLE: REIFIED ZDM ASSOCIATION
-ztm:reified-zdm-association.
-
+ztm:reified-zdm-association isa ztm:anonymous-topic.
 # ==================== Core Item Types====================
 
 # ------------------- Identity --------------------
@@ -1843,6 +1850,21 @@ zsi:authorship zid:0Q2; isa zsi:reified-association-type;
     has-role(zsi:author,1,*,zid:0Q7);
     has-role(zsi:written-work,1,1,zid:0Q8);
 .
+def written-by($work, $author, $reifier)
+    $reifier isa zsi:authorship.
+    zsi:authorship(
+        zsi:author: $author,
+        zsi:written-work: $work
+    ) ~ $reifier
+end
+def written-by($work, $author1, $author2, $reifier)
+    $reifier isa zsi:authorship.
+    zsi:authorship(
+        zsi:author: $author1,
+        zsi:author: $author2,
+        zsi:written-work: $work
+    ) ~ $reifier
+end
 
 # ==================== Property Types ====================
 # ==================== Item Types ====================
@@ -1857,6 +1879,7 @@ zsi:person zid:0Q9; isa zsi:entity-type;
     may-have-trait(zsi:author,zid:0QD);
     may-have-trait(zsi:user,zid:0QE);
 .
+#------------------ Authors -----------------
 # Robert Jordan
 robert-jordan zid:0QF; isa zsi:person;
     has-trait(zsi:author,zid:0QG);
@@ -1878,13 +1901,15 @@ janny-wurts zid:0QM; isa zsi:person;
     name("Janny Wurts",zid:0QP);
 .
 
+#------------------ Books -----------------
+
 # Magician
-magician zid:0QQ; isa zsi:book;
-
+zid:0QQ isa zsi:book;
     name("Magician",zid:0QR);
+    written-by(raymond-feist, zid:0QT);
 .
-
-zsi:authorship(
-    zsi:author: raymond-feist,
-    zsi:written-work: magician
-) ~ zid:0QT
+# Daughter of the Empire
+zid:0QU isa zsi:book;
+    name("Daughter of the Empire",zid:0QV);
+    written-by(raymond-feist, janny-wurts, zid:0QW);
+.

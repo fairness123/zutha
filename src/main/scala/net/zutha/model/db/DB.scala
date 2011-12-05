@@ -2,6 +2,7 @@ package net.zutha.model.db
 
 import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.constructs._
+import org.tmapi.core.Topic
 
 trait DB extends SchemaItems{
   def getNextZID: Zid;

@@ -4,10 +4,18 @@
 
 # ==================== General Purpose Templates ====================
 
-# A KIND OF
+# IS A
+def is-a($instance, $type)
+    $instance isa $type.
+    tmdm:type-instance(
+        tmdm:type: $type,
+        tmdm:instance: $instance
+    )
+end
+
+# KIND OF
 def kind-of($subtype, $supertype, $reifier)
-    $reifier isa zsi:supertype-subtype
-    .
+    $reifier isa zsi:supertype-subtype.
     $subtype ako $supertype.
     tmdm:supertype-subtype(
         tmdm:subtype: $subtype,

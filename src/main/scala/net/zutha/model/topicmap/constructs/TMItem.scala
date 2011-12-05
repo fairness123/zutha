@@ -31,25 +31,25 @@ class TMItem protected (topic: Topic) extends ZItem{
   def toTopic = topic
   def toItem: ZItem = this
 
-  lazy val isType = db.itemIsA(this,db.TYPE)
+  lazy val isType = allTypes.contains(db.TYPE)
   def toType: ZType = TMType(topic)
 
-  def isItemType = db.itemIsA(this,db.ITEM_TYPE)
+  def isItemType = allTypes.contains(db.ITEM_TYPE)
   def toItemType: ZItemType = TMItemType(topic)
 
-  lazy val isTrait = db.itemIsA(this,db.TRAIT)
+  lazy val isTrait = allTypes.contains(db.TRAIT)
   def toTrait: ZTrait = TMTrait(topic)
 
-  lazy val isRole = db.itemIsA(this,db.ROLE)
+  lazy val isRole = allTypes.contains(db.ROLE)
   def toRole: ZRole = TMRole(topic)
 
-  lazy val isAssociationType = db.itemIsA(this,db.ASSOCIATION_TYPE)
+  lazy val isAssociationType = allTypes.contains(db.ASSOCIATION_TYPE)
   def toAssociationType: ZAssociationType = TMAssociationType(topic)
 
-  lazy val isPropertyType = db.itemIsA(this,db.PROPERTY_TYPE)
+  lazy val isPropertyType = allTypes.contains(db.PROPERTY_TYPE)
   def toPropertyType: ZPropertyType = TMPropertyType(topic)
 
-  lazy val isAssocPropertyType = db.itemIsA(this,db.ASSOCIATION_PROPERTY_TYPE)
+  lazy val isAssocPropertyType = allTypes.contains(db.ASSOCIATION_PROPERTY_TYPE)
   def toAssocPropertyType: ZAssociationPropertyType = TMAssociationPropertyType(topic)
 
   // -------------- ZIDs --------------
@@ -99,7 +99,7 @@ class TMItem protected (topic: Topic) extends ZItem{
   }
   
   // -------------- types --------------
-  def hasType(zType: ZType): Boolean = getAllTypes.contains(zType)
+  def hasType(zType: ZType): Boolean = allTypes.contains(zType)
 
   lazy val itemType = {
     val itemTypes = db.directTypesOfItem(this).collect{
@@ -110,10 +110,10 @@ class TMItem protected (topic: Topic) extends ZItem{
 
   lazy val traits = db.traverseAssociation(this, db.ITEM.toRole, db.ITEM_HAS_TRAIT, db.TRAIT.toRole).map(_.toTrait)
 
-  lazy val getAllTypes = db.allTypesOfItem(this).toSet
+  lazy val allTypes = db.allTypesOfItem(this).toSet
 
   lazy val getFieldDefiningTypes = {
-    val fieldDefiningTypes = getAllTypes.filter(_.declaresFields)
+    val fieldDefiningTypes = allTypes.filter(_.declaresFields)
     fieldDefiningTypes
   }
 

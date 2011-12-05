@@ -13,15 +13,15 @@ import ZuthaConstants._
 import ApplicationConstants._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB
-import net.zutha.model.exceptions.SchemaItemMissingException
-import net.zutha.model.topicmap.constructs.TMType
 import net.zutha.model.topicmap.TMConversions._
 import org.tmapi.index.{Index, TypeInstanceIndex}
-import de.topicmapslab.majortom.model.core.{ITopicMap, ITopic, ITopicMapSystem}
-import de.topicmapslab.majortom.model.index.{ITransitiveTypeInstanceIndex, ITypeInstanceIndex, IIndex, ISupertypeSubtypeIndex}
+import de.topicmapslab.majortom.model.core.{ITopicMap, ITopicMapSystem}
+import de.topicmapslab.majortom.model.index.{ITransitiveTypeInstanceIndex, ISupertypeSubtypeIndex}
+import net.zutha.model.topicmap.AmbiguityWorkarounds
+import net.zutha.model.exceptions.{SchemaViolationException, SchemaItemMissingException}
 
 
-object TopicMapDB extends DB with MajortomDB with Loggable{
+object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
   val ENABLE_TRANSACTIONS = true
 
   val sys: ITopicMapSystem = makeTopicMapSystem
@@ -50,12 +50,12 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
    * @return the schema item with the given identifier
    * @throws SchemaItemMissingException if the requested topic does not exist
    */
-  protected def getSchemaItem(identifier: String): ZItem = getSchemaTopic(identifier).toItem
+  protected def getSchemaItem(identifier: String): ZItem = tmm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
+      case Some(topic) => topic.toItem
+      case None => throw new SchemaItemMissingException
+    }
 
-  protected def getSchemaTopic(identifier: String): Topic = tmm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
-    case Some(topic) => topic
-    case None => throw new SchemaItemMissingException
-  }
+  protected def getOrCreateSchemaTopic(si: String): Topic = tmm.getOrCreateTopicBySI(si)
 
   def getItemByZid(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
 
@@ -72,7 +72,7 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
     val zidUri = ZID_PREFIX + zid
     val loc = tm.createLocator(zidUri)
     val topic = tm.createTopicBySubjectIdentifier(loc)
-    topic.addType(topicType)
+    topic.setType(topicType)
     topic
   }
 
@@ -83,6 +83,7 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
     }
     assoc
   }
+
   def createReifiedAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
     val rolePlayerTopics: Seq[(Topic,Topic)] = rolePlayers.map{case (r,i) => (r,i): (Topic,Topic)}
     val assoc = createAssociation(assocType, rolePlayerTopics:_*)
@@ -152,6 +153,17 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
       subtype.addSupertype(supertype)
     }
 
+    //create all the type-instance associations (redis omits them)
+    for(t <- AmbiguityWorkarounds.getAllTopics(tm)){
+      val types = t.getTypes.toSet
+      val theType = types.headOption.getOrElse(
+        throw new SchemaViolationException("All must topics must have a type")
+      )
+      if(theType != ANONYMOUS_TOPIC){
+        t.setType(theType)
+      }
+    }
+
     logger.info("database has been reset back to schema")
   }
 
@@ -188,7 +200,7 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
 
   private def rawAllInstancesOfType(topic: Topic): Set[Topic] = {
     val index = getIndex(classOf[ITransitiveTypeInstanceIndex])
-    val instances = index.getTopics(Seq(topic)).toSet
+    val instances = AmbiguityWorkarounds.getTopics(index,topic).toSet
     instances
   }
 
@@ -288,6 +300,7 @@ object TopicMapDB extends DB with MajortomDB with Loggable{
    */
   def associationIsAnonymous(association: Association): Boolean = {
     val players = association.getRoles.map(_.getPlayer).toSet
-    players.exists(_.isAnonymous)
+    val isAnon = players.exists(_.isAnonymous)
+    isAnon
   }
 }

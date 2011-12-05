@@ -4,7 +4,7 @@ import org.tmapi.core.{Occurrence, Topic}
 
 import net.zutha.model.constants.TopicMapConstants
 import net.zutha.util.Cache._
-import net.zutha.model.topicmap.db.{TopicMapDB}
+import net.zutha.model.topicmap.db.{TopicMapDB => tdb}
 import net.zutha.model.constructs.ZTrait
 import net.zutha.model.db.DB.db
 import net.zutha.model.topicmap.TMConversions._
@@ -21,24 +21,32 @@ class TopicExtended(topic: Topic) {
     topic.createOccurrence(occType, value, integerType)
   }
 
+  def setType(tt: Topic){
+    topic.addType(tt)
+    tdb.createAssociation(db.TYPE_INSTANCE,
+      (db.TYPE:Topic) -> tt,
+      (db.INSTANCE:Topic) -> topic
+    )
+  }
+
   def addTrait(newTrait: ZTrait) {
     //create main item-has-trait association
-    val assoc = TopicMapDB.createReifiedAssociation(db.ITEM_HAS_TRAIT,
+    val assoc = tdb.createReifiedAssociation(db.ITEM_HAS_TRAIT,
       db.ITEM.toRole -> topic,
       db.TRAIT.toRole -> newTrait
     )
     val assocReifier = assoc.getReifier
     //create topic-map-friendly workaround for item-has-trait link using an anonymous topic
     val anon = tm.createTopic()
-    anon.addType(db.ANONYMOUS_TOPIC)
+    anon.addType(tdb.ANONYMOUS_TOPIC)
     anon.addSupertype(newTrait)
     topic.addType(anon)
     //link anonymous topic to the item-has-trait association
-    TopicMapDB.createAssociation(db.ANONYMOUS_TOPIC_LINK,
-      db.REIFIED_ZDM_ASSOCIATION -> assocReifier,
-      db.ANONYMOUS_TOPIC -> anon
+    tdb.createAssociation(tdb.ANONYMOUS_TOPIC_LINK,
+      tdb.REIFIED_ZDM_ASSOCIATION -> assocReifier,
+      tdb.ANONYMOUS_TOPIC -> anon
     )
   }
 
-  lazy val isAnonymous: Boolean = TopicMapDB.topicIsAnonymous(topic)
+  lazy val isAnonymous: Boolean = tdb.topicIsAnonymous(topic)
 }

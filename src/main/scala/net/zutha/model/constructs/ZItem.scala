@@ -58,7 +58,7 @@ trait ZItem extends ZAssociationMember{
   def hasType(itemType: ZType): Boolean;
   def itemType: ZItemType;
   def traits: Set[ZTrait]
-  def getAllTypes: Set[ZType];
+  def allTypes: Set[ZType];
   def getFieldDefiningTypes: Set[ZType];
 
   // -------------- fields --------------

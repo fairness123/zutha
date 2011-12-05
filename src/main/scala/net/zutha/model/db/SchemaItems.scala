@@ -1,13 +1,11 @@
 package net.zutha.model.db
 
 import net.zutha.model.constructs._
-import org.tmapi.core.Topic
 
 //TODO use objects for every schema item
 
 trait SchemaItems {
   protected def getSchemaItem(identifier: String): ZItem
-  protected def getSchemaTopic(identifier: String): Topic
 
   //kinds of item type
   lazy val TYPE: ZItemType = getSchemaItem("type").toItemType
@@ -69,8 +67,4 @@ trait SchemaItems {
   lazy val UNBOUNDED_NON_NEGATIVE_INTEGER: ZItem = getSchemaItem("unbounded-non-negative-integer")
   lazy val PERMISSION_LEVEL: ZItem = getSchemaItem("permission-level")
 
-  //topic map specific constructs
-  lazy val REIFIED_ZDM_ASSOCIATION = getSchemaTopic("topicmap/reified-zdm-association")
-  lazy val ANONYMOUS_TOPIC = getSchemaTopic("topicmap/anonymous-topic")
-  lazy val ANONYMOUS_TOPIC_LINK = getSchemaTopic("topicmap/anonymous-topic-link")
 }

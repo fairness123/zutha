@@ -1,3 +1,4 @@
+#------------------ Authors -----------------
 # Robert Jordan
 robert-jordan %zid%; isa zsi:person;
     has-trait(zsi:author,%zid%);
@@ -19,13 +20,15 @@ janny-wurts %zid%; isa zsi:person;
     name("Janny Wurts",%zid%);
 .
 
+#------------------ Books -----------------
+
 # Magician
-magician %zid%; isa zsi:book;
-
+%zid% isa zsi:book;
     name("Magician",%zid%);
+    written-by(raymond-feist, %zid%);
 .
-
-zsi:authorship(
-    zsi:author: raymond-feist,
-    zsi:written-work: magician
-) ~ %zid%
+# Daughter of the Empire
+%zid% isa zsi:book;
+    name("Daughter of the Empire",%zid%);
+    written-by(raymond-feist, janny-wurts, %zid%);
+.

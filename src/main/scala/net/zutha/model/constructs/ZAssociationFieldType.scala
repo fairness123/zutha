@@ -72,7 +72,7 @@ case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType) e
     }
   }
   def declarerForItem(item: ZItem): Option[ZType]={
-    val nonOverriddenDeclarers = declarersAmongTypes(item.getAllTypes)
+    val nonOverriddenDeclarers = declarersAmongTypes(item.allTypes)
     nonOverriddenDeclarers.size match{
       case 0 => None
       case 1 => Some(nonOverriddenDeclarers.head)

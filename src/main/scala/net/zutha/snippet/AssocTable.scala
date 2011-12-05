@@ -41,7 +41,7 @@ object AssocTable extends Logger{
     }
 
     ".role *" #> otherRoles.map{r =>
-        "a *" #> r.name &
+        "a *" #> r.nameF(role) &
         "a [href]" #> RoleLoc.makeUri(item,role,assocType,r)
       } &
     ".prop-type *" #> propTypes.map{p => Text(p.nameF(role)):NodeSeq} &

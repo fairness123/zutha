@@ -1326,13 +1326,12 @@ zsi:unbounded-non-negative-integer %zid%; isa zsi:datatype;
 #--- and an anonymous topic.
 #--- Used for locating the anonymous topic when the ZDM association
 #--- is deleted so the anonymous topic can also be deleted
-ztm:anonymous-topic-link.
+ztm:anonymous-topic-link isa ztm:anonymous-topic.
 
 # TOPIC,ROLE: ANONYMOUS TOPIC
 #--- A topic that doesn't exist in the ZDM.
 #--- May be used for implementing ZDM concepts in TM friendly form
-ztm:anonymous-topic.
+ztm:anonymous-topic isa ztm:anonymous-topic.
 
 # ROLE: REIFIED ZDM ASSOCIATION
-ztm:reified-zdm-association.
-
+ztm:reified-zdm-association isa ztm:anonymous-topic.

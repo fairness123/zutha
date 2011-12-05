@@ -14,7 +14,7 @@ object TMAssociationType{
   def apply(topic: Topic):TMAssociationType = getItem(topic)
 }
 class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAssociationType{
-  lazy val getAllSuperAssociationTypes: Set[ZAssociationType] = ancestors.filter(_.isAssociationType).map{_.toAssociationType}
+  def getAllSuperAssociationTypes: Set[ZAssociationType] = ancestors.filter(_.isAssociationType).map{_.toAssociationType}
 
   // --------- Role Players ------------
 
