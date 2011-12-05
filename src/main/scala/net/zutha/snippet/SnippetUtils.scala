@@ -8,9 +8,9 @@ import xml.{Text, NodeSeq}
 object SnippetUtils {
   def makeElemList(elems: Seq[NodeSeq]): NodeSeq => NodeSeq = {
     val intermediate = if(elems.isEmpty) elems else elems.dropRight(1)
-    ".intermediate *" #> intermediate.map{elem =>
+    ".intermediate" #> intermediate.map{elem =>
       ".listval" #> elem} &
-    ".last *" #> elems.lastOption.map{elem =>
+    ".last" #> elems.lastOption.map{elem =>
       ".listval" #> elem}
   }
   def makeItemLinkList(items: Seq[ZItem]) = {
