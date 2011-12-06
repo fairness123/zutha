@@ -48,7 +48,7 @@ class RolePage(roleInfo: RoleInfo) {
   private def renderRolePlayer(player: ZItem) = SnippetUtils.itemSummary(player,false)
 
   def renderRolePlayers = {//TODO use history and calculateDeltas
-    val selStatic = "#role-players" #> rolePlayersSorted.get.map{rp => renderRolePlayer(rp)} //send initial html response with role-players rendered
+    val selStatic = ".role-player" #> rolePlayersSorted.get.map{rp => renderRolePlayer(rp)} //send initial html response with role-players rendered
     val selDynamic = selStatic & "#role-players" #> WiringUI.toNode(rolePlayersSorted){(rps,ns) =>
       val sel = ".role-player" #> rps.map{rp => renderRolePlayer(rp)}
       sel(ns)

@@ -31,7 +31,7 @@ class ZIDTicker(tm: TopicMap) extends Logger{
     val tickerTopic = tm.getOrCreateTopicBySI(ZID_TICKER_SI)
 
     //get nextZID occurrence type
-    val nextZIDOccType = tm.getOrCreateOccurrenceTypeBySI(NEXT_ZID_SI)
+    val nextZIDOccType = tm.getOrCreateTopicBySI(NEXT_ZID_SI)
 
     //get nextZID occurrence of ZID_Ticker
     val occs = tickerTopic.getOccurrences(nextZIDOccType)

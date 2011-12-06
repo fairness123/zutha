@@ -89,7 +89,10 @@ class AssocTableEdit protected ( assocFieldSet: AssociationFieldSetBuilder ) ext
 
       def addRolePlayer(rpName:String) = {
         try{
-          val rp = assocField.allowedPlayers(role).filter{p => p.name == rpName || p.zid == rpName}.head
+          val rp = assocField.allowedPlayers(role).filter{p =>
+            (p.name equalsIgnoreCase rpName) ||
+            (p.zid equalsIgnoreCase rpName)
+          }.head
           assocField.addRolePlayer(role,rp)
           refreshCell
         } catch {

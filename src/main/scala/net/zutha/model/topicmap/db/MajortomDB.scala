@@ -15,6 +15,10 @@ trait MajortomDB {
   val redis = "de.topicmapslab.majortom.redis.store.RedisTopicMapStore"
 
   val useStore = redis
+
+  var redisHost = "redis.zutha.net"
+  var redisPort = "6379"
+  var redisPass = "ooEE8u32u8oO!3A!jkh9@EUhq$XXUEE88E"
   
   def makeTopicMapSystem: ITopicMapSystem = {
     val factory = TopicMapSystemFactory.newInstance();
@@ -27,10 +31,10 @@ trait MajortomDB {
     factory.setProperty("de.topicmapslab.majortom.jdbc.dialect", "POSTGRESQL99")
 
     //Redis properties
-    factory.setProperty("de.topicmapslab.majortom.redis.host", "localhost")
-    factory.setProperty("de.topicmapslab.majortom.redis.port", "6379")
+    factory.setProperty("de.topicmapslab.majortom.redis.host", redisHost)
+    factory.setProperty("de.topicmapslab.majortom.redis.port", redisPort)
     factory.setProperty("de.topicmapslab.majortom.redis.database", "0")
-//    factory.setProperty("de.topicmapslab.majortom.redis.password", "pass")
+    //factory.setProperty("de.topicmapslab.majortom.redis.password", redisPass)
 
 
     //Features

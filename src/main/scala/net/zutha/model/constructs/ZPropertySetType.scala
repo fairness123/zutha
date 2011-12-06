@@ -8,7 +8,7 @@ import net.zutha.model.datatypes.{ZUnboundedNNI, ZNonNegativeInteger}
 case class ZPropertySetType(definingType: ZType, propertyType: ZPropertyType)
     extends ZFieldSetType{
 
-  //TODO implement PropertySet cardMin, cardMax
+  //TODO find the only non-overridden declaration
   lazy val declarationAssociation = db.findAssociations(db.PROPERTY_DECLARATION,true,
       db.PROPERTY_DECLARER -> definingType,
       db.PROPERTY_TYPE.toRole -> propertyType

@@ -18,4 +18,5 @@ trait ZAssociationType extends ZType{
   def getAssocPropCardMin(propType: ZPropertyType): ZNonNegativeInteger
   def getAssocPropCardMax(propType: ZPropertyType): ZUnboundedNNI
 
+  def isBinary: Boolean
 }

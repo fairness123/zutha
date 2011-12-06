@@ -34,7 +34,7 @@ case class TopicMapExtended(val tm: TopicMap) {
       val occTypeTopic = getOrCreateTopicBySI(TM.OCCURRENCE_TYPE_SI)
       val si = tm.createLocator(siStr)
       val ot = tm.createTopicBySubjectIdentifier(si)
-      ot.addType(occTypeTopic)
+      //ot.addType(occTypeTopic)
       ot
   }
 

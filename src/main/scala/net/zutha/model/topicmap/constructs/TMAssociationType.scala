@@ -8,6 +8,7 @@ import net.zutha.model.datatypes.{ZNonNegativeInteger, ZUnboundedNNI}
 import org.tmapi.core.{Topic}
 import net.zutha.model.db.DB.db
 import net.zutha.model.constructs.{ZPropertyType, ZAssociation, ZRole, ZAssociationType}
+import net.zutha.model.datatypes.ZUnboundedNNI.Finite
 
 object TMAssociationType{
   val getItem = makeCache[Topic,String,TMAssociationType](_.getId, topic => new TMAssociationType(topic))
@@ -87,19 +88,13 @@ class TMAssociationType protected (topic: Topic) extends TMTrait(topic) with ZAs
     case _ => throw new SchemaViolationException("card-max properties must have datatype: ZUnboundedNNI")
   }
 
+  def isBinary = {
+    val noProps = definedAssocProperties.isEmpty
+    val twoRoles = definedRoles.forall{r =>
+      getRoleCardMin(r) == Finite(1) &&
+      getRoleCardMax(r) == Finite(1)
+    }
+    noProps && twoRoles
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

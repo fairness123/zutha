@@ -39,4 +39,5 @@ class ZuthaConsole extends StatefulSnippet {
   def buttons =
     "*" #> ""
 
+
 }

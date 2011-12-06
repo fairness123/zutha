@@ -6,6 +6,7 @@ import net.liftweb.util.Helpers._
 import model.constructs._
 import lib.uri.{ItemLoc, AssocLoc, RoleLoc, ItemInfo}
 import net.liftweb.common.Logger
+import model.datatypes.ZUnboundedNNI.Finite
 
 class Details(itemInfo: ItemInfo) extends Logger{
 
@@ -53,16 +54,23 @@ class Details(itemInfo: ItemInfo) extends Logger{
       "a *" #> player.name &
       "a [href]" #> ItemLoc.makeUri(player)
     }
+
+    def isSingleton = {
+      val singletonField = assocFieldSet.cardMax == Finite(1)
+      val binaryField = assocFieldSet.associationType.isBinary
+      singletonField && binaryField
+    }
     
     ".field-type *" #> assocFieldSet.associationType.nameF(assocFieldSet.role) &
     ".field-list" #> {
       ".value" #> otherPlayers.map(renderRolePlayer(_))} &
-    ".more-link" #> {otherPlayers.size match{
-      case 1 => "*" #> List()
-      case _ => ".more-link [href]" #> RoleLoc.makeUri(item,role,assocType,otherRole) &
+    ".more-link" #> {
+      if(isSingleton)
+        "*" #> List()
+      else
+        ".more-link [href]" #> RoleLoc.makeUri(item,role,assocType,otherRole) &
         ".other-role-plural" #> otherRole.nameF(role) //TODO get name with plural scope
-    }}
-
+    }
   }
 
   /** Render a table to display all association Fields in assocFieldSet*/

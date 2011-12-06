@@ -13,6 +13,10 @@ scalacOptions ++= Seq("-unchecked", "-deprecation")
 //web plugin
 seq(webSettings :_*)
 
+//CloudBees plugin
+//seq(bees.RunCloudPlugin.deploymentSettings :_*)
+
+
 scanDirectories in Compile := Nil //for JRebel
 
 port in container.Configuration := 8082
@@ -31,8 +35,9 @@ libraryDependencies ++= {
     val majortom_version = "1.2.0"
     Seq(
     "org.eclipse.jetty" % "jetty-webapp" % "8.0.1.v20110908" % "container",
+    //"org.apache.tomcat" % "tomcat-catalina" % "7.0.23" % "tomcat",
     "javax.servlet" % "servlet-api" % "2.5" % "provided->default",
-	  "ch.qos.logback" % "logback-classic" % "0.9.26",
+    "ch.qos.logback" % "logback-classic" % "0.9.26",
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-mapper" % liftVersion % "compile",
     "net.liftweb" %% "lift-widgets" % liftVersion % "compile" withSources(),
@@ -41,7 +46,7 @@ libraryDependencies ++= {
     "de.topicmapslab.tmql4j" % "tmql4j-draft2010" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-draft2011" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-delete" % tmql4j_version withJavadoc() withSources(),
-	  "de.topicmapslab.tmql4j" % "tmql4j-flwr" % tmql4j_version withJavadoc() withSources(),
+    "de.topicmapslab.tmql4j" % "tmql4j-flwr" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-insert" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-merge" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.tmql4j" % "tmql4j-select" % tmql4j_version withJavadoc() withSources(),

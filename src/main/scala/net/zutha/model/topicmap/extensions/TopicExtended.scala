@@ -48,5 +48,5 @@ class TopicExtended(topic: Topic) {
     )
   }
 
-  lazy val isAnonymous: Boolean = tdb.topicIsAnonymous(topic)
+  def isAnonymous: Boolean = tdb.topicIsAnonymous(topic)
 }

@@ -4,9 +4,8 @@ import net.zutha.model.exceptions.SchemaViolationException
 import net.zutha.model.datatypes.{ZUnboundedNNI}
 import ZUnboundedNNI.{Finite,Infinity}
 import net.zutha.model.db.DB.db
-import net.liftweb.common.Logger
 
-case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType) extends ZFieldType with Logger{
+case class ZAssociationFieldType(role:ZRole, associationType:ZAssociationType) extends ZFieldType{
 
   def name = associationType.nameF(role)
   

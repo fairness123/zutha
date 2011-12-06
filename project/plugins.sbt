@@ -6,4 +6,8 @@ resolvers ++= Seq(
 
 libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin" % (v+"-0.2.8"))
 
+//resolvers += "sonatype.repo" at "https://oss.sonatype.org/content/groups/public"
+
+//libraryDependencies <+= sbtVersion(v => "eu.getintheloop" %% "sbt-cloudbees-plugin" % ("0.3.1_"+v))
+
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "0.11.0")

@@ -13,9 +13,13 @@ zsi:written-work %zid%; isa zsi:entity-type;
 
 # BOOK
 zsi:book %zid%; isa zsi:entity-type;
+    has-trait(zsi:role,%zid%);
     kind-of(zsi:written-work,%zid%);
 
     name("Book",%zid%);
+
+    plays-role(zsi:book,
+        zsi:book-series-membership,0,1,%zid%);
 .
 
 # ARTICLE
@@ -24,6 +28,17 @@ zsi:article %zid%; isa zsi:entity-type;
 
     name("Article (Written Work)",%zid%);
     name("Article",zsi:written-work,%zid%);
+.
+
+# BOOK SERIES
+zsi:book-series %zid%; isa zsi:entity-type;
+    has-trait(zsi:role,%zid%);
+    kind-of(zsi:written-work,%zid%);
+
+    name("Book Series",%zid%);
+
+    plays-role(zsi:book-series,
+        zsi:book-series-membership,1,*,%zid%);
 .
 
 # ==================== Traits ====================
@@ -65,6 +80,25 @@ def written-by($work, $author1, $author2, $reifier)
         zsi:author: $author1,
         zsi:author: $author2,
         zsi:written-work: $work
+    ) ~ $reifier
+end
+
+# BOOK SERIES MEMBERSHIP
+zsi:book-series-membership %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:reified-association,%zid%);
+
+    name("Book Series Membership",%zid%);
+    name("Member of Series",zsi:book,%zid%);
+    name("Included Works",zsi:book-series,%zid%);
+
+    has-role(zsi:book-series,1,1,%zid%);
+    has-role(zsi:book,1,1,%zid%);
+.
+def member-of($book, $series, $reifier)
+    $reifier isa zsi:book-series-membership.
+    zsi:book-series-membership(
+        zsi:book: $book,
+        zsi:book-series: $series
     ) ~ $reifier
 end
 

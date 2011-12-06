@@ -13,6 +13,7 @@ case class ZAssociationFieldSetType(declaringType: ZType, role: ZRole, associati
 
   def associationFieldType = ZAssociationFieldType(role,associationType)
 
+  //TODO find the only non-overridden declaration
   lazy val declarationAssociation = db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,true,
       db.ASSOCIATION_FIELD_DECLARER -> declaringType,
       db.ROLE.toRole -> role,
@@ -20,14 +21,16 @@ case class ZAssociationFieldSetType(declaringType: ZType, role: ZRole, associati
     ).headOption.getOrElse(
       throw new SchemaViolationException(this + "is missing an association-field-declaration"))
 
-  def cardMin = declarationAssociation.getPropertyValue(db.ASSOCIATION_CARD_MIN).getOrElse(
-    throw new SchemaViolationException("association-field-declaration associations must have an association-card-min property")) match {
+  lazy val cardMin = declarationAssociation.getPropertyValue(db.ASSOCIATION_CARD_MIN).getOrElse(
+    throw new SchemaViolationException("association-field-declaration associations must have an association-card-min property"))
+  match {
     case value: ZNonNegativeInteger => value
     case _ => throw new SchemaViolationException("card-min properties must have datatype: ZNonNegativeInteger")
   }
 
-  def cardMax = declarationAssociation.getPropertyValue(db.ASSOCIATION_CARD_MAX).getOrElse(
-    throw new SchemaViolationException("association-field-declaration associations must have an association-card-max property")) match {
+  lazy val cardMax = declarationAssociation.getPropertyValue(db.ASSOCIATION_CARD_MAX).getOrElse(
+    throw new SchemaViolationException("association-field-declaration associations must have an association-card-max property"))
+  match {
     case value: ZUnboundedNNI => value
     case _ => throw new SchemaViolationException("card-mx properties must have datatype: ZUnboundedNNI")
   }

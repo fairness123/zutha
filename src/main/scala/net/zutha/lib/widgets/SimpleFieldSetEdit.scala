@@ -116,7 +116,10 @@ object SimpleFieldSetEdit extends Logger {
 
     def addRolePlayer( rpName: String ) = {
       try{
-        val rp = assocSet.fieldType.allowedPlayersOf(otherRole).filter{p => p.name == rpName || p.zid == rpName}.head
+        val rp = assocSet.fieldType.allowedPlayersOf(otherRole).filter{p =>
+          (p.name equalsIgnoreCase rpName) ||
+          (p.zid equalsIgnoreCase rpName)
+        }.head
         val assocField = assocSet.addAssociationField match {
           case Full(af) => af
           case _ => assocSet.associationFields.head //if no more fields are allowed, try adding role-player to the first existing field

@@ -21,7 +21,7 @@ zsi:item %zid%; isa zsi:item-type;
 
     is-abstract(%zid%);
     root-of(zsi:item-type,%zid%);
-    has-property(zsi:zid,1,*,%zid%);
+    #has-property(zsi:zid,1,*,%zid%);
     has-property(zsi:name,1,*,%zid%);
     has-property(zsi:modifiable-name,0,*,%zid%);
     has-property(zsi:description,0,1,%zid%);

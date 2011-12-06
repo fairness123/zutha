@@ -21,7 +21,7 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
 
   def hasAncestor(superType: ZType): Boolean = ancestors.contains(superType)
 
-  lazy val ancestors: Set[ZType] = { //TODO allow an item's supertypes to be modified
+  lazy val ancestors: Set[ZType] = {
     val ancestors = db.ancestorsOfType(this) + this //make sure this item itself is included
     ancestors
   }
@@ -37,21 +37,16 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
     propertyDefRoles.size > 0 || assocDefRoles.size > 0
   }
 
-  lazy val declaredPropertySets = { //TODO get inherited property types
+  lazy val declaredPropertySets = {
     val definedPropTypes = db.traverseAssociation(topic,db.PROPERTY_DECLARER,db.PROPERTY_DECLARATION,
       db.PROPERTY_TYPE.toRole).map(_.toPropertyType)
     definedPropTypes.map(ZPropertySetType(this,_))
-    
-//    val propDefRoles = topic.getRolesPlayed(db.siPROPERTY_DECLARER,db.siPROPERTY_DECLARATION).toSet
-//    propDefRoles.map{_.getParent.getRoles(db.siPROPERTY_TYPE).head.getPlayer.toPropertyType}
   }
 
-  /** @return a Seq[ZAssociationFieldType] representing the
-   *  association fields defined by this Type
-   */
-  def declaredAssociationFieldSets = {
+  lazy val declaredAssociationFieldSets = {
     val declAssociations = db.findAssociations(db.ASSOCIATION_FIELD_DECLARATION,false,
-      db.ASSOCIATION_FIELD_DECLARER -> this)
+      db.ASSOCIATION_FIELD_DECLARER -> this
+    )
     declAssociations.map{declAssoc =>
       val role = declAssoc.getPlayers(db.ROLE.toRole).head.toRole
       val assocType = declAssoc.getPlayers(db.ASSOCIATION_TYPE.toRole).head.toAssociationType
@@ -59,7 +54,17 @@ class TMType protected (topic: Topic) extends TMItem(topic) with ZType {
     }.toSet
   }
 
-  def requiredPropertySets = declaredPropertySets.filter(_.cardMin >= Finite(1))
+  lazy val allowedPropertySets: Set[ZPropertySetType] = {
+    val fieldSets = ancestors.flatMap(_.declaredPropertySets)
+    fieldSets
+  }
 
-  def requiredAssociationFieldSets = declaredAssociationFieldSets.filter(_.cardMin >= Finite(1))
+  lazy val allowedAssociationFieldSets: Set[ZAssociationFieldSetType] = {
+    val fieldSets = ancestors.flatMap(_.declaredAssociationFieldSets)
+    fieldSets
+  }
+
+  def requiredPropertySets = allowedPropertySets.filter(_.cardMin >= Finite(1))
+
+  def requiredAssociationFieldSets = allowedAssociationFieldSets.filter(_.cardMin >= Finite(1))
 }

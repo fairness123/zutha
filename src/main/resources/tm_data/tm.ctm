@@ -318,7 +318,7 @@ zsi:item zid:01; isa zsi:item-type;
 
     is-abstract(zid:06);
     root-of(zsi:item-type,zid:07);
-    has-property(zsi:zid,1,*,zid:08);
+    #has-property(zsi:zid,1,*,zid:08);
     has-property(zsi:name,1,*,zid:09);
     has-property(zsi:modifiable-name,0,*,zid:0A);
     has-property(zsi:description,0,1,zid:0B);
@@ -1811,44 +1811,59 @@ zsi:written-work zid:0PH; isa zsi:entity-type;
 
 # BOOK
 zsi:book zid:0PN; isa zsi:entity-type;
-    kind-of(zsi:written-work,zid:0PP);
+    has-trait(zsi:role,zid:0PP);
+    kind-of(zsi:written-work,zid:0PQ);
 
-    name("Book",zid:0PQ);
+    name("Book",zid:0PR);
+
+    plays-role(zsi:book,
+        zsi:book-series-membership,0,1,zid:0PT);
 .
 
 # ARTICLE
-zsi:article zid:0PR; isa zsi:entity-type;
-    kind-of(zsi:written-work,zid:0PT);
+zsi:article zid:0PU; isa zsi:entity-type;
+    kind-of(zsi:written-work,zid:0PV);
 
-    name("Article (Written Work)",zid:0PU);
-    name("Article",zsi:written-work,zid:0PV);
+    name("Article (Written Work)",zid:0PW);
+    name("Article",zsi:written-work,zid:0PX);
+.
+
+# BOOK SERIES
+zsi:book-series zid:0PY; isa zsi:entity-type;
+    has-trait(zsi:role,zid:0Q0);
+    kind-of(zsi:written-work,zid:0Q1);
+
+    name("Book Series",zid:0Q2);
+
+    plays-role(zsi:book-series,
+        zsi:book-series-membership,1,*,zid:0Q3);
 .
 
 # ==================== Traits ====================
 
 # AUTHOR
-zsi:author zid:0PW; isa zsi:trait;
-    has-trait(zsi:role,zid:0PX);
+zsi:author zid:0Q4; isa zsi:trait;
+    has-trait(zsi:role,zid:0Q5);
 
-    name("Author",zid:0PY);
-    name("Co-Authors",zsi:author,zid:0Q0);
+    name("Author",zid:0Q6);
+    name("Co-Authors",zsi:author,zid:0Q7);
 
     plays-role(zsi:author,
-        zsi:authorship,0,*,zid:0Q1);
+        zsi:authorship,0,*,zid:0Q8);
 .
 
 # ==================== Association Types ====================
 
 # AUTHORSHIP
-zsi:authorship zid:0Q2; isa zsi:reified-association-type;
-    kind-of(zsi:reified-association,zid:0Q3);
+zsi:authorship zid:0Q9; isa zsi:reified-association-type;
+    kind-of(zsi:reified-association,zid:0QA);
 
-    name("Authorship",zid:0Q4);
-    name("Written By",zsi:written-work,zid:0Q5);
-    name("Works Written",zsi:author,zid:0Q6);
+    name("Authorship",zid:0QB);
+    name("Written By",zsi:written-work,zid:0QC);
+    name("Works Written",zsi:author,zid:0QD);
 
-    has-role(zsi:author,1,*,zid:0Q7);
-    has-role(zsi:written-work,1,1,zid:0Q8);
+    has-role(zsi:author,1,*,zid:0QE);
+    has-role(zsi:written-work,1,1,zid:0QF);
 .
 def written-by($work, $author, $reifier)
     $reifier isa zsi:authorship.
@@ -1866,50 +1881,88 @@ def written-by($work, $author1, $author2, $reifier)
     ) ~ $reifier
 end
 
+# BOOK SERIES MEMBERSHIP
+zsi:book-series-membership zid:0QG; isa zsi:reified-association-type;
+    kind-of(zsi:reified-association,zid:0QH);
+
+    name("Book Series Membership",zid:0QJ);
+    name("Member of Series",zsi:book,zid:0QK);
+    name("Included Works",zsi:book-series,zid:0QL);
+
+    has-role(zsi:book-series,1,1,zid:0QM);
+    has-role(zsi:book,1,1,zid:0QN);
+.
+def member-of($book, $series, $reifier)
+    $reifier isa zsi:book-series-membership.
+    zsi:book-series-membership(
+        zsi:book: $book,
+        zsi:book-series: $series
+    ) ~ $reifier
+end
+
 # ==================== Property Types ====================
 # ==================== Item Types ====================
 
 # PERSON
-zsi:person zid:0Q9; isa zsi:entity-type;
-    has-trait(zsi:role,zid:0QA);
-    kind-of(zsi:zutha-object,zid:0QB);
+zsi:person zid:0QP; isa zsi:entity-type;
+    has-trait(zsi:role,zid:0QQ);
+    kind-of(zsi:zutha-object,zid:0QR);
 
-    name("Person",zid:0QC);
+    name("Person",zid:0QT);
 
-    may-have-trait(zsi:author,zid:0QD);
-    may-have-trait(zsi:user,zid:0QE);
+    may-have-trait(zsi:author,zid:0QU);
+    may-have-trait(zsi:user,zid:0QV);
 .
 #------------------ Authors -----------------
 # Robert Jordan
-robert-jordan zid:0QF; isa zsi:person;
-    has-trait(zsi:author,zid:0QG);
+robert-jordan zid:0QW; isa zsi:person;
+    has-trait(zsi:author,zid:0QX);
 
-    name("Robert Jordan",zid:0QH);
+    name("Robert Jordan",zid:0QY);
 .
 
 # Raymond E. Feist
-raymond-feist zid:0QJ; isa zsi:person;
-    has-trait(zsi:author,zid:0QK);
+raymond-feist zid:0R0; isa zsi:person;
+    has-trait(zsi:author,zid:0R1);
 
-    name("Raymond E. Feist",zid:0QL);
+    name("Raymond E. Feist",zid:0R2);
 .
 
 # Janny Wurts
-janny-wurts zid:0QM; isa zsi:person;
-    has-trait(zsi:author,zid:0QN);
+janny-wurts zid:0R3; isa zsi:person;
+    has-trait(zsi:author,zid:0R4);
 
-    name("Janny Wurts",zid:0QP);
+    name("Janny Wurts",zid:0R5);
 .
 
 #------------------ Books -----------------
 
 # Magician
-zid:0QQ isa zsi:book;
-    name("Magician",zid:0QR);
-    written-by(raymond-feist, zid:0QT);
+magician zid:0R6; isa zsi:book;
+    name("Magician",zid:0R7);
+    written-by(raymond-feist, zid:0R8);
 .
 # Daughter of the Empire
-zid:0QU isa zsi:book;
-    name("Daughter of the Empire",zid:0QV);
-    written-by(raymond-feist, janny-wurts, zid:0QW);
+daughter-of-the-empire zid:0R9; isa zsi:book;
+    name("Daughter of the Empire",zid:0RA);
+    written-by(raymond-feist, janny-wurts, zid:0RB);
+.
+# The Eye of the World
+eye-of-the-world zid:0RC; isa zsi:book;
+    name("The Eye of the World",zid:0RD);
+    written-by(robert-jordan, zid:0RE);
+    member-of(wheel-of-time, zid:0RF);
+.
+# The Great Hunt
+great-hunt zid:0RG; isa zsi:book;
+    name("The Great Hunt",zid:0RH);
+    written-by(robert-jordan, zid:0RJ);
+    member-of(wheel-of-time, zid:0RK);
+.
+
+#------------------ Book Series -----------------
+# The Wheel of Time
+wheel-of-time zid:0RL; isa zsi:book-series;
+    name("The Wheel of Time",zid:0RM);
+    written-by(robert-jordan, zid:0RN);
 .

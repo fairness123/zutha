@@ -101,32 +101,40 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
         throw new IllegalArgumentException(itemType.name + " is not one of the allowed Item Types")
 
     //nothing needs to be done unless the selectedItemType has changed
-     if(_selectedItemType != Full(itemType)) {
+    if(_selectedItemType != Full(itemType)) {
       _selectedItemType = Full(itemType)
 
-     //recalculate Field Sets required by itemType
+      //recalculate Field Sets required by itemType
       itemTypePropertySets = itemType.requiredPropertySets.map(new PropertySetBuilder(this,_))
-      itemTypeAssociationFieldSets = itemType.requiredAssociationFieldSets.map(new AssociationFieldSetBuilder(this,_))
+      itemTypeAssociationFieldSets = for{
+        assocField <- itemType.requiredAssociationFieldSets
+        if(assocField.associationFieldType != ZAssociationFieldType(db.INSTANCE,db.TYPE_INSTANCE)) //remove type-instance field
+      } yield new AssociationFieldSetBuilder(this,assocField)
 
-      if(requiredFieldIsMisc){ //need to create the requiredAssocField
+      if(requiredFieldIsMisc){ //we need to make sure we have the requiredAssocField
         itemTypeAssociationFieldSets.find(afsb =>
             afsb.fieldSetType.associationFieldType == requiredAssociationFieldType) match{
-          case None => //need to create the requiredAssocFieldSet
-            val requiredAssocFTDeclarer = requiredAssociationFieldType.declarerForType(itemType)
-            requiredAssocFTDeclarer match {
-              case Some(declarer) =>
-                //if the requiredAssociationFieldType is miscellaneous, allowed by itemType
-                // and not among itemTypeAssociationFieldSets then add it
-                itemTypeAssociationFieldSets += makeRequiredAssocFieldSet(declarer)
-                _allowedTraits = Set()
-              case None =>
-                //if the requiredAssociationFieldType is not provided by itemType
-                // then it must be provided by at least one of the traits this itemType allows,
-                // so set the allowedTraits to the set of Traits that are allowed by itemType and which
-                // allow the requiredAssociationFieldType
-                _allowedTraits = itemType.compatibleTraits intersect availableTraits
-                if(_allowedTraits.size == 1) {selectedTrait = _allowedTraits.head}
-                else {_selectedTrait = Empty; updateTraitDefinedFields}
+          case None => { //need to create the requiredAssocFieldSet
+              val requiredAssocFTDeclarer = requiredAssociationFieldType.declarerForType(itemType)
+              requiredAssocFTDeclarer match {
+                case Some(declarer) =>
+                  //if the requiredAssociationFieldType is miscellaneous, allowed by itemType
+                  // and not among itemTypeAssociationFieldSets then add it
+                  itemTypeAssociationFieldSets += makeRequiredAssocFieldSet(declarer)
+                  _allowedTraits = Set()
+                case None =>
+                  //if the requiredAssociationFieldType is not provided by itemType
+                  // then it must be provided by at least one of the traits this itemType allows,
+                  // so set the allowedTraits to the set of Traits that are allowed by itemType and which
+                  // allow the requiredAssociationFieldType
+                  _allowedTraits = itemType.compatibleTraits intersect availableTraits
+                  if (_allowedTraits.size == 1) {
+                    selectedTrait = _allowedTraits.head
+                  }
+                  else {
+                    _selectedTrait = Empty; updateTraitDefinedFields
+                  }
+              }
             }
           case Some(afsb) => makeRequiredAssocField(afsb)
         }

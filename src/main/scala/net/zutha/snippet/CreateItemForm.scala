@@ -93,7 +93,7 @@ class CreateItemForm(roleInfo: RoleInfo, rolePlayers: ValueCell[Set[ZItem]]) ext
   }
 
   //fields
-  val fieldStateCell = itemBuilderCell.lift( ib => ib.fieldSets )
+  val fieldSets = itemBuilderCell.lift( ib => ib.fieldSets )
 
   def renderFields( fields: Set[FieldSetBuilder], ns: NodeSeq ) = {
     val complexFields = fields.collect{
@@ -105,9 +105,9 @@ class CreateItemForm(roleInfo: RoleInfo, rolePlayers: ValueCell[Set[ZItem]]) ext
     val simpleFields = fields -- complexFields
 
     val sel =
-      ".simple-field" #> simpleFields.toSeq.map{SimpleFieldSetEdit(_)} &
-      ".complex-field" #> complexFields.toSeq.map{afsb =>
-        ".field-type *" #> afsb.associationType.nameF(role) &
+      ".simple-field" #> simpleFields.toSeq.sortBy(_.fieldType.name).map{SimpleFieldSetEdit(_)} &
+      ".complex-field" #> complexFields.toSeq.sortBy(_.fieldType.name).map{afsb =>
+        ".field-type *" #> afsb.associationType.nameF(afsb.role) &
         ".association-table" #> AssocTableEdit(afsb)
       }
 
@@ -139,7 +139,7 @@ class CreateItemForm(roleInfo: RoleInfo, rolePlayers: ValueCell[Set[ZItem]]) ext
     "#create-item-name" #> SHtml.ajaxText("",setName) &
     "#select-item-type" #> SHtml.ajaxSelect(itemTypeOptions,Full(selectedItemTypeZid),v => setItemType(v)) &
     "#trait-selection" #> WiringUI.toNode(traitSelectState){renderTraitsSelect} &
-    ".fields" #> WiringUI.toNode(fieldStateCell){renderFields} &
+    ".fields" #> WiringUI.toNode(fieldSets){renderFields} &
     "#create-item-button" #> SHtml.ajaxButton("Create Item",createItem)
   }
 }
