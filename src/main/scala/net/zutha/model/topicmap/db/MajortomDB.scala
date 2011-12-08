@@ -16,7 +16,8 @@ trait MajortomDB {
 
   val useStore = redis
 
-  var redisHost = "redis.zutha.net"
+//  var redisHost = "redis.zutha.net"
+  var redisHost = "localhost"
   var redisPort = "6379"
   var redisPass = "ooEE8u32u8oO!3A!jkh9@EUhq$XXUEE88E"
   

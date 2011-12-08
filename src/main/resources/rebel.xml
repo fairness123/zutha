@@ -6,7 +6,7 @@
 
 	<classpath>
 		<dir name="${myproject.root}/target/scala-2.9.1/classes"></dir>
-        <dir name="${myproject.root}/target/scala-2.9.1/test-classes"></dir>
+        <!--<dir name="${myproject.root}/target/scala-2.9.1/test-classes"></dir>-->
         <dir name="${myproject.root}/src/main/resources"></dir>
 	</classpath>
     <web>

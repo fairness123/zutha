@@ -10,17 +10,22 @@ scalaVersion := "2.9.1"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-//web plugin
+//--------- web plugin ---------
 seq(webSettings :_*)
 
-//CloudBees plugin
-//seq(bees.RunCloudPlugin.deploymentSettings :_*)
-
-
-scanDirectories in Compile := Nil //for JRebel
-
+//--------- web server settings ---------
 port in container.Configuration := 8082
 
+//--------- OneJar plugin ---------
+//seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
+
+//libraryDependencies += "commons-lang" % "commons-lang" % "2.6"
+
+//--------- War Plugins ---------
+//seq(jettyEmbedSettings:_*)
+
+//for JRebel
+scanDirectories in Compile := Nil
 
 resolvers ++= Seq(
     "Java.net Maven2 Repository" at "http://download.java.net/maven/2/",
@@ -34,10 +39,10 @@ libraryDependencies ++= {
     val tmql4j_version = "3.2.0-SNAPSHOT"
     val majortom_version = "1.2.0"
     Seq(
-    "org.eclipse.jetty" % "jetty-webapp" % "8.0.1.v20110908" % "container",
-    //"org.apache.tomcat" % "tomcat-catalina" % "7.0.23" % "tomcat",
+    "org.eclipse.jetty" % "jetty-webapp" % "8.0.0.v20110901" % "container",
     "javax.servlet" % "servlet-api" % "2.5" % "provided->default",
-    "ch.qos.logback" % "logback-classic" % "0.9.26",
+    //"org.apache.tomcat" % "tomcat-catalina" % "7.0.23" % "tomcat",
+    //"com.semagia.mio" % "mio-ctm" % "0.1.0-SNAPSHOT",
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-mapper" % liftVersion % "compile",
     "net.liftweb" %% "lift-widgets" % liftVersion % "compile" withSources(),
