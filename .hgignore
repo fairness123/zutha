@@ -4,4 +4,5 @@ target/
 project/boot
 ^\.idea
 syntax: glob
-sbt_open.bat
+sbt-dbg.bat
+sbt-jrebel.bat
