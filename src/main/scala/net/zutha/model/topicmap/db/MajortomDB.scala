@@ -4,13 +4,11 @@ import de.topicmapslab.majortom.model.core.ITopicMapSystem
 import org.tmapi.core.TopicMapSystemFactory
 import de.topicmapslab.majortom.store.TopicMapStoreProperty
 import de.topicmapslab.majortom.util.FeatureStrings
-import de.topicmapslab.majortom.queued.store.QueuedTopicMapStore
-import de.topicmapslab.majortom.model.store.ITopicMapStore
 
 
 trait MajortomDB {
-  val rdbms = "de.topicmapslab.majortom.database.store.JdbcTopicMapStore"
-  val queued = "de.topicmapslab.majortom.queued.store.QueuedTopicMapStore"
+//  val rdbms = "de.topicmapslab.majortom.database.store.JdbcTopicMapStore"
+//  val queued = "de.topicmapslab.majortom.queued.store.QueuedTopicMapStore"
   val inMemory = "de.topicmapslab.majortom.inmemory.store.InMemoryTopicMapStore"
   val redis = "de.topicmapslab.majortom.redis.store.RedisTopicMapStore"
 
@@ -44,9 +42,5 @@ trait MajortomDB {
     //factory.setFeature(FeatureStrings.SUPPORT_HISTORY, true);
 
     factory.newTopicMapSystem().asInstanceOf[ITopicMapSystem]
-  }
-
-  def makeTopicMapStore(sys: ITopicMapSystem): ITopicMapStore = {
-    new QueuedTopicMapStore(sys)
   }
 }

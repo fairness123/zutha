@@ -5,7 +5,6 @@ import scala.collection.mutable.Map
 import org.tmapi.core._
 import org.tmapix.io.CTMTopicMapReader
 import tools.nsc.io.{File}
-import de.topicmapslab.majortom.model.transaction.ITransaction
 import net.liftweb.common.{Loggable}
 
 import net.zutha.model.constants._

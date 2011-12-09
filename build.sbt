@@ -31,7 +31,7 @@ resolvers ++= Seq(
     "Java.net Maven2 Repository" at "http://download.java.net/maven/2/",
     "tmlab" at "http://maven.topicmapslab.de/public",
     "org.tmapi" at "http://www.tmapi.org/maven-repository/snapshots",
-    "semagia" at "http://repository.semagia.com/snapshots"    
+    "semagia" at "http://repository.semagia.com/releases"
 )
 
 libraryDependencies ++= {
@@ -45,9 +45,10 @@ libraryDependencies ++= {
     "net.liftweb" %% "lift-widgets" % liftVersion % "compile" withSources(),
     "net.liftweb" %% "lift-openid" % liftVersion % "compile" withSources(),
     "de.topicmapslab.majortom" % "majortom-model" % majortom_version withJavadoc() withSources(),
-    "de.topicmapslab.majortom" % "majortom-db" % majortom_version withJavadoc() withSources(),
-    "de.topicmapslab.majortom" % "majortom-inMemory" % majortom_version withJavadoc() withSources(),
-    "de.topicmapslab.majortom" % "majortom-queued" % majortom_version withJavadoc() withSources(),
-    "de.topicmapslab.majortom" % "majortom-redis" % majortom_version withJavadoc() withSources()
+//    "de.topicmapslab.majortom" % "majortom-db" % majortom_version withJavadoc() withSources(),
+//    "de.topicmapslab.majortom" % "majortom-inMemory" % majortom_version withJavadoc() withSources(),
+//    "de.topicmapslab.majortom" % "majortom-queued" % majortom_version withJavadoc() withSources(),
+    "de.topicmapslab.majortom" % "majortom-redis" % majortom_version withJavadoc() withSources(),
+    "org.tmapix" % "tmapix-io" % "1.0.0"
 )}
 
