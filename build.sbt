@@ -36,29 +36,14 @@ resolvers ++= Seq(
 
 libraryDependencies ++= {
     val liftVersion = "2.4-M5"
-    val tmql4j_version = "3.2.0-SNAPSHOT"
     val majortom_version = "1.2.0"
     Seq(
     "org.eclipse.jetty" % "jetty-webapp" % "8.0.0.v20110901" % "container",
     "javax.servlet" % "servlet-api" % "2.5" % "provided->default",
-    //"org.apache.tomcat" % "tomcat-catalina" % "7.0.23" % "tomcat",
-    //"com.semagia.mio" % "mio-ctm" % "0.1.0-SNAPSHOT",
+    "org.slf4j" % "slf4j-jdk14" % "1.6.4",
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
-    "net.liftweb" %% "lift-mapper" % liftVersion % "compile",
     "net.liftweb" %% "lift-widgets" % liftVersion % "compile" withSources(),
     "net.liftweb" %% "lift-openid" % liftVersion % "compile" withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-path" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-draft2010" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-draft2011" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-delete" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-flwr" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-insert" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-merge" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-select" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-template" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-update" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-tolog" % tmql4j_version withJavadoc() withSources(),
-    "de.topicmapslab.tmql4j" % "tmql4j-majortom" % tmql4j_version withJavadoc() withSources(),
     "de.topicmapslab.majortom" % "majortom-model" % majortom_version withJavadoc() withSources(),
     "de.topicmapslab.majortom" % "majortom-db" % majortom_version withJavadoc() withSources(),
     "de.topicmapslab.majortom" % "majortom-inMemory" % majortom_version withJavadoc() withSources(),
