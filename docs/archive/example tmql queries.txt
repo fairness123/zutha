@@ -1,0 +1,28 @@
+for $t in tm:subject >> instances
+return ($t / tm:name, $t >> indicators >> atomify, $t >> types / tm:name)
+
+
+%prefix zsi http://psi.zutha.net/
+for $t in zsi:Book >> instances
+return ($t / tm:name, $t >> indicators)
+
+%pragma taxonometry tm:transitive
+%prefix zsi http://psi.zutha.net/
+RETURN <items>{
+FOR $t IN zsi:item-type >> instances
+RETURN
+<item>
+{FOR $name IN $t / tm:name
+RETURN <name>{$name}</name>
+}
+{FOR $zid IN $t >> indicators >> atomify [. =~ "^http://zutha\\.net/item/.+$"]
+RETURN <zid>{fn:substring($zid,22,50)}</zid>
+}
+{FOR $si IN $t >> indicators >> atomify [. =~ "^(?!http://zutha\\.net/item/.*$).*$"]
+RETURN <SI>{$si}</SI>
+}
+{FOR $tt IN $t >> types
+RETURN <type>{$tt / tm:name}</type>
+}
+</item>
+}</items>
