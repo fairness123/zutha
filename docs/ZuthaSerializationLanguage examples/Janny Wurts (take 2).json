@@ -1,0 +1,32 @@
+{
+"items" : [
+    {
+        "zid" : ["07DP","1503BJ"],
+        "type" : "<author>",
+        "created" : "2011-08-18T08:10:14",
+        "modified" : "2011-08-18T08:10:14",
+        "properties": [
+            {
+            "zid" : ["0MMK5"],
+            "type" : "<name>",
+            "created" : "2011-08-18T08:10:14",
+            "modified" : "2011-08-18T08:10:14",
+            "value" : "Janny Wurts",
+            "scope" : ["<author>"]
+            }
+        ]
+    }
+],
+"associations" : [
+    {
+        "zid" : "099XPA",
+        "type" : "authorship",
+        "created" : "2011-08-18T08:10:14",
+        "modified" : "2011-08-18T08:10:14",
+        "roleplayers" : [
+            {"role" : "<author>", "player" : "07DP"},
+            {"role" : "<written-work>", "player" : "<daughter-of-the-empire>"}
+        ]
+    }
+]
+}

@@ -29,7 +29,7 @@ trait ZItem extends ZAssociationMember{
 
   // -------------- ZIDs --------------
   def zid: String;
-  def getZIDs: Set[String];
+  def zids: Set[String];
   def addZID(zid: Zid);
 
   // -------------- names --------------
@@ -66,6 +66,7 @@ trait ZItem extends ZAssociationMember{
   def getPropertySetsGrouped: Map[ZType,Set[ZPropertySet]]
   def getNonEmptyPropertySetsGrouped: Map[ZType,Set[ZPropertySet]]
   def getProperties(propType: ZPropertyType): Set[ZProperty]
+  def getAllProperties: Set[ZProperty]
   def getPropertyValues(propType: ZPropertyType): Set[PropertyValue]
   def getProperty(propType: ZPropertyType): Option[ZProperty]
   def getPropertyValue(propType: ZPropertyType): Option[PropertyValue]

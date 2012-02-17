@@ -233,6 +233,8 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
     instances
   }
 
+  def allItems: Set[ZItem] = allInstancesOfType(ITEM)
+
   def descendantsOfType(zType: ZType): Set[ZType] = {
     val rawDesc = rawDescendentsOfType(zType)
     val descendents = topicsToItems(rawDesc).map(_.toType)
@@ -283,10 +285,14 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
     otherPlayers
   }
 
+  def allAssociations : Set[ZAssociation] = {
+    tm.getAssociations.toSet.map{a: Association => a.toZAssociation}
+  }
+
   //Topic-Map specific methods
 
   /** check if this Topic is an Anonymous Topic which doesn't exist in the ZDM
-   *  @params topic
+   *  @param topic
    *  @return true if this topic is an AnonymousTopic
    */
   def topicIsAnonymous(topic: Topic): Boolean = {
@@ -294,7 +300,7 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
   }
 
   /** check if this Association is has a player which is an Anonymous Topic
-   *  @params association
+   *  @param association
    *  @return true if this association is anonymous
    */
   def associationIsAnonymous(association: Association): Boolean = {

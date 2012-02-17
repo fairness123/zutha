@@ -53,7 +53,7 @@ class RolePage(roleInfo: RoleInfo) {
       val sel = ".role-player" #> rps.map{rp => renderRolePlayer(rp)}
       sel(ns)
     }
-    if(CurrentUser.loggedIn) selDynamic else selStatic
+    if(CurrentUser.loggedIn) selStatic & selDynamic else selStatic //this was an attempt to make WiringUI.toNode send the transformed output in the initial request but it didn't work
   }
 
   def renderCreateItemForm = "*" #> createItemForm.map(_.render)

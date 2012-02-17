@@ -1,7 +1,6 @@
 package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
-import net.zutha.model.topicmap.TMConversions._
 import net.zutha.util.Cache._
 import net.zutha.model.constants.ZuthaConstants
 import ZuthaConstants._
@@ -10,6 +9,7 @@ import net.zutha.model.db.DB.db
 import de.topicmapslab.majortom.model.core.IScope
 import org.tmapi.core.{Name, Topic}
 import net.zutha.model.datatypes.{PropertyValue}
+import net.zutha.model.topicmap.TMConversions._
 
 object TMItem{
   val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
@@ -68,9 +68,9 @@ class TMItem protected (topic: Topic) extends ZItem{
       case e: IllegalArgumentException => throw new Exception("item has an invalid ZID")
     }
   }
-  def getZIDs = ZIDs
+  def zids = ZIDs
 
-  def zid: String = getZIDs.toSeq.sorted.head
+  def zid: String = zids.toSeq.sorted.head
 
   def addZID(zid: Zid){
     val zidLoc = topic.getTopicMap.createLocator(ZID_PREFIX + zid)
@@ -151,6 +151,12 @@ class TMItem protected (topic: Topic) extends ZItem{
     //propType is an occurrence-implemented property
     val occurrences = topic.getOccurrences(propType).map(_.toProperty).toSet
     occurrences
+  }
+
+  def getAllProperties: Set[ZProperty] = {
+    val nameProps = topic.getNames.map(_.toProperty).toSet
+    val occProps = topic.getOccurrences.map(_.toProperty).toSet
+    nameProps ++ occProps
   }
 
   def getPropertyValues(propType: ZPropertyType): Set[PropertyValue] = {
