@@ -5,28 +5,47 @@
         "type" : "<author>",
         "created" : "2011-08-18T08:10:14",
         "modified" : "2011-08-18T08:10:14",
-        "properties": [
-            {
-            "zid" : ["0MMK5"],
-            "type" : "<name>",
-            "created" : "2011-08-18T08:10:14",
-            "modified" : "2011-08-18T08:10:14",
-            "value" : "Janny Wurts",
-            "scope" : ["<author>"]
-            }
-        ]
-    }
+    },
+	{
+		"zid" : ["0MMK5"],
+		"type" : "<name>",
+		"created" : "2011-08-18T08:10:14",
+		"modified" : "2011-08-18T08:10:14",
+		"value" : "Janny Wurts",
+		"scope" : ["<author>"]
+	}
+	
 ],
 "associations" : [
     {
-        "zid" : "099XPA",
-        "type" : "authorship",
+        "zid" : ["099XPA"],
+        "type" : "<authorship>",
         "created" : "2011-08-18T08:10:14",
         "modified" : "2011-08-18T08:10:14",
         "roleplayers" : [
-            {"role" : "<author>", "player" : "07DP"},
-            {"role" : "<written-work>", "player" : "<daughter-of-the-empire>"}
+            {
+				"role" : "<author>", 
+				"players" : ["07DP"]
+			},
+            {
+				"role" : "<written-work>", 
+				"players" : ["<daughter-of-the-empire>"]
+			}
         ]
-    }
+    },
+	{
+		"zid" : ["0K3A"],
+		"type" : "<property-set>",
+		"roleplayers" : [
+			{
+				"role" : "<parent>",
+				"players" : ["07DP"]
+			},
+			{
+				"role" : "<property>",
+				"players" : ["0MMK5"]
+			}
+		]
+	}
 ]
 }
