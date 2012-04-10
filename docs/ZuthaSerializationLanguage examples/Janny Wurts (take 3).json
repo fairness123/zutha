@@ -42,6 +42,10 @@
 				"players" : ["07DP"]
 			},
 			{
+				"role" : "<type>",
+				"players" : "<name>"
+			},
+			{
 				"role" : "<property>",
 				"players" : ["0MMK5"]
 			}

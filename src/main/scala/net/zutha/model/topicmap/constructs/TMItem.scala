@@ -83,7 +83,7 @@ class TMItem protected (topic: Topic) extends ZItem{
     val grouped = kvPairs.groupBy(e => e._1).mapValues(e => e.map(x => x._2).toSet)
     grouped
   }
-  def names(scope: ZScope):Set[String] = namesGrouped.getOrElse(scope,Set())
+  def names(scope: ZScope): Set[String] = namesGrouped.getOrElse(scope,Set())
   def names(scopeItems: ZItem*):Set[String] = names(ZScope(scopeItems.toSet))
   def allNames:Set[String] = namesGrouped.values.flatten.toSet
   def unconstrainedNames:Set[String] = names(ZScope())

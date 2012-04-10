@@ -2,6 +2,7 @@ package net.zutha.model.constants
 
 object ApplicationConstants {
   val TM_DATA_PATH = "src/main/resources/tm_data/"
+  val JSON_DATA_PATH = "src/main/resources/json_data/"
 
   val HTML_EXT = "html"
   val ZID_NAME_SEP = "::"

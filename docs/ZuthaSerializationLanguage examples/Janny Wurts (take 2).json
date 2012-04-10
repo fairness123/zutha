@@ -1,13 +1,13 @@
 {
 "items" : [
     {
-        "zid" : ["07DP","1503BJ"],
+        "zids" : ["07DP","1503BJ"],
         "type" : "<author>",
         "created" : "2011-08-18T08:10:14",
         "modified" : "2011-08-18T08:10:14",
         "properties": [
             {
-            "zid" : ["0MMK5"],
+            "zids" : ["0MMK5"],
             "type" : "<name>",
             "created" : "2011-08-18T08:10:14",
             "modified" : "2011-08-18T08:10:14",
@@ -19,8 +19,8 @@
 ],
 "associations" : [
     {
-        "zid" : "099XPA",
-        "type" : "authorship",
+        "zids" : ["099XPA"],
+        "type" : "<authorship>",
         "created" : "2011-08-18T08:10:14",
         "modified" : "2011-08-18T08:10:14",
         "roleplayers" : [

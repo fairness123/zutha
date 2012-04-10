@@ -15,8 +15,11 @@ object TMAssociation{
 class TMAssociation protected (association: Association) extends ZAssociation{
   def toZAssociation: ZAssociation = this
   def toAssociation = association
+  def zid = reifier.zid
+  def zids = reifier.zids
   lazy val reifier = association.getReifier
   def associationType = TMAssociationType(association.getType)
+  def hasType(zType: ZType) = associationType.hasAncestor(zType)
   def associationFields: Set[ZAssociationField] = association.getRoles.toSet.map(TMAssociationField(_:Role))
   def playedRoles = association.getRoleTypes.map(TMRole(_:Topic)).toSet
   def players = rolePlayers.map(_._2)

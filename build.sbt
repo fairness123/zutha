@@ -1,3 +1,5 @@
+import com.typesafe.startscript.StartScriptPlugin
+
 //logLevel := Level.Debug
 
 name := "Zutha"
@@ -12,6 +14,9 @@ scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 //--------- web plugin ---------
 seq(webSettings :_*)
+
+//--------- start script plugin ---------
+seq(StartScriptPlugin.startScriptForClassesSettings: _*)
 
 //--------- web server settings ---------
 port in container.Configuration := 8082

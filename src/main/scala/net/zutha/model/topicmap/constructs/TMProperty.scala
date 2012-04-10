@@ -1,20 +1,30 @@
 package net.zutha.model.topicmap.constructs
 
-import net.zutha.model.constructs.ZProperty
+import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
 import net.zutha.util.Cache._
 import org.tmapi.core.{Name, Occurrence}
 import net.zutha.model.exceptions.SchemaViolationException
+import net.zutha.model.constructs.{ZScope, ZProperty}
+import net.zutha.model.constructs.ZScope._
 
 abstract class TMProperty extends ZProperty {
 
   def toProperty: ZProperty = this
+
+  def zid = reifier.zid
+
+  def zids = reifier.zids
+
   def dataTypeItem = propertyType.dataTypeItem
+
   val dataType = propertyType.dataType
+
   def value = valueString match {
     case dataType(propValue) => propValue
     case _ => throw new SchemaViolationException("property: "+this+" has illegal value: "+valueString)
   }
+
 }
 
 object TMOccurrenceProperty{
@@ -29,6 +39,10 @@ class TMOccurrenceProperty(occ: Occurrence) extends TMProperty {
   def valueString = occ.getValue
 
   def parent = occ.getParent.toItem
+
+  def reifier = occ.getReifier.toItem
+
+  def scope = ZScope(occ.getScope.map(_.toItem).toSet)
 }
 
 object TMNameProperty{
@@ -43,5 +57,9 @@ class TMNameProperty protected (name: Name) extends TMProperty {
   def valueString = name.getValue
 
   def parent = name.getParent.toItem
+
+  def reifier = name.getReifier.toItem
+
+  def scope = ZScope(name.getScope.map(_.toItem).toSet)
 }
 

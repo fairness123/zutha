@@ -9,9 +9,15 @@ libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin"
 //Sbt Idea
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "0.11.0")
 
+//start-script-plugin
+resolvers += Classpaths.typesafeResolver
+
+addSbtPlugin("com.typesafe.startscript" % "xsbt-start-script-plugin" % "0.5.1")
+
 // OneJar
 //resolvers += "retronym-releases" at "http://retronym.github.com/repo/releases"
 
 //resolvers += "retronym-snapshots" at "http://retronym.github.com/repo/snapshots"
 
 //addSbtPlugin("com.github.retronym" % "sbt-onejar" % "0.6")
+

@@ -3,7 +3,10 @@ package net.zutha.model.constructs
 import net.zutha.model.datatypes.{PropertyValue}
 
 trait ZAssociation {
+  def zid: String
+  def zids: Set[String]
   def associationType: ZAssociationType
+  def hasType(zType: ZType): Boolean
   def associationFields: Set[ZAssociationField]
   def playedRoles: Set[ZRole]
   def players: Set[ZItem]
