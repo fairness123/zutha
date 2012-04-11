@@ -16,10 +16,9 @@ end
 # KIND OF
 def kind-of($subtype, $supertype, $reifier)
     $reifier isa zsi:supertype-subtype.
-    $subtype ako $supertype.
-    tmdm:supertype-subtype(
-        tmdm:subtype: $subtype,
-        tmdm:supertype: $supertype
+    zsi:supertype-subtype(
+        zsi:subtype: $subtype,
+        zsi:supertype: $supertype
     ) ~ $reifier
 end
 
@@ -51,16 +50,16 @@ end
 
 # NAME
 def name($item, $value, $reifier)
-    $reifier isa zsi:modifiable-name
+    $reifier isa zsi:name
     .
     $item
-        - zsi:modifiable-name: $value ~ $reifier.
+        - zsi:name: $value ~ $reifier.
 end
 def name($item, $value, $scope, $reifier)
-    $reifier isa zsi:modifiable-name
+    $reifier isa zsi:name
     .
     $item
-        - zsi:modifiable-name: $value @$scope ~$reifier.
+        - zsi:name: $value @$scope ~$reifier.
 end
 
 # IDENTIFIER

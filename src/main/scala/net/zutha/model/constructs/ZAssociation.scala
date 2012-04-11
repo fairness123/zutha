@@ -3,6 +3,8 @@ package net.zutha.model.constructs
 import net.zutha.model.datatypes.{PropertyValue}
 
 trait ZAssociation {
+  override def toString = associationType.name +
+    rolePlayers.toSeq.sortBy(_._1.name).map{ case (r,p) => r.name + ": " + p.name }.mkString( "(", ", ", ")" )
   def zid: String
   def zids: Set[String]
   def associationType: ZAssociationType

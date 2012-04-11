@@ -59,7 +59,7 @@ class TMItem protected (topic: Topic) extends ZItem{
       .toSet
     //every item must have at least one ZID
     if (zids.size == 0){
-      throw new Exception("item has no ZIDs")
+      //throw new Exception("item has no ZIDs")
     }
 
     try{
@@ -93,7 +93,8 @@ class TMItem protected (topic: Topic) extends ZItem{
   lazy val name = unconstrainedNames.headOption match {
     case Some(str) => str
     case None => { //TODO implement autoNames
-      "Item " + zid
+      if(zids.isEmpty) "anon"
+      else "Item " + zid
       //throw new SchemaViolationException("item '" + this + "' has no name")
     }
   }

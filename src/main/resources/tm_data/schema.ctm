@@ -8,6 +8,18 @@
 %prefix xsd http://www.w3.org/2001/XMLSchema#
 %prefix iso http://psi.topicmaps.org/iso13250/
 
+# =============== Topic Map equivalence ==============
+zsi:item tmdm:subject.
+zsi:type tmdm:type.
+zsi:supertype tmdm:supertype.
+zsi:subtype tmdm:subtype.
+zsi:instance tmdm:instance.
+zsi:type-instance tmdm:type-instance.
+zsi:supertype-subtype tmdm:supertype-subtype.
+zsi:item-type tmcl:topic-type.
+zsi:role tmcl:role-type.
+zsi:association-type tmcl:association-type.
+zsi:property-type tmcl:occurrence-type.
 
 # ==================== Item Types ====================
 
@@ -21,9 +33,8 @@ zsi:item %zid%; isa zsi:item-type;
 
     is-abstract(%zid%);
     root-of(zsi:item-type,%zid%);
-    #has-property(zsi:zid,1,*,%zid%);
-    has-property(zsi:name,1,*,%zid%);
-    has-property(zsi:modifiable-name,0,*,%zid%);
+    has-property(zsi:zid,1,*,%zid%);
+    has-property(zsi:name,0,*,%zid%);
     has-property(zsi:description,0,1,%zid%);
     plays-role(zsi:instance,
         zsi:type-instance,1,1,%zid%);
@@ -32,7 +43,7 @@ zsi:item %zid%; isa zsi:item-type;
     plays-role(zsi:scope-item,
         zsi:field-with-scope-item-declaration,0,*,%zid%);
     plays-role(zsi:item,
-        zsi:field-set-permission-level,0,*,%zid%);
+        zsi:field-set-lock,0,*,%zid%);
 .
 
 # TYPE
@@ -223,7 +234,7 @@ zsi:association-type %zid%; isa zsi:item-type;
     plays-role(zsi:association-type,
         zsi:association-field-with-scope-item-type-declaration,0,*,%zid%);
     plays-role(zsi:association-type,
-        zsi:association-field-set-permission-level,0,*,%zid%);
+        zsi:association-field-set-lock,0,*,%zid%);
 .
 
 # CALCULATED ASSOCIATION TYPE
@@ -257,18 +268,8 @@ zsi:property-type %zid%; isa zsi:item-type;
     plays-role(zsi:property-type,
         zsi:property-with-scope-item-type-declaration,0,*,%zid%);
     plays-role(zsi:property-type,
-        zsi:property-set-permission-level,0,*,%zid%);
+        zsi:property-set-lock,0,*,%zid%);
     may-have-trait(zsi:datatype,%zid%);
-.
-
-# CALCULATED PROPERTY TYPE
-zsi:calculated-property-type %zid%; isa zsi:item-type;
-    kind-of(zsi:property-type,%zid%);
-
-    name("Calculated Property Type",%zid%);
-
-    has-property(zsi:calculated-property-generation-rule,1,1,%zid%);
-    has-property(zsi:calculated-property-generation-rule-description,0,1,%zid%);
 .
 
 # EMBEDDED PROPERTY TYPE
@@ -305,8 +306,6 @@ zsi:reified-construct-type %zid%; isa zsi:item-type;
     kind-of(zsi:construct-type,%zid%);
 
     name("Reified Construct Type",%zid%);
-    
-    has-property(zsi:default-permission-level,0,1,%zid%);
 .
 
 # REIFIED ASSOCIATION TYPE
@@ -374,17 +373,8 @@ zsi:property %zid%; isa zsi:property-type;
     root-of(zsi:property-type,%zid%);
 .
 
-# CALCULATED PROPERTY
-zsi:calculated-property %zid%; isa zsi:calculated-property-type;
-    kind-of(zsi:property,%zid%);
-
-    name("Calculated Property",%zid%);
-
-    root-of(zsi:calculated-property-type,%zid%);
-.
-
 # EMBEDDED PROPERTY
-#--- non-reified mutable property whose permission-level and scope are either derived or unavailable
+#--- non-reified mutable property whose field-lock and scope are either derived or unavailable
 zsi:embedded-property %zid%; isa zsi:embedded-property-type;
     kind-of(zsi:property,%zid%);
 
@@ -411,21 +401,11 @@ zsi:system-property %zid%; isa zsi:system-property-type;
     root-of(zsi:system-property-type,%zid%);
 .
 
-# HYBRID PROPERTY
-zsi:hybrid-property %zid%; isa zsi:property-type;
-    kind-of(zsi:property,%zid%);
-
-    name("Hybrid Property",%zid%);
-
-    is-abstract(%zid%);
-.
-
 # ---------------------- Reified Construct Types ----------------------
 
 # REIFIED CONSTRUCT
 zsi:reified-construct %zid%; isa zsi:reified-construct-type;
     kind-of(zsi:item,%zid%);
-    kind-of(zsi:permission-controller,%zid%);
 
     name("Reified Construct",%zid%);
 
@@ -441,7 +421,6 @@ zsi:reified-association %zid%; isa zsi:reified-association-type;
 
     is-abstract(%zid%);
     root-of(zsi:reified-association-type,%zid%);
-    has-property(zsi:calculated-association-name,1,1,%zid%);
 .
 
 # REIFIED PROPERTY
@@ -452,7 +431,6 @@ zsi:reified-property %zid%; isa zsi:reified-property-type;
 
     is-abstract(%zid%);
     root-of(zsi:reified-property-type,%zid%);
-    has-property(zsi:calculated-property-name,1,1,%zid%);
 .
 
 # ==================== Association Types ====================
@@ -512,7 +490,7 @@ zsi:Type-has-supertype %zid%; isa zsi:calculated-association-type;
 
 # SUPERTYPE-SUBTYPE
 zsi:supertype-subtype %zid%; isa zsi:reified-association-type;
-    kind-of(zsi:association,%zid%);
+    kind-of(zsi:reified-association,%zid%);
 
     external-identifier(tmdm:supertype-subtype, %zid%);
     name("Supertype-Subtype",%zid%);
@@ -525,7 +503,7 @@ zsi:supertype-subtype %zid%; isa zsi:reified-association-type;
 
 # ITEM HAS TRAIT
 zsi:item-has-trait %zid%; isa zsi:reified-association-type;
-    kind-of(zsi:association,%zid%);
+    kind-of(zsi:reified-association,%zid%);
 
     name("Item Has Trait",%zid%);
     name("Has Trait",zsi:item,%zid%);
@@ -535,39 +513,31 @@ zsi:item-has-trait %zid%; isa zsi:reified-association-type;
     has-role(zsi:trait,1,1,%zid%);
 .
 
-# FIELD SET PERMISSION LEVEL
-zsi:field-set-permission-level %zid%; isa zsi:reified-association-type;
-    kind-of(zsi:association,%zid%);
-    kind-of(zsi:permission-controller,%zid%);
+# FIELD SET LOCK
+zsi:field-set-lock %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:reified-association,%zid%);
+    kind-of(zsi:field-lock,%zid%);
 
-    name("Field Set Permission Level",%zid%);
-    name("Field Set has Permission Level",zsi:item,%zid%);
+    name("Field Set Lock",%zid%);
 
     is-abstract(%zid%);
     has-role(zsi:item,1,1,%zid%);
 .
 
-# PROPERTY SET PERMISSION LEVEL
-zsi:property-set-permission-level %zid%; isa zsi:reified-association-type;
-    kind-of(zsi:association,%zid%);
-    kind-of(zsi:field-set-permission-level,%zid%);
+# PROPERTY SET LOCK
+zsi:property-set-lock %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-set-lock,%zid%);
 
-    name("Property Set Permission Level",%zid%);
-    name("Property Set has Permission Level",zsi:item,%zid%);
-    name("Item restricts Property Sets of this type",zsi:property-type,%zid%);
+    name("Property Set Lock",%zid%);
 
     has-role(zsi:property-type,1,1,%zid%);
 .
 
-# ASSOCIATION FIELD SET PERMISSION LEVEL
-zsi:association-field-set-permission-level %zid%; isa zsi:reified-association-type;
-    kind-of(zsi:association,%zid%);
-    kind-of(zsi:field-set-permission-level,%zid%);
+# ASSOCIATION FIELD SET LOCK
+zsi:association-field-set-lock %zid%; isa zsi:reified-association-type;
+    kind-of(zsi:field-set-lock,%zid%);
 
-    name("Association Field Set Permission Level",%zid%);
-    name("Association Field Set has Permission Level",zsi:item,%zid%);
-    name("Item restricts Association Field sets of this Association Type",zsi:association-type,%zid%);
-    name("Item restricts Association Field sets of this Role and Association Type",zsi:role,%zid%);
+    name("Association Field Set Lock",%zid%);
 
     has-role(zsi:association-type,1,1,%zid%);
     has-role(zsi:role,1,1,%zid%);
@@ -589,77 +559,16 @@ zsi:zid %zid%; isa zsi:system-property-type;
     has-unique-value(%zid%);
 .
 
-# PERMISSION LEVEL
-zsi:permission-level %zid%; isa zsi:embedded-property-type;
-    kind-of(zsi:embedded-property,%zid%);
-    has-trait(zsi:datatype,%zid%);
-
-    name("Permission Level",%zid%);
-
-    has-datatype(zsi:permission-level,%zid%);
-.
-
-# PERMISSION LOCK LEVEL
-zsi:permission-lock-level %zid%; isa zsi:embedded-property-type;
-    kind-of(zsi:embedded-property,%zid%);
-    has-trait(zsi:datatype,%zid%);
-
-    name("Permission Lock Level",%zid%);
-
-    has-datatype(zsi:permission-lock-level,%zid%);
-.
-
-# CALCULATED NAME
-#--- implemented with Name of type zsi:calculated-name
-zsi:calculated-name %zid%; isa zsi:calculated-property-type;
-    kind-of(zsi:name,%zid%);
-    kind-of(zsi:system-property,%zid%);
-
-    name("Calculated Name",%zid%);
-
-    property(zsi:calculated-property-generation-rule, "\"item-\" + this.zid", %zid%);
-.
-
-# CALCULATED PROPERTY NAME
-zsi:calculated-property-name %zid%; isa zsi:calculated-property-type;
-    kind-of(zsi:calculated-name,%zid%);
-
-    name("Calculated Property Name",%zid%);
-
-    property(zsi:calculated-property-generation-rule, "\"property-\" + this.zid", %zid%);
-.
-
-# CALCULATED ASSOCIATION NAME
-zsi:calculated-association-name
-    kind-of(zsi:calculated-name,%zid%);
-    %zid%; isa zsi:calculated-property-type;
-
-    name("Calculated Association Name",%zid%);
-
-    property(zsi:calculated-property-generation-rule, "\"association-\" + this.zid", %zid%);
-.
-
-# -------------- Hybrid Properties --------------
-
-# NAME
-zsi:name %zid%; isa zsi:property-type;
-    kind-of(zsi:hybrid-property,%zid%);
-
-    name("Name",%zid%);
-
-    is-abstract(%zid%);
-    has-datatype(xsd:string,%zid%);
-    has-unique-value(%zid%);
-.
 
 # -------------- Reified Properties --------------
 
-# MODIFIABLE NAME
-zsi:modifiable-name %zid%; isa zsi:reified-property-type;
+# NAME
+zsi:name %zid%; isa zsi:reified-property-type;
     kind-of(zsi:reified-property,%zid%);
-    kind-of(zsi:name,%zid%);
 
-    name("Modifiable Name",%zid%);
+    name("Name",%zid%);
+    has-datatype(xsd:string,%zid%);
+    has-unique-value(%zid%);
 .
 
 # DESCRIPTION
@@ -667,27 +576,6 @@ zsi:description %zid%; isa zsi:reified-property-type;
     kind-of(zsi:reified-property,%zid%);
 
     name("Description",%zid%);
-
-    has-datatype(xsd:string,%zid%);
-.
-
-# CALCULATED PROPERTY GENERATION RULE
-zsi:calculated-property-generation-rule %zid%; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,%zid%);
-
-    name("Calculated Property Generation Rule",%zid%);
-    name("Rule",zsi:calculated-property-type,%zid%);
-
-    has-datatype(xsd:string,%zid%);
-.
-
-# CALCULATED PROPERTY GENERATION RULE DESCRIPTION
-zsi:calculated-property-generation-rule-description %zid%; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,%zid%);
-    
-
-    name("Calculated Property Generation Rule Description",%zid%);
-    name("Rule Description",zsi:calculated-property-type,%zid%);
 
     has-datatype(xsd:string,%zid%);
 .
@@ -710,15 +598,6 @@ zsi:calculated-association-rule-description %zid%; isa zsi:reified-property-type
     name("Rule Description",zsi:calculated-association-type,%zid%);
 
     has-datatype(xsd:string,%zid%);
-.
-
-# DEFAULT PERMISSION LEVEL
-zsi:default-permission-level %zid%; isa zsi:reified-property-type;
-    kind-of(zsi:reified-property,%zid%);
-
-    name("Default Permission Level",%zid%);
-
-    has-datatype(zsi:permission-level,%zid%);
 .
 
 # IDENTIFIER
@@ -781,12 +660,10 @@ zsi:role-combination %zid%; isa zsi:item-type;
 
 # ==================== Schema Traits ====================
 
-# PERMISSION CONTROLLER
-zsi:permission-controller %zid%; isa zsi:trait;
-    name("Permission Controller",%zid%);
+# FIELD LOCK
+zsi:field-lock %zid%; isa zsi:trait;
+    name("Field Lock",%zid%);
 
-    has-property(zsi:permission-level,0,1,%zid%);
-    has-property(zsi:permission-lock-level,0,1,%zid%);
 .
 
 # FIELD DECLARER
@@ -1335,3 +1212,4 @@ ztm:anonymous-topic isa ztm:anonymous-topic.
 
 # ROLE: REIFIED ZDM ASSOCIATION
 ztm:reified-zdm-association isa ztm:anonymous-topic.
+

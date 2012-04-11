@@ -1,6 +1,6 @@
 package net.zutha.model.builder
 
-import net.zutha.model.datatypes.{PropertyValue, ZPermissionLevel}
+import net.zutha.model.datatypes.{PropertyValue, ZFieldLock}
 import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.constructs.{ZProperty, ZScope, ZItem, ZPropertyType}
 import org.tmapi.core.Topic
@@ -39,22 +39,12 @@ class PropertyBuilder private[builder](val parent: ItemBuilder, val propertyType
   def addScopeItem(scopeItem:ZItem) {_scope = new ZScope(_scope.scopeItems + scopeItem)}
   def removeScopeItem(scopeItem:ZItem) {_scope = new ZScope(_scope.scopeItems - scopeItem)}
 
-  private var _permissionLevel: ZPermissionLevel = ZPermissionLevel.Inherit
-  def permissionLevel = _permissionLevel
-  def permissionLevel_= (level: Int) {_permissionLevel = ZPermissionLevel(level)}
-
   private[builder] def build(parentTopic: Topic): ZProperty = {
     val propTypeTopic = propertyType
     val propValue = value.toString
     val occ = parentTopic.createOccurrence(propTypeTopic,propValue)
 
     val propTopic = TopicMapDB.createTopic(propTypeTopic)
-    //add permission-level field if set
-    if(permissionLevel != ZPermissionLevel.Inherit){
-      val permLevelValue = permissionLevel.toString
-      val permLevelType = db.PERMISSION_LEVEL
-      propTopic.createOccurrence(permLevelType, permLevelValue)
-    }
     occ.setReifier(propTopic)
 
     TMOccurrenceProperty(occ)

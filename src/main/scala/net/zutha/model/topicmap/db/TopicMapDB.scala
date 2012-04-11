@@ -156,7 +156,7 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
     for(t <- AmbiguityWorkarounds.getAllTopics(tm)){
       val types = t.getTypes.toSet
       val theType = types.headOption.getOrElse(
-        throw new SchemaViolationException("All must topics must have a type")
+        throw new SchemaViolationException("All topics must have a type")
       )
       if(theType != ANONYMOUS_TOPIC){
         t.setType(theType)
@@ -285,9 +285,10 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
     otherPlayers
   }
 
-  def allAssociations : Set[ZAssociation] = {
-    tm.getAssociations.toSet.map{a: Association => a.toZAssociation}
-  }
+  def allAssociations : Set[ZAssociation] =
+    for (assoc <- tm.getAssociations.toSet if !assoc.isAnonymous)
+    yield assoc.toZAssociation
+
 
   //Topic-Map specific methods
 

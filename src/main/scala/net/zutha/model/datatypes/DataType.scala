@@ -7,7 +7,7 @@ object DataType{
   private val dataTypeMap = Map[ZItem,DataType](
     db.NON_NEGATIVE_INTEGER -> ZNonNegativeInteger,
     db.UNBOUNDED_NON_NEGATIVE_INTEGER -> ZUnboundedNNI,
-    db.PERMISSION_LEVEL -> ZPermissionLevel
+    db.FIELD_LOCK -> ZFieldLock
   )
   
   def apply(dataTypeItem: ZItem): DataType = {

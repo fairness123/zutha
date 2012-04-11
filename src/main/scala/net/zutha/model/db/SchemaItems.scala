@@ -65,6 +65,6 @@ trait SchemaItems {
   //datatypes
   lazy val NON_NEGATIVE_INTEGER: ZItem = getSchemaItem("non-negative-integer")
   lazy val UNBOUNDED_NON_NEGATIVE_INTEGER: ZItem = getSchemaItem("unbounded-non-negative-integer")
-  lazy val PERMISSION_LEVEL: ZItem = getSchemaItem("permission-level")
+  lazy val FIELD_LOCK: ZItem = getSchemaItem("field-lock")
 
 }

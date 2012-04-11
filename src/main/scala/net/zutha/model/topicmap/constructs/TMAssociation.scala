@@ -7,6 +7,7 @@ import org.tmapi.core.{Topic, Association, Role}
 import net.zutha.util.Cache._
 import net.zutha.model.db.DB.db
 import net.zutha.model.datatypes.PropertyValue
+import net.zutha.model.exceptions.SchemaViolationException
 
 object TMAssociation{
   val getItem = makeCache[Association,String,TMAssociation](_.getId, association => new TMAssociation(association))
@@ -15,9 +16,9 @@ object TMAssociation{
 class TMAssociation protected (association: Association) extends ZAssociation{
   def toZAssociation: ZAssociation = this
   def toAssociation = association
-  def zid = reifier.zid
-  def zids = reifier.zids
-  lazy val reifier = association.getReifier
+  def zid = Option(reifier).getOrElse( throw new SchemaViolationException("reified association has no reifier") ).zid
+  def zids = Option(reifier).map(_.zids).getOrElse(Set())
+  def reifier = association.getReifier
   def associationType = TMAssociationType(association.getType)
   def hasType(zType: ZType) = associationType.hasAncestor(zType)
   def associationFields: Set[ZAssociationField] = association.getRoles.toSet.map(TMAssociationField(_:Role))

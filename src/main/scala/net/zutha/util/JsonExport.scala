@@ -53,8 +53,8 @@ object JsonExport {
     val everyAssoc = TopicMapDB.allAssociations
     val assocs = everyAssoc filter { _.hasType( TopicMapDB.REIFIED_ASSOCIATION.toType ) }
 
-    val itemJson = items.toSeq map itemToJson
-    val assocJson = assocs.toSeq map assocToJson
+    val itemJson = items.toSeq.sortBy(_.zid) map itemToJson
+    val assocJson = assocs.toSeq.sortBy(_.zid) map assocToJson
     val json: JValue =
       ("items" -> itemJson) ~
         ("associations" -> assocJson)

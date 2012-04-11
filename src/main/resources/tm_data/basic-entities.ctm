@@ -36,9 +36,3 @@ zsi:public-key %zid%; isa zsi:reified-property-type;
     has-datatype(xsd:string,%zid%);
     has-unique-value(%zid%);
 .
-
-zsi:person %zid%; isa zsi:entity-type;
-    kind-of(zsi:entity,%zid%);
-
-    name("Person",%zid%);
-.
