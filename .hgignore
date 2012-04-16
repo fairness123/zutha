@@ -6,3 +6,5 @@ project/boot
 syntax: glob
 sbt-dbg.bat
 sbt-jrebel.bat
+.*
+~$*
