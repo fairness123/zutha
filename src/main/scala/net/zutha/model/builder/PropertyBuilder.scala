@@ -1,12 +1,7 @@
 package net.zutha.model.builder
 
-import net.zutha.model.datatypes.{PropertyValue, ZFieldLock}
-import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.datatypes.{PropertyValue}
 import net.zutha.model.constructs.{ZProperty, ZScope, ZItem, ZPropertyType}
-import org.tmapi.core.Topic
-import net.zutha.model.topicmap.constructs.TMOccurrenceProperty
-import net.zutha.model.db.DB.db
-import net.zutha.model.topicmap.TMConversions._
 
 class PropertyBuilder private[builder](val parent: ItemBuilder, val propertyType: ZPropertyType)
     extends FieldBuilder{
@@ -39,14 +34,8 @@ class PropertyBuilder private[builder](val parent: ItemBuilder, val propertyType
   def addScopeItem(scopeItem:ZItem) {_scope = new ZScope(_scope.scopeItems + scopeItem)}
   def removeScopeItem(scopeItem:ZItem) {_scope = new ZScope(_scope.scopeItems - scopeItem)}
 
-  private[builder] def build(parentTopic: Topic): ZProperty = {
-    val propTypeTopic = propertyType
-    val propValue = value.toString
-    val occ = parentTopic.createOccurrence(propTypeTopic,propValue)
-
-    val propTopic = TopicMapDB.createTopic(propTypeTopic)
-    occ.setReifier(propTopic)
-
-    TMOccurrenceProperty(occ)
+  private[builder] def build(parentItem: ZItem): ZProperty = {
+    val occ = parentItem.addProperty(propertyType,value)
+    occ
   }
 }

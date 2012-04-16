@@ -8,6 +8,8 @@ import net.zutha.model.datatypes.{PropertyValue, DataType}
 */
 
 trait ZItem extends ZAssociationMember{
+
+
   // -------------- conversion --------------
   def isType: Boolean
   def toType: ZType
@@ -77,6 +79,11 @@ trait ZItem extends ZAssociationMember{
   def getAssociationFieldSet(role: ZRole, assocType: ZAssociationType): Option[ZAssociationFieldSet]
   def getAssociationFields(assocFieldType: ZAssociationFieldType): Set[ZAssociationField]
   def getAssociationFields(role: ZRole, assocType: ZAssociationType): Set[ZAssociationField]
+
+  // -------------- modification --------------
+  def setType(tt: ZType)
+  def addTrait(zTrait: ZTrait): Unit
+  def addProperty(propType: ZPropertyType, value: PropertyValue): ZProperty
 }
 
 

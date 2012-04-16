@@ -2,12 +2,12 @@ package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
 import net.zutha.model.topicmap.TMConversions._
-import net.zutha.model.constructs._
 import org.tmapi.core.{Topic, Association, Role}
 import net.zutha.util.Cache._
 import net.zutha.model.db.DB.db
 import net.zutha.model.datatypes.PropertyValue
 import net.zutha.model.exceptions.SchemaViolationException
+import net.zutha.model.constructs._
 
 object TMAssociation{
   val getItem = makeCache[Association,String,TMAssociation](_.getId, association => new TMAssociation(association))
@@ -35,6 +35,7 @@ class TMAssociation protected (association: Association) extends ZAssociation{
   def getProperty(propType: ZPropertyType) = reifier.getProperty(propType)
   def getPropertyValue(propType: ZPropertyType) = reifier.getPropertyValue(propType)
 
+  def addProperty(propType: ZPropertyType, value: PropertyValue) = association.getReifier.createOccurrence(propType,value.toString)
 
   lazy val overriddenBy:Set[ZAssociation] = {
     val ovDeclRoles = association.getReifier.getRolesPlayed(db.OVERRIDDEN_DECLARATION,db.OVERRIDES_DECLARATION).toSet

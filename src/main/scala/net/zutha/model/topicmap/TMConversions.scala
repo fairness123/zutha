@@ -27,7 +27,7 @@ object TMConversions {
   // ZDM Scope => tmapi Scope
   implicit def zScopeToIScope(zscope: ZScope):IScope = {
     val topics = zscope.scopeItems.map(_.asInstanceOf[TMItem].toTopic)
-    TopicMapDB.tmm.asInstanceOf[ITopicMap].createScope(topics.toSeq)
+    TopicMapDB.createRawScope(topics.toSeq:_*)
   }
   
   // --------------------- TMAPI => ZDM Topic Map implementation constructs ---------------------

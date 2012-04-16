@@ -2,14 +2,14 @@ package net.zutha.model.topicmap.constructs
 
 import scala.collection.JavaConversions._
 import net.zutha.util.Cache._
-import net.zutha.model.constants.ZuthaConstants
+import net.zutha.model.constants.{ZuthaConstants}
 import ZuthaConstants._
 import net.zutha.model.constructs._
 import net.zutha.model.db.DB.db
-import de.topicmapslab.majortom.model.core.IScope
-import org.tmapi.core.{Name, Topic}
-import net.zutha.model.datatypes.{PropertyValue}
 import net.zutha.model.topicmap.TMConversions._
+import org.tmapi.core.{Name, Topic}
+import net.zutha.model.topicmap.db.{TopicMapDB => tdb}
+import net.zutha.model.datatypes.PropertyValue
 
 object TMItem{
   val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
@@ -199,5 +199,40 @@ class TMItem protected (topic: Topic) extends ZItem{
     val rolesPlayed = topic.getRolesPlayed(role, assocType).toSet
     val visibleRolesPlayed = rolesPlayed.filterNot(_.getParent.isAnonymous)
     visibleRolesPlayed.map{r => TMAssociationField(r)}
+  }
+
+  // -------------- modification --------------
+  def addTrait(newTrait: ZTrait) {
+    //create main item-has-trait association
+    val assoc = tdb.createAssociation(db.ITEM_HAS_TRAIT,
+      db.ITEM.toRole -> this,
+      db.TRAIT.toRole -> newTrait
+    )
+    val assocReifier = assoc.getReifier
+    //create topic-map-friendly workaround for item-has-trait link using an anonymous topic
+    val anon = tm.createTopic()
+    anon.addType(tdb.ANONYMOUS_TOPIC)
+    anon.addSupertype(newTrait)
+    topic.addType(anon)
+    //link anonymous topic to the item-has-trait association
+    tdb.createRawAssociation(tdb.ANONYMOUS_TOPIC_LINK,
+      tdb.REIFIED_ZDM_ASSOCIATION -> assocReifier,
+      tdb.ANONYMOUS_TOPIC -> anon
+    )
+  }
+
+  def addProperty(propType: ZPropertyType, value: PropertyValue) = {
+    val occ = topic.createOccurrence(propType,value.toString)
+    val propTopic = tdb.createItem(propType)
+    occ.setReifier(propTopic)
+    TMOccurrenceProperty(occ)
+  }
+
+  def setType(tt: ZType) {
+    topic.addType(tt)
+    tdb.createRawAssociation(db.TYPE_INSTANCE,
+      (db.TYPE:Topic) -> tt,
+      (db.INSTANCE:Topic) -> topic
+    )
   }
 }

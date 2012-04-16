@@ -1,8 +1,7 @@
 package net.zutha.model.db
 
-import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.constructs._
-import org.tmapi.core.Topic
+import net.zutha.model.topicmap.db.TopicMapDB
 
 trait DB extends SchemaItems{
   def getNextZID: Zid;
@@ -18,8 +17,16 @@ trait DB extends SchemaItems{
   def allInstancesOfType(zType: ZType): Set[ZItem]
   def descendantsOfType(zType: ZType): Set[ZType]
   def traverseAssociation(item: ZItem, role: ZRole, assocType: ZAssociationType, otherRole: ZRole): Set[ZItem]
+
+  //Construct Creation
+  def createAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*): ZAssociation
+  def createItem(itemType: ZItemType, name: String): ZItem
 }
 
 object DB {
+  val topicMapDB = "net.zutha.model.topicmap.db.DBTopicMapImpl"
+
+  //val dbClass = Class.forName(topicMapDB).asInstanceOf[Class[DB]]
+  //def db: DB = dbClass.newInstance()
   def db: DB = TopicMapDB
 }

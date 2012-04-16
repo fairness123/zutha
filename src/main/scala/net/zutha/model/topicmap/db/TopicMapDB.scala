@@ -14,11 +14,13 @@ import net.zutha.model.constructs._
 import net.zutha.model.db.DB
 import net.zutha.model.topicmap.TMConversions._
 import org.tmapi.index.{Index, TypeInstanceIndex}
-import de.topicmapslab.majortom.model.core.{ITopicMap, ITopicMapSystem}
 import de.topicmapslab.majortom.model.index.{ITransitiveTypeInstanceIndex, ISupertypeSubtypeIndex}
 import net.zutha.model.topicmap.AmbiguityWorkarounds
 import net.zutha.model.exceptions.{SchemaViolationException, SchemaItemMissingException}
+import net.zutha.model.topicmap.constructs.TMItem
+import de.topicmapslab.majortom.model.core.{IScope, ITopicMap, ITopicMapSystem}
 
+//object TopicMapDB extends DBTopicMapImpl
 
 object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
   val ENABLE_TRANSACTIONS = true
@@ -58,24 +60,26 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
 
   def getItemByZid(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
 
-  def createTopic(topicType: ZType, name: String): Topic = {
-    val topic = createTopic(topicType)
-    val nameObject = topic.createName(MODIFIABLE_NAME, name)
-    val nameReifier = createTopic(MODIFIABLE_NAME.toItemType)
-    nameObject.setReifier(nameReifier)
-    topic
-  }
+  // create constructs
 
-  def createTopic(topicType: ZType): Topic = {
+  def createItem(topicType: ZType): ZItem = {
     val zid = getNextZID
     val zidUri = ZID_PREFIX + zid
     val loc = tm.createLocator(zidUri)
-    val topic = tm.createTopicBySubjectIdentifier(loc)
-    topic.setType(topicType)
-    topic
+    val item: TMItem = tm.createTopicBySubjectIdentifier(loc)
+    item.setType(topicType)
+    item
   }
 
-  def createAssociation(assocType: Topic, rolePlayers: (Topic, Topic)*) = {
+  def createItem(itemType: ZItemType, name: String): ZItem = {
+    val item = createItem(itemType)
+    val nameObject = item.createName(NAME, name)
+    val nameReifier = createItem(NAME.toItemType)
+    nameObject.setReifier(nameReifier)
+    item
+  }
+
+  def createRawAssociation(assocType: Topic, rolePlayers: (Topic, Topic)*) = {
     val assoc = tmm.createAssociation(assocType)
     for((r,p) <- rolePlayers){
       assoc.createRole(r,p)
@@ -83,13 +87,18 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
     assoc
   }
 
-  def createReifiedAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
+  def createAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
     val rolePlayerTopics: Seq[(Topic,Topic)] = rolePlayers.map{case (r,i) => (r,i): (Topic,Topic)}
-    val assoc = createAssociation(assocType, rolePlayerTopics:_*)
-    val assocReifier = createTopic(assocType.toItemType)
+    val assoc = createRawAssociation(assocType, rolePlayerTopics:_*)
+    val assocReifier = createItem(assocType.toItemType)
     assoc.setReifier(assocReifier)
     assoc
   }
+
+  def createRawScope(topics: Topic*): IScope = {
+    tmm.createScope(topics.toSeq)
+  }
+
 
   def printTMLocators(){
     for(loc <- sys.getLocators) {
@@ -152,14 +161,14 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
       subtype.addSupertype(supertype)
     }
 
-    //create all the type-instance associations (redis omits them)
+    //create all the type-instance associations (majortom-redis omits them)
     for(t <- AmbiguityWorkarounds.getAllTopics(tm)){
       val types = t.getTypes.toSet
       val theType = types.headOption.getOrElse(
         throw new SchemaViolationException("All topics must have a type")
       )
       if(theType != ANONYMOUS_TOPIC){
-        t.setType(theType)
+        t.setType(theType.toType)
       }
     }
 

@@ -4,9 +4,6 @@ import net.zutha.model.constructs._
 import net.zutha.model.datatypes.PropertyValue
 import net.liftweb.common.Logger
 import net.liftweb.util.ValueCell
-import org.tmapi.core.Topic
-import net.zutha.model.topicmap.TMConversions._
-import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.db.DB._
 
 class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val associationFieldType: ZAssociationFieldType)
@@ -58,14 +55,13 @@ class AssociationFieldBuilder private[builder](val parent: ItemBuilder, val asso
   }
 
   /** Create a concrete Association item from this AssociationFieldBuilder */
-  private[builder] def build(parentTopic: Topic) = {
-    val rps: Seq[(ZRole, ZItem)] = (rolePlayers + ((role,parentTopic)) ).toSeq
-    val assoc = TopicMapDB.createReifiedAssociation(associationType, rps:_*)
-    val reifier = assoc.getReifier
+  private[builder] def build(parentItem: ZItem) = {
+    val rps: Seq[(ZRole, ZItem)] = (rolePlayers + ((role,parentItem)) ).toSeq
+    val assoc = db.createAssociation(associationType, rps:_*)
 
     //add properties to association reifier
-    for((propType,prop) <- properties){
-      val occ = reifier.createOccurrence(propType,prop.toString)
+    for((propType,propVal) <- properties){
+      assoc.addProperty(propType,propVal)
     }
     assoc
   }

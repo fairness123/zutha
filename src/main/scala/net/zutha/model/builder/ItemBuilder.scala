@@ -1,12 +1,7 @@
 package net.zutha.model.builder
 
-import net.zutha.model.db.DB.db
 import net.zutha.model.constructs._
-import net.zutha.model.topicmap.db.TopicMapDB
-import org.tmapi.core.Topic
 import net.zutha.model.db.DB.db
-import net.zutha.model.topicmap.TMConversions._
-import net.zutha.model.topicmap.constructs.TMItem
 import net.liftweb.http.S
 import net.liftweb.common.{Failure, Full, Empty, Box}
 
@@ -189,23 +184,23 @@ class ItemBuilder(val requiredAssociationFieldType: ZAssociationFieldType,
       return Empty
     } else S.error("name-error","") //clear the error message if the name causes no errors
 
-    val topic = TopicMapDB.createTopic(selectedItemType, itemName)
+    val item = db.createItem(selectedItemType, itemName)
 
     //add trait
     for(t <- selectedTrait){
-      topic.addTrait(t)
+      item.addTrait(t)
     }
 
     //create properties
     for(ps <- propertySets; p <- ps.properties){
-      p.build(topic)
+      p.build(item)
     }
 
     //create associations
     for(as <- associationFieldSets; a <- as.associationFields){
-      a.build(topic)
+      a.build(item)
     }
-    Full(TMItem(topic))
+    Full(item)
   }
 
   // -------------- Helper Methods ---------------

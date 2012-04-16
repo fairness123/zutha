@@ -20,6 +20,8 @@ trait ZAssociation {
   def getProperty(propType: ZPropertyType):Option[ZProperty]
   def getPropertyValue(propType: ZPropertyType): Option[PropertyValue]
 
+  def addProperty(propType: ZPropertyType, value: PropertyValue): ZProperty
+
   /** @return the schema associations that override this one.
    *  Will always return an empty set for any associations that cannot be overridden. */
   def overriddenBy:Set[ZAssociation]

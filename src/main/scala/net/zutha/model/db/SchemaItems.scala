@@ -59,7 +59,6 @@ trait SchemaItems {
   lazy val PROPERTY_CARD_MAX: ZPropertyType = getSchemaItem("property-card-max").toPropertyType
 
   lazy val NAME: ZPropertyType = getSchemaItem("name").toPropertyType
-  lazy val MODIFIABLE_NAME: ZPropertyType = getSchemaItem("modifiable-name").toPropertyType
   lazy val ZID: ZPropertyType= getSchemaItem("zid").toPropertyType
 
   //datatypes

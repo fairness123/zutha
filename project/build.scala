@@ -6,5 +6,5 @@ object ZuthaBuild extends Build {
     "Zutha",
     file("."))
 
-  System.setProperty("myproject.root", "D:\\Dropbox\\Projects\\Zutha")
+  System.setProperty("myproject.root", "D:\\Dropbox\\Projects\\Programming\\Zutha")
 }
