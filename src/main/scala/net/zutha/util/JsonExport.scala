@@ -2,17 +2,16 @@ package net.zutha.util
 
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
-import net.zutha.model.topicmap.db.TopicMapDB
 import net.zutha.model.constructs.{ZAssociation, ZProperty, ZItem}
 import net.zutha.model.constants.ApplicationConstants._
 import tools.nsc.io.File
+import net.zutha.model.db.DB._
 
 object JsonExportApp extends App {
   JsonExport.export
 }
 
 object JsonExport {
-
   def itemToJson(item: ZItem): JValue = {
     val props = item.getAllProperties
     val json =
@@ -48,10 +47,10 @@ object JsonExport {
 
   def export {
 
-    val everyItem = TopicMapDB.allItems
-    val items = everyItem filterNot { _.hasType( TopicMapDB.REIFIED_ASSOCIATION.toType ) }
-    val everyAssoc = TopicMapDB.allAssociations
-    val assocs = everyAssoc filter { _.hasType( TopicMapDB.REIFIED_ASSOCIATION.toType ) }
+    val everyItem = db.allItems
+    val items = everyItem filterNot { _.hasType( db.REIFIED_ASSOCIATION.toType ) }
+    val everyAssoc = db.allAssociations
+    val assocs = everyAssoc filter { _.hasType( db.REIFIED_ASSOCIATION.toType ) }
 
     val itemJson = items.toSeq.sortBy(_.zid) map itemToJson
     val assocJson = assocs.toSeq.sortBy(_.zid) map assocToJson

@@ -4,6 +4,8 @@ import collection.JavaConversions._
 
 import net.zutha.util.Cache._
 import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.db.DB
+
 import org.tmapi.core.{Role, Topic, Association}
 
 object AssociationExtended{
@@ -11,7 +13,7 @@ object AssociationExtended{
   def apply(association: Association):AssociationExtended = get(association)
 }
 class AssociationExtended(association: Association) {
-  lazy val isAnonymous: Boolean = TopicMapDB.associationIsAnonymous(association)
+  lazy val isAnonymous: Boolean = DB.db.asInstanceOf[TopicMapDB].associationIsAnonymous(association)
 
   /**
    * @return Set[(roleType:Topic,player:Topic]

@@ -8,8 +8,8 @@ import net.zutha.model.constructs._
 import net.zutha.model.db.DB.db
 import net.zutha.model.topicmap.TMConversions._
 import org.tmapi.core.{Name, Topic}
-import net.zutha.model.topicmap.db.{TopicMapDB => tdb}
 import net.zutha.model.datatypes.PropertyValue
+import net.zutha.model.topicmap.db.{TopicMapDB}
 
 object TMItem{
   val getItem = makeCache[Topic,String,TMItem](_.getId, topic => new TMItem(topic))
@@ -17,6 +17,7 @@ object TMItem{
 }
 class TMItem protected (topic: Topic) extends ZItem{
   val tm = topic.getTopicMap
+  val tdb = db.asInstanceOf[TopicMapDB]
 
   // -------------- Common method overrides --------------
   override def hashCode() = ("http://zutha.net/majortomTopic/" + topic.getId).hashCode()
@@ -204,7 +205,7 @@ class TMItem protected (topic: Topic) extends ZItem{
   // -------------- modification --------------
   def addTrait(newTrait: ZTrait) {
     //create main item-has-trait association
-    val assoc = tdb.createAssociation(db.ITEM_HAS_TRAIT,
+    val assoc = db.createAssociation(db.ITEM_HAS_TRAIT,
       db.ITEM.toRole -> this,
       db.TRAIT.toRole -> newTrait
     )

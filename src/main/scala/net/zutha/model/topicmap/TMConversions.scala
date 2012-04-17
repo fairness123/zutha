@@ -1,9 +1,9 @@
 package net.zutha.model.topicmap
 
 import db.TopicMapDB
+import net.zutha.model.db.DB
 import de.topicmapslab.majortom.model.core._
 import org.tmapi.core._
-import collection.JavaConversions._
 
 import net.zutha.model.topicmap.constructs._
 import net.zutha.model.topicmap.extensions._
@@ -27,7 +27,7 @@ object TMConversions {
   // ZDM Scope => tmapi Scope
   implicit def zScopeToIScope(zscope: ZScope):IScope = {
     val topics = zscope.scopeItems.map(_.asInstanceOf[TMItem].toTopic)
-    TopicMapDB.createRawScope(topics.toSeq:_*)
+    DB.db.asInstanceOf[TopicMapDB].createRawScope(topics.toSeq:_*)
   }
   
   // --------------------- TMAPI => ZDM Topic Map implementation constructs ---------------------

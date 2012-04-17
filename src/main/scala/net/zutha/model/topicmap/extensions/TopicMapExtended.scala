@@ -3,10 +3,14 @@ package net.zutha.model.topicmap.extensions
 import net.zutha.model.constructs.Zid
 import net.zutha.model.constants.ZuthaConstants._
 import net.zutha.model.constants.{TopicMapConstants => TM}
+import net.zutha.model.constants.ApplicationConstants._
 import org.tmapi.core.{Topic, TopicMap}
-import net.zutha.model.topicmap.db.TopicMapDB
+import net.zutha.model.topicmap.db.{TopicMapDB}
+import net.zutha.model.db.DB.db
 
 case class TopicMapExtended(val tm: TopicMap) {
+  lazy val tdb = db.asInstanceOf[TopicMapDB]
+
   def lookupTopicByZSI(zsi: String): Option[Topic] = lookupTopicBySI(ZSI_PREFIX + zsi)
 
   def lookupTopicByZID(zid: Zid): Option[Topic] = lookupTopicBySI(ZID_PREFIX + zid)
@@ -20,10 +24,14 @@ case class TopicMapExtended(val tm: TopicMap) {
 
   def getOrCreateTopicBySI(siStr: String): Topic = lookupTopicBySI(siStr) match {
     case Some(t) => t
-    case _ => {
+    case None => {
       val loc = tm.createLocator(siStr)
       val t = tm.createTopicBySubjectIdentifier(loc)
-      t.addType(TopicMapDB.ANONYMOUS_TOPIC)
+      if (siStr == ANONYMOUS_TOPIC_SI){
+        t.addType(t)
+      } else {
+        t.addType(tdb.ANONYMOUS_TOPIC)
+      }
       t
     }
   }

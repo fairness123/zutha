@@ -1,11 +1,9 @@
 package net.zutha.snippet
 
-import scala.collection.JavaConversions._
 import net.liftweb._
 import http._
 import util._
 import Helpers._
-import net.zutha.model.topicmap.db.{TopicMapDB}
 
 class ZuthaConsole extends StatefulSnippet {
 

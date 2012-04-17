@@ -10,7 +10,6 @@ import net.liftweb.common.{Loggable}
 import net.zutha.model.constants._
 import ZuthaConstants._
 import ApplicationConstants._
-import net.zutha.model.constructs._
 import net.zutha.model.db.DB
 import net.zutha.model.topicmap.TMConversions._
 import org.tmapi.index.{Index, TypeInstanceIndex}
@@ -19,89 +18,31 @@ import net.zutha.model.topicmap.AmbiguityWorkarounds
 import net.zutha.model.exceptions.{SchemaViolationException, SchemaItemMissingException}
 import net.zutha.model.topicmap.constructs.TMItem
 import de.topicmapslab.majortom.model.core.{IScope, ITopicMap, ITopicMapSystem}
+import net.zutha.model.constructs._
 
-//object TopicMapDB extends DBTopicMapImpl
-
-object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
+class TopicMapDB extends DB with  MajortomDB with ZtmTopics with Loggable{
   val ENABLE_TRANSACTIONS = true
 
-  val sys: ITopicMapSystem = makeTopicMapSystem
-
-  //check if schema needs to be created
-  tmm.lookupTopicByZSI("item") match {
-    case Some(_)  => //nothing needs doing
-    case None     => generateSchema()
-  }
+  val tmSystem: ITopicMapSystem = makeTopicMapSystem
 
   // Zutha Topic Map
-  def tmm: ITopicMap = {
-    Option(sys.getTopicMap(ZUTHA_TOPIC_MAP_URI)) match {
+  lazy val tm: ITopicMap = {
+    Option(tmSystem.getTopicMap(ZUTHA_TOPIC_MAP_URI)) match {
       case Some(ztm) => ztm
-      case None => sys.createTopicMap(ZUTHA_TOPIC_MAP_URI)
+      case None => {
+        val newtm = tmSystem.createTopicMap(ZUTHA_TOPIC_MAP_URI)
+        generateSchema()
+        newtm
+      }
     }
   }
-  def tm: TopicMap = tmm
 
   // ZID Ticker
-  private lazy val zidTicker = new ZIDTicker(tmm)
+  private lazy val zidTicker = new ZIDTicker(tm)
   def getNextZID: Zid = zidTicker.getNext
 
-  /**
-   * @param identifier the Zutha Identifier of the schema item to retrieve
-   * @return the schema item with the given identifier
-   * @throws SchemaItemMissingException if the requested topic does not exist
-   */
-  protected def getSchemaItem(identifier: String): ZItem = tmm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
-      case Some(topic) => topic.toItem
-      case None => throw new SchemaItemMissingException
-    }
-
-  protected def getOrCreateSchemaTopic(si: String): Topic = tmm.getOrCreateTopicBySI(si)
-
-  def getItemByZid(zid: Zid) = tmm.lookupTopicByZID(zid).map{_.toItem}
-
-  // create constructs
-
-  def createItem(topicType: ZType): ZItem = {
-    val zid = getNextZID
-    val zidUri = ZID_PREFIX + zid
-    val loc = tm.createLocator(zidUri)
-    val item: TMItem = tm.createTopicBySubjectIdentifier(loc)
-    item.setType(topicType)
-    item
-  }
-
-  def createItem(itemType: ZItemType, name: String): ZItem = {
-    val item = createItem(itemType)
-    val nameObject = item.createName(NAME, name)
-    val nameReifier = createItem(NAME.toItemType)
-    nameObject.setReifier(nameReifier)
-    item
-  }
-
-  def createRawAssociation(assocType: Topic, rolePlayers: (Topic, Topic)*) = {
-    val assoc = tmm.createAssociation(assocType)
-    for((r,p) <- rolePlayers){
-      assoc.createRole(r,p)
-    }
-    assoc
-  }
-
-  def createAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
-    val rolePlayerTopics: Seq[(Topic,Topic)] = rolePlayers.map{case (r,i) => (r,i): (Topic,Topic)}
-    val assoc = createRawAssociation(assocType, rolePlayerTopics:_*)
-    val assocReifier = createItem(assocType.toItemType)
-    assoc.setReifier(assocReifier)
-    assoc
-  }
-
-  def createRawScope(topics: Topic*): IScope = {
-    tmm.createScope(topics.toSeq)
-  }
-
-
   def printTMLocators(){
-    for(loc <- sys.getLocators) {
+    for(loc <- tmSystem.getLocators) {
       println (loc.getReference)
     }
   }
@@ -132,7 +73,7 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
             case _ => newZID //this is an anonymous ZID placeholder
           }
         })
-//        newLine foreach (writer write _)
+        //        newLine foreach (writer write _)
         writer println newLine
       }
       writer.flush()
@@ -145,7 +86,7 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
 
     //make a topic map from the ctm schema
     val source: java.io.File = tmFile.jfile
-    val reader: CTMTopicMapReader = new CTMTopicMapReader(tmm, source,ZUTHA_TOPIC_MAP_URI)
+    val reader: CTMTopicMapReader = new CTMTopicMapReader(tm, source,ZUTHA_TOPIC_MAP_URI)
     reader.read()
 
     //set ZID Ticker start value
@@ -175,6 +116,59 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
     logger.info("database has been reset back to schema")
   }
 
+  /**
+   * @param identifier the Zutha Identifier of the schema item to retrieve
+   * @return the schema item with the given identifier
+   * @throws SchemaItemMissingException if the requested topic does not exist
+   */
+  protected def getSchemaItem(identifier: String): ZItem = tm.lookupTopicBySI(ZSI_PREFIX + identifier) match {
+    case Some(topic) => topic.toItem
+    case None => throw new SchemaItemMissingException
+  }
+
+  protected def getOrCreateSchemaTopic(si: String): Topic = tm.getOrCreateTopicBySI(si)
+
+  def getItemByZid(zid: Zid) = tm.lookupTopicByZID(zid).map{_.toItem}
+
+  // create constructs
+
+  def createItem(topicType: ZType): ZItem = {
+    val zid = getNextZID
+    val zidUri = ZID_PREFIX + zid
+    val loc = tm.createLocator(zidUri)
+    val item: TMItem = tm.createTopicBySubjectIdentifier(loc)
+    item.setType(topicType)
+    item
+  }
+
+  def createItem(itemType: ZItemType, name: String): ZItem = {
+    val item = createItem(itemType)
+    val nameObject = item.createName(NAME, name)
+    val nameReifier = createItem(NAME.toItemType)
+    nameObject.setReifier(nameReifier)
+    item
+  }
+
+  def createRawAssociation(assocType: Topic, rolePlayers: (Topic, Topic)*) = {
+    val assoc = tm.createAssociation(assocType)
+    for((r,p) <- rolePlayers){
+      assoc.createRole(r,p)
+    }
+    assoc
+  }
+
+  def createAssociation(assocType: ZAssociationType, rolePlayers: (ZRole, ZItem)*) = {
+    val rolePlayerTopics: Seq[(Topic,Topic)] = rolePlayers.map{case (r,i) => (r,i): (Topic,Topic)}
+    val assoc = createRawAssociation(assocType, rolePlayerTopics:_*)
+    val assocReifier = createItem(assocType.toItemType)
+    assoc.setReifier(assocReifier)
+    assoc
+  }
+
+  def createRawScope(topics: Topic*): IScope = {
+    tm.createScope(topics.toSeq)
+  }
+
   //*********************************************************
   //*********************************************************
   //***************      DB Access methods      *************
@@ -184,7 +178,7 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
   // ------------ Internal Methods -------------
 
   private def getIndex[T <: Index](clazz: Class[T]) = {
-    val index = tmm.getStore.getIndex(clazz)
+    val index = tm.getStore.getIndex(clazz)
     if (!index.isOpen()) {
       index.open();
     }
@@ -295,7 +289,7 @@ object TopicMapDB extends DB with MajortomDB with ZtmTopics with Loggable{
   }
 
   def allAssociations : Set[ZAssociation] =
-    for (assoc <- tm.getAssociations.toSet if !assoc.isAnonymous)
+    for (assoc <- tm.asInstanceOf[TopicMap].getAssociations.toSet if !assoc.isAnonymous)
     yield assoc.toZAssociation
 
 
