@@ -1,0 +1,3 @@
+Zutha.net is a crowdsourced knowledgebase and general purpose reputation platform. The project is in the very early stages of development at the moment, but it has long term ambitions to explore ideas like Reputation Currency, Semantic Knowledge Representation, a Revenue Model for content creators based on investment, Decentralized Infrastructure Management and Distributed Banking.
+
+To find out more, please visit the [Wiki](http://zutha.wikispaces.com).

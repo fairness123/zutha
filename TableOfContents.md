@@ -1,0 +1,5 @@
+  * [Introduction](Introduction.md)
+  * [Core Principles](CorePrinciples.md)
+    * [Reputation](Reputation.md)
+    * [Investment](Investment.md)
+  * [Contributing to the Project](Contributing.md)

@@ -1,0 +1,5 @@
+# Fundamentals #
+
+Users earn reputation according to the worth of the items they own. For example, a user might write a review of a film which becomes very popular - that is, the Review item achieves a high worth. The user that wrote the review also owns the corresponding item and will gain reputation in proportion to the worth of that item.
+To illustrate, imagine that George is a new user on Zutha. He writes a review of Avatar and that review receives investment which brings its total worth to 100. George's reputation will now be 100.
+Now imagine that George has just written a book about popular culture and decides to advertise it on Zutha.net. He creates a Book item that represents his book and makes himself the owner of this new item. Other Zutha users discover his book, read it and invest in it on Zutha. As the worth of George's Book item increases, George's reputation increases proportionally.
